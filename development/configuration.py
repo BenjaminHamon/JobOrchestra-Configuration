@@ -39,7 +39,9 @@ def load_configuration(environment):
 
 	configuration["development_dependencies"] = [ "pylint", "pymongo" ]
 
-	configuration["components"] = []
+	configuration["components"] = [
+		{ "name": "bhamon-build-configuration", "path": "master_configuration", "packages": [ "bhamon_build_configuration" ] },
+	]
 
 	return configuration
 
