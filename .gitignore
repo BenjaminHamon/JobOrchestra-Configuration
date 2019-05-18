@@ -1,6 +1,9 @@
 # Environment
 environment.json
 
+# Generated metadata
+__metadata__.py
+
 # Python
 __pycache__/
 *.egg-info/
