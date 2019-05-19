@@ -1,9 +1,11 @@
 import argparse
+import importlib
 import logging
 
 import filelock
 import pymongo
 
+import bhamon_build_configuration.worker_selector as worker_selector
 import bhamon_build_master.master as master
 import bhamon_build_master.supervisor as supervisor
 import bhamon_build_master.task_processor as task_processor
@@ -16,6 +18,7 @@ import bhamon_build_model.task_provider as task_provider
 import bhamon_build_model.worker_provider as worker_provider
 
 import environment
+import master_configuration
 
 
 def main():
@@ -35,13 +38,17 @@ def main():
 			task_provider = task_provider_instance,
 		)
 
+		worker_selector_instance = worker_selector.WorkerSelector(
+			worker_provider = worker_provider_instance,
+		)
+
 		supervisor_instance = supervisor.Supervisor(
 			host = arguments.address,
 			port = arguments.port,
 			worker_provider = worker_provider_instance,
 			job_provider = job_provider_instance,
 			build_provider = build_provider_instance,
-			worker_selector = select_worker,
+			worker_selector = worker_selector_instance,
 		)
 
 		master_instance = master.Master(
@@ -74,11 +81,9 @@ def create_database_client(database_uri):
 
 
 def reload_configuration():
-	return { "jobs": [], "workers": [] }
-
-
-def select_worker(job, all_available_workers):
-	return None
+	importlib.reload(master_configuration)
+	master_configuration.reload_modules()
+	return master_configuration.configure()
 
 
 if __name__ == "__main__":
