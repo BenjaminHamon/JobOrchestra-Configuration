@@ -1,6 +1,7 @@
 def configure_workers():
 	all_projects = [
 		"example",
+		"image-manager",
 		"my-website",
 	]
 
