@@ -4,11 +4,11 @@ __date__ = None
 
 
 try:
-	import bhamon_build_extensions.__metadata__
+	import bhamon_build_worker_extensions.__metadata__
 
-	__copyright__ = bhamon_build_extensions.__metadata__.__copyright__
-	__version__ = bhamon_build_extensions.__metadata__.__version__
-	__date__ = bhamon_build_extensions.__metadata__.__date__
+	__copyright__ = bhamon_build_worker_extensions.__metadata__.__copyright__
+	__version__ = bhamon_build_worker_extensions.__metadata__.__version__
+	__date__ = bhamon_build_worker_extensions.__metadata__.__date__
 
 except ImportError:
 	pass
