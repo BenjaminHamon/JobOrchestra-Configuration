@@ -41,6 +41,7 @@ def load_configuration(environment):
 
 	configuration["components"] = [
 		{ "name": "bhamon-build-configuration", "path": "master_configuration", "packages": [ "bhamon_build_configuration" ] },
+		{ "name": "bhamon-build-worker-extensions", "path": "worker_extensions", "packages": [ "bhamon_build_worker_extensions" ] },
 	]
 
 	return configuration
