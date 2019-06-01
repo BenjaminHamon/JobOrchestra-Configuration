@@ -4,7 +4,10 @@ import os
 
 import flask
 
+import bhamon_build_website
 import bhamon_build_website.website as website
+
+import bhamon_build_website_extensions
 
 import environment
 
@@ -19,10 +22,15 @@ def main():
 	application.artifact_storage_path = os.path.normpath(environment_instance["artifact_storage_path"])
 	application.artifact_storage_url = environment_instance["artifact_storage_url"]
 
+	resource_paths = [
+		os.path.dirname(bhamon_build_website_extensions.__file__),
+		os.path.dirname(bhamon_build_website.__file__),
+	]
+
 	website.configure(application)
 	website.register_handlers(application)
 	website.register_routes(application)
-	website.register_resources(application)
+	website.register_resources(application, resource_paths)
 
 	application.run(host = arguments.address, port = arguments.port, debug = True)
 
