@@ -1,5 +1,6 @@
 import importlib
 
+import bhamon_build_configuration.projects.build_service as project_build_service
 import bhamon_build_configuration.projects.example as project_example
 import bhamon_build_configuration.projects.image_manager as project_image_manager
 import bhamon_build_configuration.projects.my_website as project_my_website
@@ -7,6 +8,7 @@ import bhamon_build_configuration.workers as configuration_workers
 
 
 def reload_modules():
+	importlib.reload(project_build_service)
 	importlib.reload(project_example)
 	importlib.reload(project_image_manager)
 	importlib.reload(project_my_website)
@@ -15,6 +17,7 @@ def reload_modules():
 
 def configure():
 	all_jobs = []
+	all_jobs += project_build_service.configure_jobs()
 	all_jobs += project_example.configure_jobs()
 	all_jobs += project_image_manager.configure_jobs()
 	all_jobs += project_my_website.configure_jobs()
