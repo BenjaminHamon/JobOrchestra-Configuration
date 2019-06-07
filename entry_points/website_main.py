@@ -8,6 +8,7 @@ import bhamon_build_website
 import bhamon_build_website.website as website
 
 import bhamon_build_website_extensions
+import bhamon_build_website_extensions.website as website_extensions
 
 import environment
 
@@ -29,8 +30,9 @@ def main():
 
 	website.configure(application)
 	website.register_handlers(application)
-	website.register_routes(application)
 	website.register_resources(application, resource_paths)
+	website.register_routes(application)
+	website_extensions.register_routes(application)
 
 	application.run(host = arguments.address, port = arguments.port, debug = True)
 

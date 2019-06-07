@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>{{ project_identifier }}</h1>
+
+<section>
+	<h2>Status</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Revision</th>
+				{% for group in group_collection %}
+				<th><a href="{{ url_for('job_index', job_identifier = group['job_identifier']) }}">{{ group['display_name'] }}</a></th>
+				{% endfor %}
+			</tr>
+		</thead>
+		<tbody>
+			{% for revision in project_status %}
+			<tr>
+				<td>
+					<div class="revision-header">
+						<a href="{{ revision['url'] }}">{{ revision['identifier_short'] }}</a>
+						<p class="date">{{ revision['date'] }}</p>
+					</div>
+				</td>
+				{% for group in group_collection %}
+				<td>
+					{% for build in revision['builds'] %}
+						{% if build['group'] == group['identifier'] %}
+					<div class="status-group">
+						<div class="status-indicator {{ build['status'] }}" title="{{ build['status'] }}"></div>
+						<a href="{{ url_for('build_index', build_identifier = build['identifier']) }}">{{ build['identifier'] }}</a>
+					</div>
+						{% endif %}
+					{% endfor %}
+				</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</section>
+{% endblock %}

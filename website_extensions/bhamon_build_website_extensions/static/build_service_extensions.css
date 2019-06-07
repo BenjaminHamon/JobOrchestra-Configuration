@@ -1,0 +1,9 @@
+.revision-header > a
+{
+	text-align: center;
+}
+
+.revision-header > .date
+{
+	font-size: 80%;
+}

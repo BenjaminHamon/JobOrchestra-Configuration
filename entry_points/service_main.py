@@ -12,8 +12,10 @@ import bhamon_build_model.mongo_database_client as mongo_database_client
 import bhamon_build_model.task_provider as task_provider
 import bhamon_build_model.worker_provider as worker_provider
 import bhamon_build_service.service as service
+import bhamon_build_service_extensions.service as service_extensions
 
 import environment
+import master_configuration
 
 
 def main():
@@ -29,8 +31,11 @@ def main():
 	application.task_provider = task_provider.TaskProvider(database_client_instance)
 	application.worker_provider = worker_provider.WorkerProvider(database_client_instance)
 
+	application.project_collection = master_configuration.configure_projects()
+
 	service.register_handlers(application)
 	service.register_routes(application)
+	service_extensions.register_routes(application)
 
 	application.run(host = arguments.address, port = arguments.port, debug = True)
 

@@ -1,6 +1,18 @@
 repository = "https://github.com/BenjaminHamon/MyWebsite"
 
 
+def configure_services():
+	return {
+		"revision_control": {
+			"service": "github",
+			"parameters": {
+				"owner": "BenjaminHamon",
+				"repository": "MyWebsite",
+			},
+		}
+	}
+
+
 def configure_jobs():
 	return [
 		check(),

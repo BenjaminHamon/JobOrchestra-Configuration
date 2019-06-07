@@ -1,5 +1,7 @@
 import importlib
 
+from bhamon_build_model_extensions.project import Project
+
 import bhamon_build_configuration.projects.build_service as project_build_service
 import bhamon_build_configuration.projects.example as project_example
 import bhamon_build_configuration.projects.image_manager as project_image_manager
@@ -27,4 +29,12 @@ def configure():
 	return {
 		"jobs": all_jobs,
 		"workers": all_workers,
+	}
+
+
+def configure_projects():
+	return {
+		"build-service": Project(project_build_service.configure_services()),
+		"image-manager": Project(project_image_manager.configure_services()),
+		"my-website": Project(project_my_website.configure_services()),
 	}

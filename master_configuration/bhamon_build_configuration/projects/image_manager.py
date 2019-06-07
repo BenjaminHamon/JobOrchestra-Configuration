@@ -1,6 +1,18 @@
 repository = "https://github.com/BenjaminHamon/Overmind.ImageManager"
 
 
+def configure_services():
+	return {
+		"revision_control": {
+			"service": "github",
+			"parameters": {
+				"owner": "BenjaminHamon",
+				"repository": "Overmind.ImageManager",
+			},
+		}
+	}
+
+
 def configure_jobs():
 	return [
 		controller(),
