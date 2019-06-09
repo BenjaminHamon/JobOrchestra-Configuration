@@ -4,6 +4,11 @@ import logging
 import os
 import sys
 
+import pymongo
+
+import bhamon_build_model.json_database_client as json_database_client
+import bhamon_build_model.mongo_database_client as mongo_database_client
+
 
 log_format = "[{levelname}][{name}] {message}"
 
@@ -21,6 +26,14 @@ def configure_logging(log_level):
 	logging.getLogger("urllib3").setLevel(logging.INFO)
 	logging.getLogger("websockets.protocol").setLevel(logging.INFO)
 	logging.getLogger("werkzeug").setLevel(logging.WARNING)
+
+
+def create_database_client(database_uri):
+	if database_uri == "json":
+		return json_database_client.JsonDatabaseClient(".")
+	if database_uri.startswith("mongodb://"):
+		return mongo_database_client.MongoDatabaseClient(pymongo.MongoClient(database_uri).get_database())
+	raise ValueError("Unsupported database uri '%s'" % database_uri)
 
 
 def create_default_environment():
