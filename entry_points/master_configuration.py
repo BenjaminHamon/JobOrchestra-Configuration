@@ -7,6 +7,7 @@ import bhamon_build_configuration.projects.example as project_example
 import bhamon_build_configuration.projects.image_manager as project_image_manager
 import bhamon_build_configuration.projects.my_website as project_my_website
 import bhamon_build_configuration.projects.solitaire as project_solitaire
+import bhamon_build_configuration.worker_selector as worker_selector
 import bhamon_build_configuration.workers as configuration_workers
 
 
@@ -16,6 +17,7 @@ def reload_modules():
 	importlib.reload(project_image_manager)
 	importlib.reload(project_my_website)
 	importlib.reload(project_solitaire)
+	importlib.reload(worker_selector)
 	importlib.reload(configuration_workers)
 
 
