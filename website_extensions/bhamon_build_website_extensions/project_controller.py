@@ -94,4 +94,49 @@ def get_status_groups(project_identifier):
 			},
 		]
 
+	if project_identifier == "solitaire":
+		return [
+			{
+				"identifier": "controller",
+				"display_name": "Controller",
+				"job_identifier": "solitaire_controller",
+			},
+			{
+				"identifier": "package_android_debug",
+				"display_name": "Android Package (Debug)",
+				"job_identifier": "solitaire_package_android",
+				"condition": lambda build: build["parameters"]["configuration"] == "Debug",
+			},
+			{
+				"identifier": "package_android_release",
+				"display_name": "Android Package (Release)",
+				"job_identifier": "solitaire_package_android",
+				"condition": lambda build: build["parameters"]["configuration"] == "Release",
+			},
+			{
+				"identifier": "package_linux_debug",
+				"display_name": "Linux Package (Debug)",
+				"job_identifier": "solitaire_package_linux",
+				"condition": lambda build: build["parameters"]["configuration"] == "Debug",
+			},
+			{
+				"identifier": "package_linux_release",
+				"display_name": "Linux Package (Release)",
+				"job_identifier": "solitaire_package_linux",
+				"condition": lambda build: build["parameters"]["configuration"] == "Release",
+			},
+			{
+				"identifier": "package_windows_debug",
+				"display_name": "Windows Package (Debug)",
+				"job_identifier": "solitaire_package_windows",
+				"condition": lambda build: build["parameters"]["configuration"] == "Debug",
+			},
+			{
+				"identifier": "package_windows_release",
+				"display_name": "Windows Package (Release)",
+				"job_identifier": "solitaire_package_windows",
+				"condition": lambda build: build["parameters"]["configuration"] == "Release",
+			},
+		]
+
 	raise ValueError("Unknown project: '%s'" % project_identifier)

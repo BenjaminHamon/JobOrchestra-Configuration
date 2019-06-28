@@ -4,6 +4,7 @@ def configure_workers():
 		"example",
 		"image-manager",
 		"my-website",
+		"solitaire",
 	]
 
 	return [

@@ -6,6 +6,7 @@ import bhamon_build_configuration.projects.build_service as project_build_servic
 import bhamon_build_configuration.projects.example as project_example
 import bhamon_build_configuration.projects.image_manager as project_image_manager
 import bhamon_build_configuration.projects.my_website as project_my_website
+import bhamon_build_configuration.projects.solitaire as project_solitaire
 import bhamon_build_configuration.workers as configuration_workers
 
 
@@ -14,6 +15,7 @@ def reload_modules():
 	importlib.reload(project_example)
 	importlib.reload(project_image_manager)
 	importlib.reload(project_my_website)
+	importlib.reload(project_solitaire)
 	importlib.reload(configuration_workers)
 
 
@@ -23,6 +25,7 @@ def configure():
 	all_jobs += project_example.configure_jobs()
 	all_jobs += project_image_manager.configure_jobs()
 	all_jobs += project_my_website.configure_jobs()
+	all_jobs += project_solitaire.configure_jobs()
 
 	all_workers = configuration_workers.configure_workers()
 
@@ -37,4 +40,5 @@ def configure_projects():
 		"build-service": Project(project_build_service.configure_services()),
 		"image-manager": Project(project_image_manager.configure_services()),
 		"my-website": Project(project_my_website.configure_services()),
+		"solitaire": Project(project_solitaire.configure_services()),
 	}
