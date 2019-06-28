@@ -5,7 +5,7 @@
 
 <section>
 	<h2>Status</h2>
-	<table>
+	<table class="project-status-table">
 		<thead>
 			<tr>
 				<th>Revision</th>
@@ -29,7 +29,7 @@
 						{% if build['group'] == group['identifier'] %}
 					<div class="status-group">
 						<div class="status-indicator {{ build['status'] }}" title="{{ build['status'] }}"></div>
-						<a href="{{ url_for('build_index', build_identifier = build['identifier']) }}">{{ build['identifier'] }}</a>
+						<a href="{{ url_for('build_index', build_identifier = build['identifier']) }}">{{ build['identifier'][:18] }}</a>
 					</div>
 						{% endif %}
 					{% endfor %}

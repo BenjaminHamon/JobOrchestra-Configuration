@@ -1,3 +1,8 @@
+.project-status-table > thead
+{
+	white-space: normal;
+}
+
 .revision-header > a
 {
 	text-align: center;
