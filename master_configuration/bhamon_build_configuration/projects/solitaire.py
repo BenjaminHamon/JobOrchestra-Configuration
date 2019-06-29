@@ -85,11 +85,15 @@ def package(target_platform):
 
 	initialization_script = [ "{environment[python3_executable]}", "-u", "{environment[script_root]}/solitaire.py", "--results", "{result_file_path}" ]
 	project_script = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	artifact_parameters = [ "--parameters", "platform=" + target_platform, "configuration={parameters[configuration]}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}", "--type", "worker" ]},
 		{ "name": "clean", "command": project_script + [ "clean" ] },
-		{ "name": "package", "command": project_script + [ "package", "--platform", target_platform, "--configuration", "{parameters[configuration]}" ] },
+		{ "name": "build", "command": project_script + [ "package", "--platform", target_platform, "--configuration", "{parameters[configuration]}" ] },
+		{ "name": "package", "command": project_script + [ "artifact", "package", "--command", "package" ] + artifact_parameters },
+		{ "name": "verify", "command": project_script + [ "artifact", "package", "--command", "verify" ] + artifact_parameters },
+		{ "name": "upload", "command": project_script + [ "artifact", "package", "--command", "upload" ] + artifact_parameters },
 	]
 
 	return job
