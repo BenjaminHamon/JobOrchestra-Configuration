@@ -15,20 +15,21 @@ def configure_services():
 
 def configure_jobs():
 	return [
-		check(),
+		check("linux"),
+		check("windows"),
 		distribute(),
 	]
 
 
-def check():
+def check(platform):
 	job = {
-		"identifier": "build-service_check",
+		"identifier": "build-service_check_" + platform,
 		"description": "Run checks for the BuildService project.",
 		"workspace": "build-service",
 
 		"properties": {
 			"project": "build-service",
-			"operating_system": [ "linux", "windows" ],
+			"operating_system": [ platform ],
 			"is_controller": False,
 		},
 

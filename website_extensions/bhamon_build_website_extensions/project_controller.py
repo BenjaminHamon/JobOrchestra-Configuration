@@ -48,9 +48,14 @@ def get_status_groups(project_identifier):
 	if project_identifier == "build-service":
 		return [
 			{
-				"identifier": "check",
-				"display_name": "Check",
-				"job_identifier": "build-service_check",
+				"identifier": "check_linux",
+				"display_name": "Check Linux",
+				"job_identifier": "build-service_check_linux",
+			},
+			{
+				"identifier": "check_windows",
+				"display_name": "Check Windows",
+				"job_identifier": "build-service_check_windows",
 			},
 			{
 				"identifier": "distribute",
