@@ -11,7 +11,7 @@ def configure_argument_parser(environment, configuration, subparsers): # pylint:
 
 
 def run(environment, configuration, arguments): # pylint: disable=unused-argument
-	install_depencies(environment["python3_executable"], configuration["development_dependencies"], arguments.simulate)
+	install_dependencies(environment["python3_executable"], configuration["development_dependencies"], arguments.simulate)
 	print("")
 	for component in configuration["components"]:
 		setup_component(configuration, component, arguments.simulate)
@@ -21,7 +21,7 @@ def run(environment, configuration, arguments): # pylint: disable=unused-argumen
 		print("")
 
 
-def install_depencies(python_executable, dependency_collection, simulate):
+def install_dependencies(python_executable, dependency_collection, simulate):
 	logger.info("Installing development dependencies")
 
 	install_command = [ python_executable, "-m", "pip", "install", "--upgrade" ] + dependency_collection
