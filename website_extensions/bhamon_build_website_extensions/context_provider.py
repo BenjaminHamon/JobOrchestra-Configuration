@@ -10,7 +10,7 @@ def get_project_context(project, context):
 	raise ValueError("Unknown project: '%s'" % project)
 
 
-def get_build_service_context(context): 
+def get_build_service_context(context):
 	project_filters = get_build_service_filters()
 
 	if context is None:
@@ -38,7 +38,7 @@ def get_build_service_filters():
 	]
 
 
-def get_image_manager_context(context): 
+def get_image_manager_context(context):
 	project_filters = get_image_manager_filters()
 
 	if context is None:
@@ -68,7 +68,7 @@ def get_image_manager_filters():
 	]
 
 
-def get_my_website_context(context): 
+def get_my_website_context(context):
 	project_filters = get_my_website_filters()
 
 	if context is None:
@@ -91,7 +91,7 @@ def get_my_website_filters():
 	]
 
 
-def get_solitaire_context(context): 
+def get_solitaire_context(context):
 	project_filters = get_solitaire_filters()
 
 	if context is None:
