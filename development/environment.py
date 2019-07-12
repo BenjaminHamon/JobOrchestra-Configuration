@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import sys
 
 
 log_format = "[{levelname}][{name}] {message}"
@@ -19,7 +18,7 @@ def configure_logging(log_level):
 def create_default_environment():
 	return {
 		"git_executable": "git",
-		"python3_executable": sys.executable,
+		"python3_executable": "python3",
 	}
 
 
