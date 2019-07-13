@@ -2,6 +2,7 @@ import argparse
 import json
 import logging
 import os
+import platform
 import re
 import subprocess
 
@@ -55,6 +56,9 @@ def setup_virtual_environment(environment_instance):
 	setup_venv_command = [ environment_instance["python3_system_executable"], "-m", "venv", ".venv" ]
 	logger.info("+ %s", " ".join(setup_venv_command))
 	subprocess.check_call(setup_venv_command)
+
+	if platform.system() == "Linux" and not os.path.exists(".venv/scripts"):
+		os.symlink("bin", ".venv/scripts")
 
 	install_pip_command = [ ".venv/scripts/python", "-m", "pip", "install", "--upgrade", "pip" ]
 	logger.info("+ %s", " ".join(install_pip_command))
