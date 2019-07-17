@@ -4,6 +4,8 @@ import os
 
 import flask
 
+import bhamon_build_model.authorization_provider as authorization_provider
+
 import bhamon_build_website
 import bhamon_build_website.website as website
 
@@ -19,9 +21,13 @@ def main():
 	arguments = parse_arguments()
 
 	application = flask.Flask(__name__, static_folder = None)
+	application.authorization_provider = authorization_provider.AuthorizationProvider()
 	application.service_url = environment_instance["build_service_url"]
 	application.artifact_storage_path = os.path.normpath(environment_instance["artifact_storage_path"])
 	application.artifact_storage_url = environment_instance["artifact_storage_url"]
+
+	with open(arguments.secret_path) as key_file:
+		application.secret_key = key_file.read().strip()
 
 	resource_paths = [
 		os.path.dirname(bhamon_build_website_extensions.__file__),
@@ -41,6 +47,7 @@ def parse_arguments():
 	argument_parser = argparse.ArgumentParser()
 	argument_parser.add_argument("--address", required = True, help = "set the address for the server to listen to")
 	argument_parser.add_argument("--port", required = True, type = int, help = "set the port for the server to listen to")
+	argument_parser.add_argument("--secret-path", required = True, metavar = "<path>", help = "set the path for a file containing the application secret")
 	return argument_parser.parse_args()
 
 
