@@ -2,6 +2,7 @@ import copy
 import json
 import logging
 import os
+import re
 import sys
 
 import pymongo
@@ -29,8 +30,8 @@ def configure_logging(log_level):
 
 
 def create_database_client(database_uri):
-	if database_uri == "json":
-		return json_database_client.JsonDatabaseClient(".")
+	if database_uri.startswith("json://"):
+		return json_database_client.JsonDatabaseClient(re.sub("^json://", "", database_uri))
 	if database_uri.startswith("mongodb://"):
 		return mongo_database_client.MongoDatabaseClient(pymongo.MongoClient(database_uri).get_database())
 	raise ValueError("Unsupported database uri '%s'" % database_uri)
@@ -46,9 +47,9 @@ def load_environment():
 	default_environment = create_default_environment()
 
 	environment_instance = copy.deepcopy(create_default_environment())
-	environment_instance.update(_load_environment_transform(os.path.join(os.path.expanduser("~"), "environment.json")))
-	environment_instance.update(_load_environment_transform(os.path.join(os.path.dirname(__file__), "environment.json")))
-	environment_instance.update(_load_environment_transform("environment.json"))
+	environment_instance.update(load_transform(os.path.join(os.path.expanduser("~"), "environment.json")))
+	environment_instance.update(load_transform(os.path.join(os.path.dirname(__file__), "environment.json")))
+	environment_instance.update(load_transform("environment.json"))
 
 	for key in environment_instance.keys():
 		if environment_instance[key] == "$default":
@@ -57,7 +58,7 @@ def load_environment():
 	return environment_instance
 
 
-def _load_environment_transform(transform_file_path):
+def load_transform(transform_file_path):
 	if not os.path.exists(transform_file_path):
 		return {}
 	with open(transform_file_path) as transform_file:
