@@ -1,0 +1,23 @@
+{
+	"build_database_uri": "mongodb://localhost:27017/build_database",
+	"build_file_storage_path": "database_mongo",
+
+	"build_master_listen_address": "localhost",
+	"build_master_listen_port": 8765,
+	"build_master_url": "ws://localhost:8765",
+
+	"build_service_listen_address": "localhost",
+	"build_service_listen_port": 5100,
+	"build_service_url": "http://localhost:5100",
+
+	"build_website_secret": "build_website_secret.txt",
+	"build_website_listen_address": "localhost",
+	"build_website_listen_port": 5000,
+	"build_website_url": "http://localhost:5000",
+
+	"build_workers": {
+		"windows_controller": { "working_directory": "controller" },
+		"windows_worker_01": { "working_directory": "worker_01" },
+		"windows_worker_02": { "working_directory": "worker_02" }
+	}
+}
