@@ -28,7 +28,7 @@ def get_project_status(project):
 
 	project_instance = flask.current_app.project_collection[project]
 	revision_collection = project_instance.get_revision_list(**revision_query_parameters)
-	build_collection = flask.current_app.build_provider.get_list(**build_query_parameters)
+	build_collection = flask.current_app.build_provider.get_list_as_documents(**build_query_parameters)
 
 	revision_dictionary = { revision["identifier"]: revision for revision in revision_collection }
 	for revision in revision_collection:
