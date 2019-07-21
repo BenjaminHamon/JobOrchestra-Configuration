@@ -60,6 +60,7 @@ def configure_workspace_environment(environment_instance):
 	logger.info("Configuring workspace environment")
 
 	workspace_environment = {
+		"artifact_repository": environment_instance["artifact_repository"],
 		"git_executable": environment_instance["git_executable"],
 		"python3_executable": ".venv/scripts/python",
 		"python_package_repository": environment_instance["python_package_repository"],

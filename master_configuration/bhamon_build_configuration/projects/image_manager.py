@@ -1,8 +1,17 @@
 repository = "https://github.com/BenjaminHamon/Overmind.ImageManager"
 
 
-def configure_services():
+def configure_services(environment):
 	return {
+		"artifact_repository": {
+			"url": environment["artifact_repository_url"] + "/" + "ImageManager",
+			"file_types": {
+				"binaries": { "path_in_repository": "Binaries", "file_extension": ".zip" },
+				"package": { "path_in_repository": "Packages", "file_extension": ".zip" },
+				"package_final": { "path_in_repository": "Packages", "file_extension": ".zip" },
+			},
+		},
+
 		"revision_control": {
 			"service": "github",
 			"parameters": {

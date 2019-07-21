@@ -37,10 +37,10 @@ def configure():
 	}
 
 
-def configure_projects():
+def configure_projects(environment):
 	return {
-		"build-service": Project(project_build_service.configure_services()),
-		"image-manager": Project(project_image_manager.configure_services()),
-		"my-website": Project(project_my_website.configure_services()),
-		"solitaire": Project(project_solitaire.configure_services()),
+		"build-service": Project(project_build_service.configure_services(environment)),
+		"image-manager": Project(project_image_manager.configure_services(environment)),
+		"my-website": Project(project_my_website.configure_services(environment)),
+		"solitaire": Project(project_solitaire.configure_services(environment)),
 	}

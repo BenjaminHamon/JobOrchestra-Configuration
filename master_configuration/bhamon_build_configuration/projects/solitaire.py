@@ -1,8 +1,15 @@
 repository = "https://github.com/BenjaminHamon/Overmind.Solitaire"
 
 
-def configure_services():
+def configure_services(environment):
 	return {
+		"artifact_repository": {
+			"url": environment["artifact_repository_url"] + "/" + "Solitaire",
+			"file_types": {
+				"package": { "path_in_repository": "Packages", "file_extension": ".zip" },
+			},
+		},
+
 		"revision_control": {
 			"service": "github",
 			"parameters": {

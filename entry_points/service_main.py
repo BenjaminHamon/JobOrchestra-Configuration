@@ -1,7 +1,6 @@
 import argparse
 import json
 import logging
-import os
 
 import flask
 
@@ -57,8 +56,14 @@ def create_application(configuration):
 	application.user_provider = UserProvider(database_client_instance)
 	application.worker_provider = WorkerProvider(database_client_instance)
 
-	application.project_collection = master_configuration.configure_projects()
+	environment_instance = {
+		"artifact_repository_url": configuration["artifact_repository_url"],
+		"python_package_repository_url": configuration["python_package_repository_url"],
+	}
 
+	application.project_collection = master_configuration.configure_projects(environment_instance)
+
+	service_extensions.configure_overrides()
 	service.register_handlers(application)
 	service.register_routes(application)
 	service_extensions.register_routes(application)

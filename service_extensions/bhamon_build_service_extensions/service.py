@@ -1,4 +1,10 @@
+import bhamon_build_service.build_controller as build_controller
+import bhamon_build_service_extensions.build_controller as build_controller_extensions
 import bhamon_build_service_extensions.project_controller as project_controller
+
+
+def configure_overrides():
+	build_controller.get_build_results = build_controller_extensions.get_build_results
 
 
 def register_routes(application):

@@ -1,8 +1,17 @@
 repository = "https://github.com/BenjaminHamon/MyWebsite"
 
 
-def configure_services():
+def configure_services(environment):
 	return {
+		"artifact_repository": {
+			"url": environment["artifact_repository_url"] + "/" + "MyWebsite",
+		},
+
+		"python_package_repository": {
+			"url": environment["python_package_repository_url"],
+			"distribution_extension": "-py3-none-any.whl",
+		},
+
 		"revision_control": {
 			"service": "github",
 			"parameters": {

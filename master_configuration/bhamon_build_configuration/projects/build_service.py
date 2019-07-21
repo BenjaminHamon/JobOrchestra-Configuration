@@ -1,8 +1,20 @@
 repository = "https://github.com/BenjaminHamon/BuildService"
 
 
-def configure_services():
+def configure_services(environment):
 	return {
+		"artifact_repository": {
+			"url": environment["artifact_repository_url"] + "/" + "BuildService",
+			"file_types": {
+				"package": { "path_in_repository": "packages", "file_extension": ".zip" },
+			},
+		},
+
+		"python_package_repository": {
+			"url": environment["python_package_repository_url"],
+			"distribution_extension": "-py3-none-any.whl",
+		},
+
 		"revision_control": {
 			"service": "github",
 			"parameters": {
