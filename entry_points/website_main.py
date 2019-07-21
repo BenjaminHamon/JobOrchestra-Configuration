@@ -43,6 +43,7 @@ def create_application(configuration):
 	application = flask.Flask(__name__, static_folder = None)
 	application.authorization_provider = AuthorizationProvider()
 	application.artifact_repository_url = configuration["artifact_repository_url"]
+	application.python_package_repository_url = configuration["python_package_repository_url"]
 	application.service_url = configuration["build_service_url"]
 
 	with open(configuration["build_website_secret"]) as key_file:
