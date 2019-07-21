@@ -8,6 +8,7 @@ import requests
 logger = logging.getLogger("GitHub")
 
 
+website_url = "https://github.com"
 api_url = "https://api.github.com"
 
 
@@ -48,3 +49,7 @@ def get_revision(owner, repository, revision, access_token = None):
 		"description": revision["commit"]["message"],
 		"url": revision["html_url"],
 	}
+
+
+def get_revision_url(owner, repository, revision):
+	return website_url + "/{owner}/{repository}/commit/{revision}".format(**locals())

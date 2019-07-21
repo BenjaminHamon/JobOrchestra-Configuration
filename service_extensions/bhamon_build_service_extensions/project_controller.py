@@ -1,6 +1,7 @@
 import logging
 
 import flask
+import requests
 
 
 logger = logging.getLogger("ProjectController")
@@ -37,7 +38,10 @@ def get_project_status(project):
 	for build in build_collection:
 		revision_identifier = build.get("results", {}).get("revision_control", {}).get("revision")
 		if revision_identifier is None and build["status"] in [ "pending", "running" ]:
-			revision_identifier = project_instance.try_resolve_revision(build["parameters"]["revision"], access_token = access_token)
+			try:
+				revision_identifier = project_instance.resolve_revision(build["parameters"]["revision"], access_token = access_token)
+			except requests.HTTPError:
+				logger.warning("Failed to resolve project '%s' revision '%s'", project, build["parameters"]["revision"], exc_info = True)
 
 		revision = revision_dictionary.get(revision_identifier)
 		if revision is not None:
