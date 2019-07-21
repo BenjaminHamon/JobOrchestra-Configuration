@@ -57,8 +57,8 @@ def check(platform):
 		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}" ]},
 		{ "name": "clean", "command": project_script + [ "clean" ] },
 		{ "name": "develop", "command": project_script + [ "develop" ] },
-		{ "name": "test", "command": project_script + [ "test" ] },
 		{ "name": "lint", "command": project_script + [ "lint" ] },
+		{ "name": "test", "command": project_script + [ "test" ] },
 	]
 
 	return job
