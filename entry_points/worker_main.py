@@ -18,6 +18,7 @@ def main():
 	with open(arguments.configuration, "r") as configuration_file:
 		configuration = json.load(configuration_file)
 
+	os.makedirs(configuration["build_workers"][arguments.identifier]["working_directory"], exist_ok = True)
 	os.chdir(configuration["build_workers"][arguments.identifier]["working_directory"])
 	with filelock.FileLock("build_worker.lock", 5):
 		worker.run(configuration["build_master_url"], arguments.identifier, executor_script)

@@ -46,11 +46,8 @@ def controller():
 		],
 	}
 
-	initialization_script = [ "{environment[python3_executable]}", "-u", "{environment[script_root]}/solitaire.py" ]
-	initialization_script += [ "--results", "{result_file_path}" ]
-
-	controller_script = [ "{environment[python3_executable]}", "-u", "{environment[script_root]}/controller.py" ]
-	controller_script += [ "--service-url", "{environment[build_service_url]}", "--results", "{result_file_path}" ]
+	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/solitaire.py", "--results", "{result_file_path}" ]
+	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py", "--results", "{result_file_path}" ]
 
 	package_android_job = "solitaire_package_android"
 	package_linux_job = "solitaire_package_linux"
@@ -90,7 +87,7 @@ def package(target_platform):
 		],
 	}
 
-	initialization_script = [ "{environment[python3_executable]}", "-u", "{environment[script_root]}/solitaire.py", "--results", "{result_file_path}" ]
+	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/solitaire.py", "--results", "{result_file_path}" ]
 	project_script = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 	artifact_parameters = [ "--parameters", "platform=" + target_platform, "configuration={parameters[configuration]}" ]
 

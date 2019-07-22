@@ -3,7 +3,6 @@ import json
 import logging
 import os
 import re
-import sys
 
 import pymongo
 
@@ -38,9 +37,7 @@ def create_database_client(database_uri):
 
 
 def create_default_environment():
-	return {
-		"python3_executable": sys.executable,
-	}
+	return {}
 
 
 def load_environment():
@@ -48,7 +45,6 @@ def load_environment():
 
 	environment_instance = copy.deepcopy(create_default_environment())
 	environment_instance.update(load_transform(os.path.join(os.path.expanduser("~"), "environment.json")))
-	environment_instance.update(load_transform(os.path.join(os.path.dirname(__file__), "environment.json")))
 	environment_instance.update(load_transform("environment.json"))
 
 	for key in environment_instance.keys():

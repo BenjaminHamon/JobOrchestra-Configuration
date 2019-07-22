@@ -8,8 +8,10 @@ import environment
 
 def main():
 	environment.configure_logging(logging.INFO)
+	environment_instance = environment.load_environment()
+
 	arguments = parse_arguments()
-	arguments.func(arguments)
+	arguments.func(environment_instance["build_service_url"], arguments)
 
 
 def parse_arguments():
@@ -21,7 +23,6 @@ def parse_arguments():
 		return (key_value[0], key_value[1])
 
 	main_parser = argparse.ArgumentParser()
-	main_parser.add_argument("--service-url", required = True, help = "set the build service url to send requests to")
 	main_parser.add_argument("--results", required = True, help = "set the file path where to store the build results")
 
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
@@ -43,12 +44,12 @@ def parse_arguments():
 	return arguments
 
 
-def trigger_build(arguments):
-	controller.trigger_build(arguments.service_url, arguments.results, arguments.job_identifier, arguments.parameters)
+def trigger_build(service_url, arguments):
+	controller.trigger_build(service_url, arguments.results, arguments.job_identifier, arguments.parameters)
 
 
-def wait_build(arguments):
-	controller.wait_build(arguments.service_url, arguments.results)
+def wait_build(service_url, arguments):
+	controller.wait_build(service_url, arguments.results)
 
 
 if __name__ == "__main__":

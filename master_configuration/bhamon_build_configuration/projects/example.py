@@ -4,6 +4,7 @@ def configure_jobs():
 		sleep(),
 		failure(),
 		exception(),
+		environment(),
 		parameters(),
 		large_log(),
 		large_log_random(),
@@ -27,8 +28,8 @@ def hello():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello_stderr", "command": [ "{environment[python3_executable]}", "-c", "import sys; print('hello from stderr', file = sys.stderr)" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello_stderr", "command": [ "{environment[build_worker_python_executable]}", "-c", "import sys; print('hello from stderr', file = sys.stderr)" ] },
 		],
 	}
 
@@ -48,9 +49,9 @@ def sleep():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "sleep", "command": [ "{environment[python3_executable]}", "-c", "import time; time.sleep(60)" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "sleep", "command": [ "{environment[build_worker_python_executable]}", "-c", "import time; time.sleep(60)" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
 		],
 	}
 
@@ -70,11 +71,11 @@ def failure():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "fail", "command": [ "{environment[python3_executable]}", "-c", "raise RuntimeError" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "fail", "command": [ "{environment[build_worker_python_executable]}", "-c", "raise RuntimeError" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
 		],
 	}
 
@@ -94,11 +95,32 @@ def exception():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "exception", "command": [ "{environment[python3_executable]}", "-c", "print('{undefined}')" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "exception", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{undefined}')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+		],
+	}
+
+
+def environment():
+	return {
+		"identifier": "example_environment",
+		"description": "Example job using environment.",
+		"workspace": "example",
+
+		"properties": {
+			"project": "example",
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [],
+
+		"steps": [
+			{ "name": "python_executable", "command": [ "{environment[build_worker_python_executable]}", "-c", "import sys; print(sys.executable)" ] },
+			{ "name": "script_root", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{environment[build_worker_script_root]}')" ] },
 		],
 	}
 
@@ -120,7 +142,7 @@ def parameters():
 		],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[python3_executable]}", "-c", "print('{parameters[text_to_print]}')" ] },
+			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{parameters[text_to_print]}')" ] },
 		],
 	}
 
@@ -140,7 +162,7 @@ def large_log():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "write", "command": [ "{environment[python3_executable]}", "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ] },
+			{ "name": "write", "command": [ "{environment[build_worker_python_executable]}", "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ] },
 		],
 	}
 
@@ -160,16 +182,13 @@ def large_log_random():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "write", "command": [ "{environment[python3_executable]}", "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ] },
+			{ "name": "write", "command": [ "{environment[build_worker_python_executable]}", "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ] },
 		],
 	}
 
 
 def controller_success():
-	controller_script = [
-		"{environment[python3_executable]}", "{environment[script_root]}/controller_main.py",
-		"--service-url", "{environment[build_service_url]}", "--results", "{result_file_path}",
-	]
+	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py", "--results", "{result_file_path}" ]
 
 	return {
 		"identifier": "example_controller-success",
@@ -194,10 +213,7 @@ def controller_success():
 
 
 def controller_failure():
-	controller_script = [
-		"{environment[python3_executable]}", "{environment[script_root]}/controller_main.py",
-		"--service-url", "{environment[build_service_url]}", "--results", "{result_file_path}",
-	]
+	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py", "--results", "{result_file_path}" ]
 
 	return {
 		"identifier": "example_controller-failure",

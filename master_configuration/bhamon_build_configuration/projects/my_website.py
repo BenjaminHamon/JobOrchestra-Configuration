@@ -46,7 +46,7 @@ def check():
 		],
 	}
 
-	initialization_script = [ "{environment[python3_executable]}", "-u", "{environment[script_root]}/my_website.py", "--results", "{result_file_path}" ]
+	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/my_website.py", "--results", "{result_file_path}" ]
 	project_script = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
@@ -76,7 +76,7 @@ def distribute():
 		],
 	}
 
-	initialization_script = [ "{environment[python3_executable]}", "-u", "{environment[script_root]}/my_website.py", "--results", "{result_file_path}" ]
+	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/my_website.py", "--results", "{result_file_path}" ]
 	project_script = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
