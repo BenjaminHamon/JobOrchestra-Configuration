@@ -1,4 +1,6 @@
+import glob
 import logging
+import os
 import subprocess
 
 
@@ -10,14 +12,26 @@ def configure_argument_parser(environment, configuration, subparsers): # pylint:
 
 
 def run(environment, configuration, arguments): # pylint: disable=unused-argument
-	lint(environment, configuration["components"])
+	lint_packages(environment["python3_executable"], configuration["components"])
+	lint_scripts(environment["python3_executable"], "entry_points")
+	lint_scripts(environment["python3_executable"], "worker_scripts")
 
 
-def lint(environment, component_collection):
-	logger.info("Running linter")
+def lint_packages(python_executable, component_collection):
+	logger.info("Running linter in python packages")
 
-	pylint_command = [ environment["python3_executable"], "-m", "pylint" ]
+	pylint_command = [ python_executable, "-m", "pylint" ]
 	pylint_command += [ component["path"] for component in component_collection ]
+
+	logger.info("+ %s", " ".join(pylint_command))
+	subprocess.check_call(pylint_command)
+
+
+def lint_scripts(python_executable, directory):
+	logger.info("Running linter in '%s'", directory)
+
+	pylint_command = [ python_executable, "-m", "pylint" ]
+	pylint_command += [ file_path for file_path in glob.glob(os.path.join(directory, "**", "*.py"), recursive = True) ]
 
 	logger.info("+ %s", " ".join(pylint_command))
 	subprocess.check_call(pylint_command)
