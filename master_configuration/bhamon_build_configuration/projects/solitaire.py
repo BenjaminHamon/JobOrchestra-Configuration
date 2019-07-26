@@ -47,7 +47,8 @@ def controller():
 	}
 
 	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/solitaire.py", "--results", "{result_file_path}" ]
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py", "--results", "{result_file_path}" ]
+	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
+	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
 
 	package_android_job = "solitaire_package_android"
 	package_linux_job = "solitaire_package_linux"

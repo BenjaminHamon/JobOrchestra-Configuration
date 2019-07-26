@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 
 import bhamon_build_worker.controller as controller
@@ -8,10 +9,14 @@ import environment
 
 def main():
 	environment.configure_logging(logging.INFO)
-	environment_instance = environment.load_environment()
-
 	arguments = parse_arguments()
-	arguments.func(environment_instance["build_service_url"], arguments)
+
+	with open(arguments.configuration, "r") as configuration_file:
+		configuration = json.load(configuration_file)
+	with open(configuration["authentication_file_path"], "r") as authentication_file:
+		authentication = json.load(authentication_file)
+
+	arguments.func(configuration["build_service_url"], arguments, (authentication["user"], authentication["secret"]))
 
 
 def parse_arguments():
@@ -23,6 +28,7 @@ def parse_arguments():
 		return (key_value[0], key_value[1])
 
 	main_parser = argparse.ArgumentParser()
+	main_parser.add_argument("--configuration", required = True, help = "set the configuration file path")
 	main_parser.add_argument("--results", required = True, help = "set the file path where to store the build results")
 
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
@@ -44,12 +50,12 @@ def parse_arguments():
 	return arguments
 
 
-def trigger_build(service_url, arguments):
-	controller.trigger_build(service_url, arguments.results, arguments.job_identifier, arguments.parameters)
+def trigger_build(service_url, arguments, authorization):
+	controller.trigger_build(service_url, arguments.results, arguments.job_identifier, arguments.parameters, authorization)
 
 
-def wait_build(service_url, arguments):
-	controller.wait_build(service_url, arguments.results)
+def wait_build(service_url, arguments, authorization):
+	controller.wait_build(service_url, arguments.results, authorization)
 
 
 if __name__ == "__main__":

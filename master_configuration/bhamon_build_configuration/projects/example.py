@@ -123,6 +123,7 @@ def environment():
 		"parameters": [],
 
 		"steps": [
+			{ "name": "configuration", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{environment[build_worker_configuration]}')" ] },
 			{ "name": "python_executable", "command": [ "{environment[build_worker_python_executable]}", "-c", "import sys; print(sys.executable)" ] },
 			{ "name": "script_root", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{environment[build_worker_script_root]}')" ] },
 		],
@@ -192,7 +193,8 @@ def large_log_random():
 
 
 def controller_success():
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py", "--results", "{result_file_path}" ]
+	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
+	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
 
 	return {
 		"identifier": "example_controller-success",
@@ -217,7 +219,8 @@ def controller_success():
 
 
 def controller_failure():
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py", "--results", "{result_file_path}" ]
+	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
+	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
 
 	return {
 		"identifier": "example_controller-failure",

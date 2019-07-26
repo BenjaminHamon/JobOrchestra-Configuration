@@ -21,8 +21,8 @@
 	"build_website_url": "http://localhost:5000",
 
 	"build_workers": {
-		"windows_controller": { "working_directory": "controller" },
-		"windows_worker_01": { "working_directory": "worker_01" },
-		"windows_worker_02": { "working_directory": "worker_02" }
+		"windows_controller": { "path": "controller" },
+		"windows_worker_01": { "path": "worker_01" },
+		"windows_worker_02": { "path": "worker_02" }
 	}
 }
