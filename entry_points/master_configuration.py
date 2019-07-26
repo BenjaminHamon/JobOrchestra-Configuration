@@ -40,6 +40,7 @@ def configure():
 def configure_projects(environment):
 	return {
 		"build-service": Project(project_build_service.configure_services(environment)),
+		"example": Project(project_example.configure_services(environment)),
 		"image-manager": Project(project_image_manager.configure_services(environment)),
 		"my-website": Project(project_my_website.configure_services(environment)),
 		"solitaire": Project(project_solitaire.configure_services(environment)),

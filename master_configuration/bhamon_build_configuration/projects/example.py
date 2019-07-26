@@ -1,3 +1,7 @@
+def configure_services(environment_instance): # pylint: disable = unused-argument
+	return {}
+
+
 def configure_jobs():
 	return [
 		hello(),
