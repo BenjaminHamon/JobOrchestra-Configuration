@@ -1,5 +1,10 @@
 repository = "https://github.com/BenjaminHamon/Overmind.ImageManager"
 
+controller_script = "{environment[build_worker_script_root]}/controller.py"
+initialization_script = "{environment[build_worker_script_root]}/image_manager.py"
+worker_configuration_path = "{environment[build_worker_configuration]}"
+worker_python_executable = "{environment[build_worker_python_executable]}"
+
 
 def configure_services(environment):
 	return {
@@ -46,19 +51,21 @@ def controller():
 		],
 	}
 
-	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/image_manager.py", "--results", "{result_file_path}" ]
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
-	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
+	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	package_job = "image-manager_package"
 	package_debug_parameters = [ "--parameters", "configuration=Debug", "revision={results[revision_control][revision]}" ]
 	package_release_parameters = [ "--parameters", "configuration=Release", "revision={results[revision_control][revision]}" ]
 
 	job["steps"] = [
-		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}", "--type", "controller" ] },
-		{ "name": "trigger_package_debug", "command": controller_script + [ "trigger", package_job ] + package_debug_parameters },
-		{ "name": "trigger_package_release", "command": controller_script + [ "trigger", package_job ] + package_release_parameters },
-		{ "name": "wait", "command": controller_script + [ "wait" ] },
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
+		{ "name": "trigger_package_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_job ] + package_debug_parameters },
+		{ "name": "trigger_package_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_job ] + package_release_parameters },
+		{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 	]
 
 	return job
@@ -82,18 +89,21 @@ def package():
 		],
 	}
 
-	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/image_manager.py", "--results", "{result_file_path}" ]
-	project_script = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	artifact_parameters = [ "--parameters", "configuration={parameters[configuration]}" ]
 
 	job["steps"] = [
-		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}", "--type", "worker" ]},
-		{ "name": "clean", "command": project_script + [ "clean" ] },
-		{ "name": "metadata", "command": project_script + [ "metadata" ] },
-		{ "name": "compile", "command": project_script + [ "compile", "--configuration", "{parameters[configuration]}" ] },
-		{ "name": "test", "command": project_script + [ "test", "--configuration", "{parameters[configuration]}" ] },
-		{ "name": "package", "command": project_script + [ "artifact", "package", "--command", "package", "--parameters", "configuration={parameters[configuration]}" ] },
-		{ "name": "verify", "command": project_script + [ "artifact", "package", "--command", "verify", "--parameters", "configuration={parameters[configuration]}" ] },
-		{ "name": "upload", "command": project_script + [ "artifact", "package", "--command", "upload", "--parameters", "configuration={parameters[configuration]}" ] },
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
+		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "metadata", "command": project_entry_point + [ "metadata" ] },
+		{ "name": "compile", "command": project_entry_point + [ "compile", "--configuration", "{parameters[configuration]}" ] },
+		{ "name": "test", "command": project_entry_point + [ "test", "--configuration", "{parameters[configuration]}" ] },
+		{ "name": "package", "command": project_entry_point + [ "artifact", "package", "--command", "package" ] + artifact_parameters },
+		{ "name": "verify", "command": project_entry_point + [ "artifact", "package", "--command", "verify" ] + artifact_parameters },
+		{ "name": "upload", "command": project_entry_point + [ "artifact", "package", "--command", "upload" ] + artifact_parameters },
 	]
 
 	return job

@@ -18,6 +18,8 @@ def main():
 	environment_instance = environment.load_environment()
 
 	arguments = parse_arguments()
+	with open(arguments.configuration, "r") as configuration_file:
+		worker_configuration = json.load(configuration_file)
 
 	# Prevent active pyvenv from overriding a python executable specified in a command
 	if "__PYVENV_LAUNCHER__" in os.environ:
@@ -25,7 +27,7 @@ def main():
 
 	setup_virtual_environment(environment_instance)
 	print("")
-	configure_workspace_environment(environment_instance)
+	configure_workspace_environment(environment_instance, worker_configuration)
 	print("")
 	git.initialize(environment_instance, arguments.repository)
 	print("")
@@ -35,6 +37,7 @@ def main():
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
+	parser.add_argument("--configuration", required = True, help = "set the worker configuration file path")
 	parser.add_argument("--repository", required = True, help = "set the repository uri to clone")
 	parser.add_argument("--revision", required = True, help = "set the revision to update to")
 	parser.add_argument("--results", required = True, help = "set the file path where to store the build results")
@@ -56,14 +59,14 @@ def setup_virtual_environment(environment_instance):
 	subprocess.check_call(install_pip_command)
 
 
-def configure_workspace_environment(environment_instance):
+def configure_workspace_environment(environment_instance, worker_configuration):
 	logger.info("Configuring workspace environment")
 
 	workspace_environment = {
-		"artifact_repository": environment_instance["artifact_repository"],
+		"artifact_repository": worker_configuration["artifact_repository_path"],
 		"git_executable": environment_instance["git_executable"],
 		"python3_executable": ".venv/scripts/python",
-		"python_package_repository": environment_instance["python_package_repository"],
+		"python_package_repository": worker_configuration["python_package_repository_path"],
 	}
 
 	for key, value in workspace_environment.items():

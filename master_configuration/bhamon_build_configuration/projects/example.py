@@ -1,3 +1,9 @@
+controller_script = "{environment[build_worker_script_root]}/controller.py"
+initialization_script = "{environment[build_worker_script_root]}/example.py"
+worker_configuration_path = "{environment[build_worker_configuration]}"
+worker_python_executable = "{environment[build_worker_python_executable]}"
+
+
 def configure_services(environment_instance): # pylint: disable = unused-argument
 	return {}
 
@@ -32,8 +38,8 @@ def hello():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello_stderr", "command": [ "{environment[build_worker_python_executable]}", "-c", "import sys; print('hello from stderr', file = sys.stderr)" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "hello_stderr", "command": [ worker_python_executable, "-c", "import sys; print('hello from stderr', file = sys.stderr)" ] },
 		],
 	}
 
@@ -53,9 +59,9 @@ def sleep():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "sleep", "command": [ "{environment[build_worker_python_executable]}", "-c", "import time; time.sleep(60)" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "sleep", "command": [ worker_python_executable, "-c", "import time; time.sleep(60)" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
 		],
 	}
 
@@ -75,11 +81,11 @@ def failure():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "fail", "command": [ "{environment[build_worker_python_executable]}", "-c", "raise RuntimeError" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "fail", "command": [ worker_python_executable, "-c", "raise RuntimeError" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
 		],
 	}
 
@@ -99,16 +105,19 @@ def exception():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "exception", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{undefined}')" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "exception", "command": [ worker_python_executable, "-c", "print('{undefined}')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
 		],
 	}
 
 
 def environment():
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path ]
+
 	return {
 		"identifier": "example_environment",
 		"description": "Example job using environment.",
@@ -123,9 +132,7 @@ def environment():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "configuration", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{environment[build_worker_configuration]}')" ] },
-			{ "name": "python_executable", "command": [ "{environment[build_worker_python_executable]}", "-c", "import sys; print(sys.executable)" ] },
-			{ "name": "script_root", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{environment[build_worker_script_root]}')" ] },
+			{ "name": "initialization", "command": initialization_entry_point + initialization_parameters },
 		],
 	}
 
@@ -147,7 +154,7 @@ def parameters():
 		],
 
 		"steps": [
-			{ "name": "hello", "command": [ "{environment[build_worker_python_executable]}", "-c", "print('{parameters[text_to_print]}')" ] },
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('{parameters[text_to_print]}')" ] },
 		],
 	}
 
@@ -167,7 +174,7 @@ def large_log():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "write", "command": [ "{environment[build_worker_python_executable]}", "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ] },
+			{ "name": "write", "command": [ worker_python_executable, "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ] },
 		],
 	}
 
@@ -187,14 +194,14 @@ def large_log_random():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "write", "command": [ "{environment[build_worker_python_executable]}", "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ] },
+			{ "name": "write", "command": [ worker_python_executable, "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ] },
 		],
 	}
 
 
 def controller_success():
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
-	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
+	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	return {
 		"identifier": "example_controller-success",
@@ -210,17 +217,17 @@ def controller_success():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "trigger_hello", "command": controller_script + [ "trigger", "example_hello" ] },
-			{ "name": "trigger_sleep", "command": controller_script + [ "trigger", "example_sleep" ] },
-			{ "name": "trigger_hello", "command": controller_script + [ "trigger", "example_hello" ] },
-			{ "name": "wait", "command": controller_script + [ "wait" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example_hello" ] },
+			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example_sleep" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example_hello" ] },
+			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 		],
 	}
 
 
 def controller_failure():
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
-	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
+	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	return {
 		"identifier": "example_controller-failure",
@@ -236,9 +243,9 @@ def controller_failure():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "trigger_hello", "command": controller_script + [ "trigger", "example_hello" ] },
-			{ "name": "trigger_sleep", "command": controller_script + [ "trigger", "example_sleep" ] },
-			{ "name": "trigger_failure", "command": controller_script + [ "trigger", "example_failure" ] },
-			{ "name": "wait", "command": controller_script + [ "wait" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example_hello" ] },
+			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example_sleep" ] },
+			{ "name": "trigger_failure", "command": controller_entry_point + controller_parameters + [ "trigger", "example_failure" ] },
+			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 		],
 	}

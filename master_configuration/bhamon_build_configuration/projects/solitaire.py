@@ -1,5 +1,10 @@
 repository = "https://github.com/BenjaminHamon/Overmind.Solitaire"
 
+controller_script = "{environment[build_worker_script_root]}/controller.py"
+initialization_script = "{environment[build_worker_script_root]}/solitaire.py"
+worker_configuration_path = "{environment[build_worker_configuration]}"
+worker_python_executable = "{environment[build_worker_python_executable]}"
+
 
 def configure_services(environment):
 	return {
@@ -46,9 +51,11 @@ def controller():
 		],
 	}
 
-	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/solitaire.py", "--results", "{result_file_path}" ]
-	controller_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/controller.py" ]
-	controller_script += [ "--configuration", "{environment[build_worker_configuration]}", "--results", "{result_file_path}" ]
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
+	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	package_android_job = "solitaire_package_android"
 	package_linux_job = "solitaire_package_linux"
@@ -57,14 +64,14 @@ def controller():
 	package_release_parameters = [ "--parameters", "configuration=Release", "revision={results[revision_control][revision]}" ]
 
 	job["steps"] = [
-		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}", "--type", "controller" ] },
-		{ "name": "trigger_package_android_debug", "command": controller_script + [ "trigger", package_android_job ] + package_debug_parameters },
-		{ "name": "trigger_package_android_release", "command": controller_script + [ "trigger", package_android_job ] + package_release_parameters },
-		{ "name": "trigger_package_linux_debug", "command": controller_script + [ "trigger", package_linux_job ] + package_debug_parameters },
-		{ "name": "trigger_package_linux_release", "command": controller_script + [ "trigger", package_linux_job ] + package_release_parameters },
-		{ "name": "trigger_package_windows_debug", "command": controller_script + [ "trigger", package_windows_job ] + package_debug_parameters },
-		{ "name": "trigger_package_windows_release", "command": controller_script + [ "trigger", package_windows_job ] + package_release_parameters },
-		{ "name": "wait", "command": controller_script + [ "wait" ] },
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
+		{ "name": "trigger_package_android_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_android_job ] + package_debug_parameters },
+		{ "name": "trigger_package_android_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_android_job ] + package_release_parameters },
+		{ "name": "trigger_package_linux_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_linux_job ] + package_debug_parameters },
+		{ "name": "trigger_package_linux_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_linux_job ] + package_release_parameters },
+		{ "name": "trigger_package_windows_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_windows_job ] + package_debug_parameters },
+		{ "name": "trigger_package_windows_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_windows_job ] + package_release_parameters },
+		{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 	]
 
 	return job
@@ -88,17 +95,19 @@ def package(target_platform):
 		],
 	}
 
-	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/solitaire.py", "--results", "{result_file_path}" ]
-	project_script = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 	artifact_parameters = [ "--parameters", "platform=" + target_platform, "configuration={parameters[configuration]}" ]
 
 	job["steps"] = [
-		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}", "--type", "worker" ]},
-		{ "name": "clean", "command": project_script + [ "clean" ] },
-		{ "name": "build", "command": project_script + [ "package", "--platform", target_platform, "--configuration", "{parameters[configuration]}" ] },
-		{ "name": "package", "command": project_script + [ "artifact", "package", "--command", "package" ] + artifact_parameters },
-		{ "name": "verify", "command": project_script + [ "artifact", "package", "--command", "verify" ] + artifact_parameters },
-		{ "name": "upload", "command": project_script + [ "artifact", "package", "--command", "upload" ] + artifact_parameters },
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
+		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "build", "command": project_entry_point + [ "package", "--platform", target_platform, "--configuration", "{parameters[configuration]}" ] },
+		{ "name": "package", "command": project_entry_point + [ "artifact", "package", "--command", "package" ] + artifact_parameters },
+		{ "name": "verify", "command": project_entry_point + [ "artifact", "package", "--command", "verify" ] + artifact_parameters },
+		{ "name": "upload", "command": project_entry_point + [ "artifact", "package", "--command", "upload" ] + artifact_parameters },
 	]
 
 	return job

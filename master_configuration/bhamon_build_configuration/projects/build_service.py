@@ -1,5 +1,9 @@
 repository = "https://github.com/BenjaminHamon/BuildService"
 
+initialization_script = "{environment[build_worker_script_root]}/build_service.py"
+worker_configuration_path = "{environment[build_worker_configuration]}"
+worker_python_executable = "{environment[build_worker_python_executable]}"
+
 
 def configure_services(environment):
 	return {
@@ -50,15 +54,17 @@ def check(platform):
 		],
 	}
 
-	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/build_service.py", "--results", "{result_file_path}" ]
-	project_script = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
-		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}" ]},
-		{ "name": "clean", "command": project_script + [ "clean" ] },
-		{ "name": "develop", "command": project_script + [ "develop" ] },
-		{ "name": "lint", "command": project_script + [ "lint" ] },
-		{ "name": "test", "command": project_script + [ "test" ] },
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
+		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
+		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
+		{ "name": "test", "command": project_entry_point + [ "test" ] },
 	]
 
 	return job
@@ -81,17 +87,19 @@ def distribute():
 		],
 	}
 
-	initialization_script = [ "{environment[build_worker_python_executable]}", "-u", "{environment[build_worker_script_root]}/build_service.py", "--results", "{result_file_path}" ]
-	project_script = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
-		{ "name": "initialize", "command": initialization_script + [ "--repository", repository, "--revision", "{parameters[revision]}" ]},
-		{ "name": "clean", "command": project_script + [ "clean" ] },
-		{ "name": "develop", "command": project_script + [ "develop" ] },
-		{ "name": "lint", "command": project_script + [ "lint" ] },
-		{ "name": "test", "command": project_script + [ "test" ] },
-		{ "name": "package", "command": project_script + [ "distribute", "--command", "package"] },
-		{ "name": "upload", "command": project_script + [ "distribute", "--command", "upload"] },
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
+		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
+		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
+		{ "name": "test", "command": project_entry_point + [ "test" ] },
+		{ "name": "package", "command": project_entry_point + [ "distribute", "--command", "package"] },
+		{ "name": "upload", "command": project_entry_point + [ "distribute", "--command", "upload"] },
 	]
 
 	return job

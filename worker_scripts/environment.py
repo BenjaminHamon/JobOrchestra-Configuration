@@ -24,14 +24,13 @@ def create_default_environment():
 
 
 def load_environment():
-	# Default + User + Script (+ Local)
+	# Default + User (+ Local)
 	# The local transform is ignored here because worker scripts are overwriting it
 
 	default_environment = create_default_environment()
 
 	environment_instance = copy.deepcopy(create_default_environment())
 	environment_instance.update(_load_environment_transform(os.path.join(os.path.expanduser("~"), "environment.json")))
-	environment_instance.update(_load_environment_transform(os.path.join(os.path.dirname(__file__), "environment.json")))
 	# environment_instance.update(_load_environment_transform("environment.json"))
 
 	for key in environment_instance.keys():
