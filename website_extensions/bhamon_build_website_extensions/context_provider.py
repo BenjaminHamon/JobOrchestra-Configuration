@@ -10,6 +10,18 @@ def get_project_default_branch(project):
 	raise ValueError("Unknown project: '%s'" % project)
 
 
+def get_project_context_collection(project):
+	if project == "build-service":
+		return [ "Summary" ]
+	if project == "image-manager":
+		return [ "Summary" ]
+	if project == "my-website":
+		return [ "Summary" ]
+	if project == "solitaire":
+		return [ "Summary" ]
+	raise ValueError("Unknown project: '%s'" % project)
+
+
 def get_project_context(project, context):
 	if project == "build-service":
 		return get_build_service_context(context)
@@ -25,7 +37,7 @@ def get_project_context(project, context):
 def get_build_service_context(context):
 	project_filters = get_build_service_filters()
 
-	if context is None:
+	if context == "Summary":
 		return [ f for f in project_filters ]
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "build-service"))
 
@@ -53,7 +65,7 @@ def get_build_service_filters():
 def get_image_manager_context(context):
 	project_filters = get_image_manager_filters()
 
-	if context is None:
+	if context == "Summary":
 		return [ f for f in project_filters ]
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "image-manager"))
 
@@ -83,7 +95,7 @@ def get_image_manager_filters():
 def get_my_website_context(context):
 	project_filters = get_my_website_filters()
 
-	if context is None:
+	if context == "Summary":
 		return [ f for f in project_filters ]
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "my-website"))
 
@@ -106,7 +118,7 @@ def get_my_website_filters():
 def get_solitaire_context(context):
 	project_filters = get_solitaire_filters()
 
-	if context is None:
+	if context == "Summary":
 		return [ f for f in project_filters ]
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "solitaire"))
 

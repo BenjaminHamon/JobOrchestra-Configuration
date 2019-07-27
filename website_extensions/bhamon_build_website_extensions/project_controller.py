@@ -15,11 +15,14 @@ def project_index(project_identifier):
 	status_limit = max(min(flask.request.args.get("limit", default = 20, type = int), 100), 1)
 	access_token = flask.request.args.get("access_token", default = None)
 
+	project_branch_collection = service_client.get("/project/{project_identifier}/branches".format(**locals()), { "access_token": access_token })
+	project_context_collection = context_provider.get_project_context_collection(project_identifier)
+
 	if project_branch is None:
 		project_branch = context_provider.get_project_default_branch(project_identifier)
+	if context_identifier is None:
+		context_identifier = project_context_collection[0]
 	project_context = context_provider.get_project_context(project_identifier, context_identifier)
-
-	project_branch_collection = service_client.get("/project/{project_identifier}/branches".format(**locals()), { "access_token": access_token })
 
 	status_parameters = {
 		"branch": project_branch,
@@ -43,6 +46,7 @@ def project_index(project_identifier):
 		"project_branch": project_branch,
 		"project_branch_collection": project_branch_collection,
 		"project_context": project_context,
+		"project_context_collection": project_context_collection,
 		"project_status": project_status,
 	}
 

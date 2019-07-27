@@ -16,7 +16,17 @@
 					{% endif %}
 				{% endfor %}
 			</select>
-			<button type="submit">Go</button>
+			<label for="context">Context</label>
+			<select name="context">
+				{% for context in project_context_collection %}
+					{% if project_context["identifier"] == branch %}
+				<option selected>{{ context }}</option>
+					{% else %}
+				<option>{{ context }}</option>
+					{% endif %}
+				{% endfor %}
+			</select>
+			<button type="submit">Apply</button>
 		</form>
 		<table class="project-status-table">
 			<thead>
