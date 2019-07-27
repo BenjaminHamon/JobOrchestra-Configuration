@@ -1,5 +1,3 @@
-import copy
-
 import bhamon_build_model_extensions.revision_control.github as revision_control_github
 
 
@@ -12,10 +10,29 @@ class Project:
 		self.revision_control = services.get("revision_control", None)
 
 
+	def get_branch_list(self, access_token = None):
+		if self.revision_control["service"] == "github":
+			parameters = {
+				"owner": self.revision_control["owner"],
+				"repository": self.revision_control["repository"],
+				"access_token": access_token,
+			}
+
+			return revision_control_github.get_branch_list(**parameters)
+
+		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
+
+
 	def get_revision_list(self, branch = None, limit = None, access_token = None):
 		if self.revision_control["service"] == "github":
-			parameters = copy.deepcopy(self.revision_control["parameters"])
-			parameters.update({ "branch": branch, "limit": limit, "access_token": access_token })
+			parameters = {
+				"owner": self.revision_control["owner"],
+				"repository": self.revision_control["repository"],
+				"branch": branch,
+				"limit": limit,
+				"access_token": access_token,
+			}
+
 			return revision_control_github.get_revision_list(**parameters)
 
 		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
@@ -23,8 +40,13 @@ class Project:
 
 	def get_revision(self, revision, access_token = None):
 		if self.revision_control["service"] == "github":
-			parameters = copy.deepcopy(self.revision_control["parameters"])
-			parameters.update({ "revision": revision, "access_token": access_token })
+			parameters = {
+				"owner": self.revision_control["owner"],
+				"repository": self.revision_control["repository"],
+				"revision": revision,
+				"access_token": access_token,
+			}
+
 			return revision_control_github.get_revision(**parameters)
 
 		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
@@ -32,8 +54,12 @@ class Project:
 
 	def get_revision_url(self, revision):
 		if self.revision_control["service"] == "github":
-			parameters = copy.deepcopy(self.revision_control["parameters"])
-			parameters.update({ "revision": revision })
+			parameters = {
+				"owner": self.revision_control["owner"],
+				"repository": self.revision_control["repository"],
+				"revision": revision,
+			}
+
 			return revision_control_github.get_revision_url(**parameters)
 
 		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
@@ -41,8 +67,13 @@ class Project:
 
 	def resolve_revision(self, revision, access_token = None):
 		if self.revision_control["service"] == "github":
-			parameters = copy.deepcopy(self.revision_control["parameters"])
-			parameters.update({ "revision": revision, "access_token": access_token })
+			parameters = {
+				"owner": self.revision_control["owner"],
+				"repository": self.revision_control["repository"],
+				"revision": revision,
+				"access_token": access_token,
+			}
+
 			return revision_control_github.get_revision(**parameters)["identifier"]
 
 		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])

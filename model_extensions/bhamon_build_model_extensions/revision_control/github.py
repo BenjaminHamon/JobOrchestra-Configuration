@@ -12,6 +12,15 @@ website_url = "https://github.com"
 api_url = "https://api.github.com"
 
 
+def get_branch_list(owner, repository, access_token = None):
+	url = api_url + "/repos/{owner}/{repository}/branches".format(**locals())
+	headers = { "Authorization": "token %s" % access_token } if access_token is not None else {}
+	response = requests.get(url, headers = headers)
+	response.raise_for_status()
+
+	return [ item["name"] for item in response.json() ]
+
+
 def get_revision_list(owner, repository, branch = None, limit = None, access_token = None):
 	url = api_url + "/repos/{owner}/{repository}/commits".format(**locals())
 	parameters = { "sha": branch, "per_page": limit }

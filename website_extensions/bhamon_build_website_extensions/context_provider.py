@@ -1,3 +1,15 @@
+def get_project_default_branch(project):
+	if project == "build-service":
+		return "master"
+	if project == "image-manager":
+		return "master"
+	if project == "my-website":
+		return "master"
+	if project == "solitaire":
+		return "master"
+	raise ValueError("Unknown project: '%s'" % project)
+
+
 def get_project_context(project, context):
 	if project == "build-service":
 		return get_build_service_context(context)

@@ -18,10 +18,8 @@ def configure_services(environment):
 
 		"revision_control": {
 			"service": "github",
-			"parameters": {
-				"owner": "BenjaminHamon",
-				"repository": "MyWebsite",
-			},
+			"owner": "BenjaminHamon",
+			"repository": "MyWebsite",
 		}
 	}
 

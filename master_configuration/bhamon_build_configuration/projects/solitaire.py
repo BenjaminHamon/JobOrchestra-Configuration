@@ -17,10 +17,8 @@ def configure_services(environment):
 
 		"revision_control": {
 			"service": "github",
-			"parameters": {
-				"owner": "BenjaminHamon",
-				"repository": "Overmind.Solitaire",
-			},
+			"owner": "BenjaminHamon",
+			"repository": "Overmind.Solitaire",
 		}
 	}
 

@@ -21,10 +21,8 @@ def configure_services(environment):
 
 		"revision_control": {
 			"service": "github",
-			"parameters": {
-				"owner": "BenjaminHamon",
-				"repository": "BuildService",
-			},
+			"owner": "BenjaminHamon",
+			"repository": "BuildService",
 		}
 	}
 

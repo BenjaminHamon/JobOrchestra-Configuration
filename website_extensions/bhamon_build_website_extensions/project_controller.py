@@ -10,14 +10,19 @@ logger = logging.getLogger("ProjectController")
 
 
 def project_index(project_identifier):
-	branch = flask.request.args.get("branch", default = None)
+	project_branch = flask.request.args.get("branch", default = None)
 	context_identifier = flask.request.args.get("context", default = None)
 	status_limit = max(min(flask.request.args.get("limit", default = 20, type = int), 100), 1)
 	access_token = flask.request.args.get("access_token", default = None)
+
+	if project_branch is None:
+		project_branch = context_provider.get_project_default_branch(project_identifier)
 	project_context = context_provider.get_project_context(project_identifier, context_identifier)
 
+	project_branch_collection = service_client.get("/project/{project_identifier}/branches".format(**locals()), { "access_token": access_token })
+
 	status_parameters = {
-		"branch": branch,
+		"branch": project_branch,
 		"revision_limit": 20,
 		"build_limit": 1000,
 		"access_token": access_token,
@@ -35,6 +40,8 @@ def project_index(project_identifier):
 
 	view_data = {
 		"project_identifier": project_identifier,
+		"project_branch": project_branch,
+		"project_branch_collection": project_branch_collection,
 		"project_context": project_context,
 		"project_status": project_status,
 	}

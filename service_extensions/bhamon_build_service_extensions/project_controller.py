@@ -7,6 +7,12 @@ import requests
 logger = logging.getLogger("ProjectController")
 
 
+def get_branch_collection(project):
+	access_token = flask.request.args.get("access_token", default = None)
+	project_instance = flask.current_app.project_collection[project]
+	return flask.jsonify(project_instance.get_branch_list(access_token = access_token))
+
+
 def get_revision_collection(project):
 	query_parameters = {
 		"branch": flask.request.args.get("branch", default = None),

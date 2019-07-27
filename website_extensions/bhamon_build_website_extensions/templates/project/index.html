@@ -1,41 +1,55 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h1>{{ project_identifier }}</h1>
+<h1>Project status for {{ project_identifier }}</h1>
 
 <section>
-	<h2>Status</h2>
-	<table class="project-status-table">
-		<thead>
-			<tr>
-				<th>Revision</th>
-				{% for build_filter in project_context %}
-				<th><a href="{{ url_for('job_index', job_identifier = build_filter['job_identifier']) }}">{{ build_filter['display_name'] }}</a></th>
+	<div class="table-container">
+		<form method="get" action="{{ url_for('project_index', project_identifier = project_identifier) }}">
+			<label for="branch">Branch</label>
+			<select name="branch">
+				{% for branch in project_branch_collection %}
+					{% if project_branch == branch %}
+				<option selected>{{ branch }}</option>
+					{% else %}
+				<option>{{ branch }}</option>
+					{% endif %}
 				{% endfor %}
-			</tr>
-		</thead>
-		<tbody>
-			{% for revision in project_status %}
-			<tr>
-				<td>
-					<div class="revision-header">
-						<a href="{{ revision['url'] }}">{{ revision['identifier_short'] }}</a>
-						<p class="date">{{ revision['date'] }}</p>
-					</div>
-				</td>
-				{% for build_filter in project_context %}
-				<td>
-					{% for build in revision['builds_by_filter'][build_filter['identifier']] %}
-					<div class="status-group">
-						<div class="status-indicator {{ build['status'] }}" title="{{ build['status'] }}"></div>
-						<a href="{{ url_for('build_index', build_identifier = build['identifier']) }}">{{ build['identifier'][:18] }}</a>
-					</div>
+			</select>
+			<button type="submit">Go</button>
+		</form>
+		<table class="project-status-table">
+			<thead>
+				<tr>
+					<th>Revision</th>
+					{% for build_filter in project_context %}
+					<th><a href="{{ url_for('job_index', job_identifier = build_filter['job_identifier']) }}">{{ build_filter['display_name'] }}</a></th>
 					{% endfor %}
-				</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for revision in project_status %}
+				<tr>
+					<td>
+						<div class="revision-header">
+							<a href="{{ revision['url'] }}">{{ revision['identifier_short'] }}</a>
+							<p class="date">{{ revision['date'] }}</p>
+						</div>
+					</td>
+					{% for build_filter in project_context %}
+					<td>
+						{% for build in revision['builds_by_filter'][build_filter['identifier']] %}
+						<div class="status-group">
+							<div class="status-indicator {{ build['status'] }}" title="{{ build['status'] }}"></div>
+							<a href="{{ url_for('build_index', build_identifier = build['identifier']) }}">{{ build['identifier'][:18] }}</a>
+						</div>
+						{% endfor %}
+					</td>
+					{% endfor %}
+				</tr>
 				{% endfor %}
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+			</tbody>
+		</table>
+	</div>
 </section>
 {% endblock %}

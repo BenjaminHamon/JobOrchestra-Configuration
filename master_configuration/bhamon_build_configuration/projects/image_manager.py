@@ -19,10 +19,8 @@ def configure_services(environment):
 
 		"revision_control": {
 			"service": "github",
-			"parameters": {
-				"owner": "BenjaminHamon",
-				"repository": "Overmind.ImageManager",
-			},
+			"owner": "BenjaminHamon",
+			"repository": "Overmind.ImageManager",
 		}
 	}
 
