@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import time
 
 import pymongo
 
@@ -10,11 +11,12 @@ import bhamon_build_model.json_database_client as json_database_client
 import bhamon_build_model.mongo_database_client as mongo_database_client
 
 
-log_format = "[{levelname}][{name}] {message}"
+stdout_log_format = "[{levelname}][{name}] {message}"
+file_log_format = "{asctime} [{levelname}][{name}] {message}"
 
 
 def configure_logging(log_level):
-	logging.basicConfig(level = log_level, format = log_format, style = "{")
+	logging.basicConfig(level = log_level, format = stdout_log_format, style = "{")
 	logging.addLevelName(logging.DEBUG, "Debug")
 	logging.addLevelName(logging.INFO, "Info")
 	logging.addLevelName(logging.WARNING, "Warning")
@@ -26,6 +28,17 @@ def configure_logging(log_level):
 	logging.getLogger("urllib3").setLevel(logging.INFO)
 	logging.getLogger("websockets.protocol").setLevel(logging.INFO)
 	logging.getLogger("werkzeug").setLevel(logging.WARNING)
+
+
+def configure_log_file(log_file_path, log_level):
+	log_formatter = logging.Formatter(file_log_format, "%Y-%m-%dT%H:%M:%SZ", "{")
+	log_formatter.converter = time.gmtime
+
+	log_handler = logging.FileHandler(log_file_path)
+	log_handler.setLevel(log_level)
+	log_handler.setFormatter(log_formatter)
+
+	logging.getLogger().addHandler(log_handler)
 
 
 def create_database_client(database_uri):

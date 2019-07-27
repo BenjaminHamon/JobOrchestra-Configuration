@@ -25,6 +25,7 @@ def main():
 
 	with open(arguments.configuration, "r") as configuration_file:
 		configuration = json.load(configuration_file)
+	environment.configure_log_file(configuration["build_master_log_file_path"], logging.INFO)
 
 	with filelock.FileLock("build_master.lock", 5):
 		application = create_application(configuration)

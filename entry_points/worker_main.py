@@ -19,9 +19,11 @@ def main():
 		configuration = json.load(configuration_file)
 
 	worker_path = configuration["build_workers"][arguments.identifier]["path"]
+	worker_log_path = configuration["build_workers"][arguments.identifier]["log"]
 	os.makedirs(worker_path, exist_ok = True)
 
 	with filelock.FileLock(os.path.join(worker_path, "build_worker.lock"), 5):
+		environment.configure_log_file(os.path.join(worker_path, worker_log_path), logging.INFO)
 		configure_worker(configuration, worker_path)
 		os.chdir(worker_path)
 		worker.run(configuration["build_master_url"], arguments.identifier, executor_script)

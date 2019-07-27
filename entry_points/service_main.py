@@ -26,6 +26,7 @@ def main():
 
 	with open(arguments.configuration, "r") as configuration_file:
 		configuration = json.load(configuration_file)
+	environment.configure_log_file(configuration["build_service_log_file_path"], logging.INFO)
 
 	development_options = {
 		"debug": True,
