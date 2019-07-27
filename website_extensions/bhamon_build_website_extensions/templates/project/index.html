@@ -6,8 +6,8 @@
 <section>
 	<div class="table-container">
 		<form method="get" action="{{ url_for('project_index', project_identifier = project_identifier) }}">
-			<label for="branch">Branch</label>
-			<select name="branch">
+			<label for="input-branch">Branch</label>
+			<select id="input-branch" name="branch">
 				{% for branch in project_branch_collection %}
 					{% if project_branch == branch %}
 				<option selected>{{ branch }}</option>
@@ -16,8 +16,8 @@
 					{% endif %}
 				{% endfor %}
 			</select>
-			<label for="context">Context</label>
-			<select name="context">
+			<label for="input-context">Context</label>
+			<select id="input-context" name="context">
 				{% for context in project_context_collection %}
 					{% if project_context["identifier"] == branch %}
 				<option selected>{{ context }}</option>
