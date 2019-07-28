@@ -46,9 +46,7 @@ def create_application(configuration):
 	application.artifact_repository_url = configuration["artifact_repository_url"]
 	application.python_package_repository_url = configuration["python_package_repository_url"]
 	application.service_url = configuration["build_service_url"]
-
-	with open(configuration["build_website_secret"]) as key_file:
-		application.secret_key = key_file.read().strip()
+	application.secret_key = configuration["build_website_secret"]
 
 	resource_paths = [
 		os.path.dirname(bhamon_build_website_extensions.__file__),

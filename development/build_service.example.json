@@ -21,7 +21,7 @@
 	"build_website_listen_address": "localhost",
 	"build_website_listen_port": 5000,
 	"build_website_log_file_path": "build_website.log",
-	"build_website_secret": "build_website_secret.txt",
+	"build_website_secret": null,
 	"build_website_url": "http://localhost:5000",
 
 	"build_workers": {
