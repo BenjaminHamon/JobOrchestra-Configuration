@@ -41,11 +41,11 @@ def configure_log_file(log_file_path, log_level):
 	logging.getLogger().addHandler(log_handler)
 
 
-def create_database_client(database_uri):
+def create_database_client(database_uri, database_authentication):
 	if database_uri.startswith("json://"):
 		return json_database_client.JsonDatabaseClient(re.sub("^json://", "", database_uri))
 	if database_uri.startswith("mongodb://"):
-		return mongo_database_client.MongoDatabaseClient(pymongo.MongoClient(database_uri).get_database())
+		return mongo_database_client.MongoDatabaseClient(pymongo.MongoClient(database_uri, **database_authentication).get_database())
 	raise ValueError("Unsupported database uri '%s'" % database_uri)
 
 

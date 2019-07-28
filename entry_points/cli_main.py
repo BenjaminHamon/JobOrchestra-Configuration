@@ -45,7 +45,7 @@ def parse_arguments():
 
 
 def create_application(configuration):
-	database_client_instance = environment.create_database_client(configuration["build_database_uri"])
+	database_client_instance = environment.create_database_client(configuration["build_database_uri"], configuration["build_database_authentication"])
 	file_storage_instance = FileStorage(configuration["build_file_storage_path"])
 
 	application = types.SimpleNamespace()
