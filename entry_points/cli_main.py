@@ -49,6 +49,9 @@ def create_application(configuration):
 	file_storage_instance = FileStorage(configuration["build_file_storage_path"])
 
 	application = types.SimpleNamespace()
+	application.database_uri = configuration["build_database_uri"]
+	application.database_authentication = configuration["build_database_authentication"]
+
 	application.authentication_provider = AuthenticationProvider(database_client_instance)
 	application.authorization_provider = AuthorizationProvider()
 	application.build_provider = BuildProvider(database_client_instance, file_storage_instance)

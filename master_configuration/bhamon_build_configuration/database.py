@@ -12,21 +12,21 @@ def register_commands(subparsers):
 
 
 def initialize_database(application, arguments): # pylint: disable = unused-argument
-	if arguments.database == "json":
+	if application.database_uri.startswith("json://"):
 		initialize_json_database()
-	elif arguments.database.startswith("mongodb://"):
-		initialize_mongo_database(arguments.database)
+	elif application.database_uri.startswith("mongodb://"):
+		initialize_mongo_database(application.database_uri, application.database_authentication)
 	else:
-		raise ValueError("Unsupported database uri '%s'" % arguments.database)
+		raise ValueError("Unsupported database uri '%s'" % application.database_uri)
 
 
 def initialize_json_database():
 	pass
 
 
-def initialize_mongo_database(database_uri):
+def initialize_mongo_database(database_uri, database_authentication):
 	logger.info("Initializing Mongo database (Uri: '%s')", database_uri)
-	database = pymongo.MongoClient(database_uri).get_database()
+	database = pymongo.MongoClient(database_uri, **database_authentication).get_database()
 
 	print("")
 
