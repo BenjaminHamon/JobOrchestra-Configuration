@@ -31,6 +31,8 @@ def main():
 	}
 
 	application = create_application(configuration)
+	application.config["WEBSITE_ANNOUNCEMENT"] = "Development Environment"
+	application.config["WEBSITE_ANNOUNCEMENT_TYPE"] = "warning"
 	application.run(**development_options)
 
 
