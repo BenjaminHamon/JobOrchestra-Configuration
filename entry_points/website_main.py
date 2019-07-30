@@ -53,7 +53,10 @@ def create_application(configuration):
 		os.path.dirname(bhamon_build_website.__file__),
 	]
 
-	website.configure(application)
+	website_title = "Build Service"
+	website_copyright = bhamon_build_website_extensions.__copyright__.replace("(c)", "©")
+
+	website.configure(application, website_title, website_copyright)
 	website.register_handlers(application)
 	website.register_resources(application, resource_paths)
 	website.register_routes(application)

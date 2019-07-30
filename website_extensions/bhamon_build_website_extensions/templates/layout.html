@@ -2,7 +2,7 @@
 <html>
 
 	<head>
-		<title>{{ title }} - Build Service</title>
+		<title>{{ title }} - {{ config['WEBSITE_TITLE'] }}</title>
 		<link rel="stylesheet" href="{{ url_for('static', filename = 'generic.css') }}">
 		<link rel="stylesheet" href="{{ url_for('static', filename = 'build_service.css') }}">
 		<link rel="stylesheet" href="{{ url_for('static', filename = 'build_service_extensions.css') }}">
@@ -12,17 +12,23 @@
 
 		<header>
 			<div class="title">
-				<a href="{{ url_for('home') }}">Build Service</a>
+				<a href="{{ url_for('home') }}">{{ config['WEBSITE_TITLE'] }}</a>
 			</div>
 			<div class="login">
 				{% if not "token" in session %}
 				<span><a href="{{ url_for('login') }}">Log In</a></span>
 				{% else %}
-				<span>Logged in as <a href="{{ url_for('my_profile') }}">{{ session["token"]["user_identifier"] }}</a></span>
+				<span>Logged in as <a href="{{ url_for('my_profile') }}">{{ session["user"]["display_name"] }} ({{ session["user"]["identifier"] }})</a></span>
 				<span><a href="{{ url_for('logout') }}">Log Out</a></span>
 				{% endif %}
 			</div>
 		</header>
+
+		{% if config['WEBSITE_ANNOUNCEMENT'] %}
+		<div id="announcement" class="{{ config['WEBSITE_ANNOUNCEMENT_TYPE'] }}">
+			<p>{{ config['WEBSITE_ANNOUNCEMENT'] }}</p>
+		</div>
+		{% endif %}
 
 		<nav>
 			{% if authorize_view('nav-admin') %}
@@ -58,7 +64,7 @@
 		</main>
 
 		<footer>
-			<p>Copyright © 2019 Benjamin Hamon</p>
+			<p>{{ config["WEBSITE_COPYRIGHT"] }}</p>
 		</footer>
 
 	</body>

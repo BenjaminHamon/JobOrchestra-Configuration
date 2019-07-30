@@ -35,7 +35,7 @@ def load_configuration(environment):
 	configuration["author"] = "Benjamin Hamon"
 	configuration["author_email"] = "hamon.benjamin@gmail.com"
 	configuration["project_url"] = "https://github.com/BenjaminHamon/BuildService"
-	configuration["copyright"] = "Copyright © 2019 Benjamin Hamon"
+	configuration["copyright"] = "Copyright (c) 2019 Benjamin Hamon"
 
 	configuration["development_dependencies"] = [ "pylint", "pymongo" ]
 
