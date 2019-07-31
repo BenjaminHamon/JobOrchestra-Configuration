@@ -10,6 +10,7 @@ def configure_services(environment_instance): # pylint: disable = unused-argumen
 
 def configure_jobs():
 	return [
+		empty(),
 		hello(),
 		sleep(),
 		failure(),
@@ -21,6 +22,23 @@ def configure_jobs():
 		controller_success(),
 		controller_failure(),
 	]
+
+
+def empty():
+	return {
+		"identifier": "example_empty",
+		"description": "Example job doing nothing.",
+		"workspace": "example",
+
+		"properties": {
+			"project": "example",
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [],
+		"steps": [],
+	}
 
 
 def hello():
