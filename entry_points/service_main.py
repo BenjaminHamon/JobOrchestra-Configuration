@@ -64,6 +64,7 @@ def create_application(configuration):
 
 	application.project_collection = master_configuration.configure_projects(environment_instance)
 
+	service.configure(application)
 	service_extensions.configure_overrides()
 	service.register_handlers(application)
 	service.register_routes(application)
