@@ -8,7 +8,7 @@ worker_python_executable = "{environment[build_worker_python_executable]}"
 def configure_services(environment):
 	return {
 		"artifact_repository": {
-			"url": environment["artifact_repository_url"] + "/" + "MyWebsite",
+			"url": environment["artifact_server_url"] + "/" + "MyWebsite",
 		},
 
 		"python_package_repository": {

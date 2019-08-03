@@ -8,7 +8,7 @@ worker_python_executable = "{environment[build_worker_python_executable]}"
 def configure_services(environment):
 	return {
 		"artifact_repository": {
-			"url": environment["artifact_repository_url"] + "/" + "BuildService",
+			"url": environment["artifact_server_url"] + "/" + "BuildService",
 			"file_types": {
 				"package": { "path_in_repository": "packages", "file_extension": ".zip" },
 			},

@@ -10,7 +10,7 @@ def register_routes(application):
 
 
 def artifact_repository_home():
-	return flask.redirect(flask.current_app.artifact_repository_url)
+	return flask.redirect(flask.current_app.artifact_server_url)
 
 
 def python_package_repository_home():

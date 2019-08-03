@@ -63,10 +63,12 @@ def configure_workspace_environment(environment_instance, worker_configuration):
 	logger.info("Configuring workspace environment")
 
 	workspace_environment = {
-		"artifact_repository": worker_configuration["artifact_repository_path"],
+		"artifact_server_url": worker_configuration["artifact_server_url"],
+		"artifact_server_parameters": worker_configuration["artifact_server_parameters"],
 		"git_executable": environment_instance["git_executable"],
 		"python3_executable": ".venv/scripts/python",
-		"python_package_repository": worker_configuration["python_package_repository_path"],
+		"python_package_repository_url": worker_configuration["python_package_repository_url"],
+		"python_package_repository_parameters": worker_configuration["python_package_repository_parameters"],
 	}
 
 	for key, value in workspace_environment.items():

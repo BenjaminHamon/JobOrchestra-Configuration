@@ -72,7 +72,8 @@ def configure_workspace_environment(environment_instance, worker_configuration):
 	logger.info("Configuring workspace environment")
 
 	workspace_environment = {
-		"artifact_repository": worker_configuration["artifact_repository_path"],
+		"artifact_server_url": worker_configuration["artifact_server_url"],
+		"artifact_server_parameters": worker_configuration["artifact_server_parameters"],
 		"git_executable": environment_instance["git_executable"],
 		"msbuild_2017_executable": environment_instance["msbuild_2017_executable"],
 		"nuget_executable": environment_instance["nuget_executable"],

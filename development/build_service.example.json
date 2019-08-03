@@ -1,8 +1,11 @@
 {
-	"artifact_repository_path": "artifacts",
-	"artifact_repository_url": null,
-	"python_package_repository_path": "python_packages",
+	"artifact_server_web_url": null,
+	"artifact_server_url": null,
+	"artifact_server_parameters": {},
+
+	"python_package_repository_web_url": null,
 	"python_package_repository_url": null,
+	"python_package_repository_parameters": {},
 
 	"build_database_uri": "mongodb://localhost:27017/build_database",
 	"build_database_authentication": {},

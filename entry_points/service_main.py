@@ -58,8 +58,8 @@ def create_application(configuration):
 	application.worker_provider = WorkerProvider(database_client_instance)
 
 	environment_instance = {
-		"artifact_repository_url": configuration["artifact_repository_url"],
-		"python_package_repository_url": configuration["python_package_repository_url"],
+		"artifact_server_url": configuration["artifact_server_web_url"],
+		"python_package_repository_url": configuration["python_package_repository_web_url"],
 	}
 
 	application.project_collection = master_configuration.configure_projects(environment_instance)

@@ -72,7 +72,8 @@ def configure_workspace_environment(environment_instance, worker_configuration):
 	logger.info("Configuring workspace environment")
 
 	workspace_environment = {
-		"artifact_repository": worker_configuration["artifact_repository_path"],
+		"artifact_server_url": worker_configuration["artifact_server_url"],
+		"artifact_server_parameters": worker_configuration["artifact_server_parameters"],
 		"git_executable": environment_instance["git_executable"],
 		"unity_2019_executable": environment_instance["unity_2019_executable"],
 	}

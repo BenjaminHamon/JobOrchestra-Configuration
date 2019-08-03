@@ -9,7 +9,7 @@ worker_python_executable = "{environment[build_worker_python_executable]}"
 def configure_services(environment):
 	return {
 		"artifact_repository": {
-			"url": environment["artifact_repository_url"] + "/" + "Solitaire",
+			"url": environment["artifact_server_url"] + "/" + "Solitaire",
 			"file_types": {
 				"package": { "path_in_repository": "Packages", "file_extension": ".zip" },
 			},
