@@ -91,7 +91,7 @@ def package():
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
-	artifact_parameters = [ "--parameters", "configuration={parameters[configuration]}" ]
+	artifact_parameters = [ "package", "--parameters", "configuration={parameters[configuration]}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
@@ -99,9 +99,9 @@ def package():
 		{ "name": "metadata", "command": project_entry_point + [ "metadata" ] },
 		{ "name": "compile", "command": project_entry_point + [ "compile", "--configuration", "{parameters[configuration]}" ] },
 		{ "name": "test", "command": project_entry_point + [ "test", "--configuration", "{parameters[configuration]}" ] },
-		{ "name": "package", "command": project_entry_point + [ "artifact", "package", "--command", "package" ] + artifact_parameters },
-		{ "name": "verify", "command": project_entry_point + [ "artifact", "package", "--command", "verify" ] + artifact_parameters },
-		{ "name": "upload", "command": project_entry_point + [ "artifact", "package", "--command", "upload" ] + artifact_parameters },
+		{ "name": "package", "command": project_entry_point + [ "artifact", "package" ] + artifact_parameters },
+		{ "name": "verify", "command": project_entry_point + [ "artifact", "verify" ] + artifact_parameters },
+		{ "name": "upload", "command": project_entry_point + [ "artifact", "upload" ] + artifact_parameters },
 	]
 
 	return job

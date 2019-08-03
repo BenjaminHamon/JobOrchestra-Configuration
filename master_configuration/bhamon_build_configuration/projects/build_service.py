@@ -96,8 +96,8 @@ def distribute():
 		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
 		{ "name": "test", "command": project_entry_point + [ "test" ] },
-		{ "name": "package", "command": project_entry_point + [ "distribute", "--command", "package"] },
-		{ "name": "upload", "command": project_entry_point + [ "distribute", "--command", "upload"] },
+		{ "name": "package", "command": project_entry_point + [ "distribute", "package"] },
+		{ "name": "upload", "command": project_entry_point + [ "distribute", "upload"] },
 	]
 
 	return job
