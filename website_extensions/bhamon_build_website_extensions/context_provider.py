@@ -55,6 +55,11 @@ def get_build_service_filters():
 			"job_identifier": "build-service_check_windows",
 		},
 		{
+			"identifier": "package",
+			"display_name": "Package",
+			"job_identifier": "build-service_package",
+		},
+		{
 			"identifier": "distribute",
 			"display_name": "Distribution",
 			"job_identifier": "build-service_distribute",

@@ -31,6 +31,7 @@ def configure_jobs():
 	return [
 		check("linux"),
 		check("windows"),
+		package(),
 		distribute(),
 	]
 
@@ -68,10 +69,10 @@ def check(platform):
 	return job
 
 
-def distribute():
+def package():
 	job = {
-		"identifier": "build-service_distribute",
-		"description": "Generate and upload distribution packages for the BuildService project.",
+		"identifier": "build-service_package",
+		"description": "Generate distribution packages for the BuildService project.",
 		"workspace": "build-service",
 
 		"properties": {
@@ -96,8 +97,44 @@ def distribute():
 		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
 		{ "name": "test", "command": project_entry_point + [ "test" ] },
-		{ "name": "package", "command": project_entry_point + [ "distribute", "package"] },
-		{ "name": "upload", "command": project_entry_point + [ "distribute", "upload"] },
+		{ "name": "distribute package", "command": project_entry_point + [ "distribute", "package" ] },
+		{ "name": "artifact package", "command": project_entry_point + [ "artifact", "package", "package" ] },
+		{ "name": "artifact verify", "command": project_entry_point + [ "artifact", "verify", "package" ] },
+		{ "name": "artifact upload", "command": project_entry_point + [ "artifact", "upload", "package" ] },
+	]
+
+	return job
+
+
+def distribute():
+	job = {
+		"identifier": "build-service_distribute",
+		"description": "Upload distribution packages for the BuildService project to the python package repository.",
+		"workspace": "build-service",
+
+		"properties": {
+			"project": "build-service",
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+	}
+
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+
+	job["steps"] = [
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
+		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
+		{ "name": "artifact download", "command": project_entry_point + [ "artifact", "download", "package" ] },
+		{ "name": "artifact install", "command": project_entry_point + [ "artifact", "install", "package" ] },
+		{ "name": "distribute upload", "command": project_entry_point + [ "distribute", "upload" ] },
 	]
 
 	return job
