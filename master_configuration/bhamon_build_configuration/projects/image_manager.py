@@ -29,6 +29,7 @@ def configure_jobs():
 	return [
 		controller(),
 		package(),
+		release(),
 	]
 
 
@@ -91,7 +92,6 @@ def package():
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
-	artifact_parameters = [ "package", "--parameters", "configuration={parameters[configuration]}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
@@ -99,9 +99,53 @@ def package():
 		{ "name": "metadata", "command": project_entry_point + [ "metadata" ] },
 		{ "name": "compile", "command": project_entry_point + [ "compile", "--configuration", "{parameters[configuration]}" ] },
 		{ "name": "test", "command": project_entry_point + [ "test", "--configuration", "{parameters[configuration]}" ] },
-		{ "name": "package", "command": project_entry_point + [ "artifact", "package" ] + artifact_parameters },
-		{ "name": "verify", "command": project_entry_point + [ "artifact", "verify" ] + artifact_parameters },
-		{ "name": "upload", "command": project_entry_point + [ "artifact", "upload" ] + artifact_parameters },
+		{ "name": "package", "command": project_entry_point + [ "artifact", "package", "package", "--parameters", "configuration={parameters[configuration]}" ] },
+		{ "name": "verify", "command": project_entry_point + [ "artifact", "verify", "package", "--parameters", "configuration={parameters[configuration]}" ] },
+		{ "name": "upload", "command": project_entry_point + [ "artifact", "upload", "package", "--parameters", "configuration={parameters[configuration]}" ] },
+	]
+
+	return job
+
+
+def release():
+	job = {
+		"identifier": "image-manager_release",
+		"description": "Build and package the ImageManager project for release.",
+		"workspace": "image-manager",
+
+		"properties": {
+			"project": "image-manager",
+			"operating_system": [ "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+	}
+
+	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+
+	job["steps"] = [
+		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
+		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "metadata", "command": project_entry_point + [ "metadata" ] },
+		{ "name": "compile debug", "command": project_entry_point + [ "compile", "--configuration", "Debug" ] },
+		{ "name": "test debug", "command": project_entry_point + [ "test", "--configuration", "Debug" ] },
+		{ "name": "compile release", "command": project_entry_point + [ "compile", "--configuration", "Release" ] },
+		{ "name": "test release", "command": project_entry_point + [ "test", "--configuration", "Release" ] },
+		{ "name": "artifact package package debug", "command": project_entry_point + [ "artifact", "package", "package", "--parameters", "configuration=Debug" ] },
+		{ "name": "artifact verify package debug", "command": project_entry_point + [ "artifact", "verify", "package", "--parameters", "configuration=Debug" ] },
+		{ "name": "artifact upload package debug", "command": project_entry_point + [ "artifact", "upload", "package", "--parameters", "configuration=Debug" ] },
+		{ "name": "artifact package package release", "command": project_entry_point + [ "artifact", "package", "package", "--parameters", "configuration=Release" ] },
+		{ "name": "artifact verify package release", "command": project_entry_point + [ "artifact", "verify", "package", "--parameters", "configuration=Release" ] },
+		{ "name": "artifact upload package release", "command": project_entry_point + [ "artifact", "upload", "package", "--parameters", "configuration=Release" ] },
+		{ "name": "artifact package package final", "command": project_entry_point + [ "artifact", "package", "package_final", "--parameters", "configuration=Release" ] },
+		{ "name": "artifact verify package final", "command": project_entry_point + [ "artifact", "verify", "package_final", "--parameters", "configuration=Release" ] },
+		{ "name": "artifact upload package final", "command": project_entry_point + [ "artifact", "upload", "package_final", "--parameters", "configuration=Release" ] },
 	]
 
 	return job

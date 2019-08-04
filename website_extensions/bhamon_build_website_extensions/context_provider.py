@@ -94,6 +94,11 @@ def get_image_manager_filters():
 			"job_identifier": "image-manager_package",
 			"condition": lambda build: build["parameters"]["configuration"] == "Release",
 		},
+		{
+			"identifier": "release",
+			"display_name": "Release",
+			"job_identifier": "image-manager_release",
+		},
 	]
 
 
