@@ -84,6 +84,9 @@ class Project:
 			if "revision_control" in build_results:
 				build_results["revision_control"]["url"] = self.get_revision_url(build_results["revision_control"]["revision"])
 
+		for test_run in build_results.get("tests", []):
+			test_run["summary_text"] = self.generate_test_summary_text(test_run)
+
 		if self.artifact_repository is not None:
 			for artifact in build_results.get("artifacts", []):
 				artifact["url"] = self.resolve_artifact_url(artifact)
@@ -91,6 +94,14 @@ class Project:
 		if self.python_package_repository is not None:
 			for distribution in build_results.get("distributions", []):
 				distribution["url"] = self.resolve_python_distribution_url(distribution)
+
+
+	def generate_test_summary_text(self, test_run): # pylint: disable = no-self-use
+		if test_run['run_type'] == 'pylint':
+			return ", ".join("%s: %s" % (key, value) for key, value in test_run["summary"].items() if value > 0)
+		if test_run['run_type'] == 'pytest':
+			return ", ".join("%s: %s" % (key, value) for key, value in test_run["summary"].items() if value > 0)
+		raise ValueError("Unsupported test run type: '%s'" % test_run['run_type'])
 
 
 	def resolve_artifact_url(self, artifact):
