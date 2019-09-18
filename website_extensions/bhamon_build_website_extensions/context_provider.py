@@ -1,6 +1,8 @@
 def get_project_default_branch(project):
 	if project == "build-service":
 		return "master"
+	if project == "development-toolkit":
+		return "master"
 	if project == "image-manager":
 		return "master"
 	if project == "my-website":
@@ -12,6 +14,8 @@ def get_project_default_branch(project):
 
 def get_project_context_collection(project):
 	if project == "build-service":
+		return [ "Summary" ]
+	if project == "development-toolkit":
 		return [ "Summary" ]
 	if project == "image-manager":
 		return [ "Summary" ]
@@ -25,6 +29,8 @@ def get_project_context_collection(project):
 def get_project_context(project, context):
 	if project == "build-service":
 		return get_build_service_context(context)
+	if project == "development-toolkit":
+		return get_development_toolkit_context(context)
 	if project == "image-manager":
 		return get_image_manager_context(context)
 	if project == "my-website":
@@ -98,6 +104,29 @@ def get_image_manager_filters():
 			"identifier": "release",
 			"display_name": "Release",
 			"job_identifier": "image-manager_release",
+		},
+	]
+
+
+def get_development_toolkit_context(context):
+	project_filters = get_development_toolkit_filters()
+
+	if context == "Summary":
+		return [ f for f in project_filters ]
+	raise ValueError("Unknown context '%s' for project '%s'" % (context, "development-toolkit"))
+
+
+def get_development_toolkit_filters():
+	return [
+		{
+			"identifier": "check",
+			"display_name": "Check",
+			"job_identifier": "development-toolkit_check",
+		},
+		{
+			"identifier": "distribute",
+			"display_name": "Distribution",
+			"job_identifier": "development-toolkit_distribute",
 		},
 	]
 
