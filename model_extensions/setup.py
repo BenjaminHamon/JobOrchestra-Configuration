@@ -17,7 +17,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 parameters.update({
 	"name": "bhamon-build-model-extensions",
 	"description": "Extensions for build model",
-	"packages": [ "bhamon_build_model_extensions" ],
+
+	"packages": [
+		"bhamon_build_model_extensions",
+		"bhamon_build_model_extensions/revision_control",
+	],
+
 	"install_requires": [ "requests ~= 2.21" ],
 	"python_requires": "~= 3.5",
 })

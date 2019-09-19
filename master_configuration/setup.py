@@ -17,7 +17,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 parameters.update({
 	"name": "bhamon-build-configuration",
 	"description": "Configuration for the build master",
-	"packages": [ "bhamon_build_configuration" ],
+
+	"packages": [
+		"bhamon_build_configuration",
+		"bhamon_build_configuration/projects",
+	],
+
 	"python_requires": "~= 3.5",
 })
 

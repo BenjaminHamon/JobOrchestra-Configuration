@@ -1,6 +1,18 @@
 # Build artifacts
 .artifacts/
 
+# Distribution
+master_configuration/build/
+master_configuration/dist/
+model_extensions/build/
+model_extensions/dist/
+service_extensions/build/
+service_extensions/dist/
+website_extensions/build/
+website_extensions/dist/
+worker_extensions/build/
+worker_extensions/dist/
+
 # Environment
 environment.json
 

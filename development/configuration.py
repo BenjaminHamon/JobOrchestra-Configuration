@@ -29,7 +29,7 @@ def load_configuration(environment):
 
 	configuration["development_toolkit"] = "git+https://github.com/BenjaminHamon/DevelopmentToolkit@{revision}#subdirectory=toolkit"
 	configuration["development_toolkit_revision"] = "ccaa3b07938c45f0700c277f5a079dcf02bd79fa"
-	configuration["development_dependencies"] = [ "pylint", "pymongo" ]
+	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
 
 	configuration["components"] = [
 		{ "name": "bhamon-build-configuration", "path": "master_configuration", "packages": [ "bhamon_build_configuration" ] },
@@ -55,6 +55,7 @@ def load_commands():
 	all_modules = [
 		"development.commands.clean",
 		"development.commands.develop",
+		"development.commands.distribute",
 		"development.commands.lint",
 	]
 

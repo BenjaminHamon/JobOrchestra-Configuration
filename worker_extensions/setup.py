@@ -17,7 +17,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 parameters.update({
 	"name": "bhamon-build-worker-extensions",
 	"description": "Extensions for build workers",
-	"packages": [ "bhamon_build_worker_extensions" ],
+
+	"packages": [
+		"bhamon_build_worker_extensions",
+		"bhamon_build_worker_extensions/revision_control",
+	],
+
 	"python_requires": "~= 3.5",
 })
 
