@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-import time
+import sys
 
 import pymongo
 
@@ -13,10 +13,12 @@ import bhamon_build_model.mongo_database_client as mongo_database_client
 
 stdout_log_format = "[{levelname}][{name}] {message}"
 file_log_format = "{asctime} [{levelname}][{name}] {message}"
+date_format = "%Y-%m-%dT%H:%M:%S"
 
 
 def configure_logging(log_level):
-	logging.basicConfig(level = log_level, format = stdout_log_format, style = "{")
+	logging.root.setLevel(log_level)
+
 	logging.addLevelName(logging.DEBUG, "Debug")
 	logging.addLevelName(logging.INFO, "Info")
 	logging.addLevelName(logging.WARNING, "Warning")
@@ -29,16 +31,19 @@ def configure_logging(log_level):
 	logging.getLogger("websockets.protocol").setLevel(logging.INFO)
 	logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
+	log_formatter = logging.Formatter(stdout_log_format, date_format, "{")
+	stream_handler = logging.StreamHandler(sys.stdout)
+	stream_handler.setLevel(log_level)
+	stream_handler.formatter = log_formatter
+	logging.root.addHandler(stream_handler)
+
 
 def configure_log_file(log_file_path, log_level):
-	log_formatter = logging.Formatter(file_log_format, "%Y-%m-%dT%H:%M:%SZ", "{")
-	log_formatter.converter = time.gmtime
-
+	log_formatter = logging.Formatter(file_log_format, date_format, "{")
 	log_handler = logging.FileHandler(log_file_path)
 	log_handler.setLevel(log_level)
 	log_handler.setFormatter(log_formatter)
-
-	logging.getLogger().addHandler(log_handler)
+	logging.root.addHandler(log_handler)
 
 
 def create_database_client(database_uri, database_authentication):
