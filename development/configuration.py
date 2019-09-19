@@ -1,17 +1,7 @@
 import datetime
+import importlib
 import subprocess
-
-import development.commands.clean
-import development.commands.develop
-import development.commands.lint
-
-
-def get_command_list():
-	return [
-		development.commands.clean,
-		development.commands.develop,
-		development.commands.lint,
-	]
+import sys
 
 
 def load_configuration(environment):
@@ -37,6 +27,8 @@ def load_configuration(environment):
 	configuration["project_url"] = "https://github.com/BenjaminHamon/BuildService"
 	configuration["copyright"] = "Copyright (c) 2019 Benjamin Hamon"
 
+	configuration["development_toolkit"] = "git+https://github.com/BenjaminHamon/DevelopmentToolkit@{revision}#subdirectory=toolkit"
+	configuration["development_toolkit_revision"] = "ccaa3b07938c45f0700c277f5a079dcf02bd79fa"
 	configuration["development_dependencies"] = [ "pylint", "pymongo" ]
 
 	configuration["components"] = [
@@ -57,3 +49,27 @@ def get_setuptools_parameters(configuration):
 		"author_email": configuration["author_email"],
 		"url": configuration["project_url"],
 	}
+
+
+def load_commands():
+	all_modules = [
+		"development.commands.clean",
+		"development.commands.develop",
+		"development.commands.lint",
+	]
+
+	return [ import_command(module) for module in all_modules ]
+
+
+def import_command(module_name):
+	try:
+		return {
+			"module_name": module_name,
+			"module": importlib.import_module(module_name),
+		}
+
+	except ImportError:
+		return {
+			"module_name": module_name,
+			"exception": sys.exc_info(),
+		}

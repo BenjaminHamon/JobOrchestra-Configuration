@@ -1,8 +1,14 @@
+# Build artifacts
+.artifacts/
+
 # Environment
 environment.json
 
 # Generated metadata
 __metadata__.py
+
+# Logs
+*.log
 
 # Python
 __pycache__/
@@ -10,6 +16,9 @@ __pycache__/
 
 # Python virtual environment
 .venv/
+
+# Tests
+test_results/
 
 # Visual Studio Code
 .vscode/

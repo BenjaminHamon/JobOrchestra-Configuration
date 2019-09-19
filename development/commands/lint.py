@@ -1,37 +1,69 @@
-import glob
 import logging
-import os
-import subprocess
+import uuid
+
+import bhamon_development_toolkit.python.lint
+import bhamon_development_toolkit.workspace
 
 
 logger = logging.getLogger("Main")
 
 
-def configure_argument_parser(environment, configuration, subparsers): # pylint: disable=unused-argument
+def configure_argument_parser(environment, configuration, subparsers): # pylint: disable = unused-argument
 	return subparsers.add_parser("lint", help = "run linter")
 
 
-def run(environment, configuration, arguments): # pylint: disable=unused-argument
-	lint_packages(environment["python3_executable"], configuration["components"])
-	lint_scripts(environment["python3_executable"], "entry_points")
-	lint_scripts(environment["python3_executable"], "worker_scripts")
+def run(environment, configuration, arguments): # pylint: disable = unused-argument
+	run_identifier = uuid.uuid4()
+
+	try:
+		lint_packages(environment["python3_executable"], run_identifier, configuration["components"], arguments.simulate)
+		lint_scripts(environment["python3_executable"], run_identifier, [ "entry_points", "worker_scripts" ], arguments.simulate)
+	finally:
+		save_results(run_identifier, arguments.results, arguments.simulate)
 
 
-def lint_packages(python_executable, component_collection):
-	logger.info("Running linter in python packages")
+def lint_packages(python_executable, run_identifier, component_collection, simulate):
+	logger.info("Running linter for packages (RunIdentifier: %s)", run_identifier)
+	print("")
 
-	pylint_command = [ python_executable, "-m", "pylint" ]
-	pylint_command += [ component["path"] for component in component_collection ]
+	all_results = []
 
-	logger.info("+ %s", " ".join(pylint_command))
-	subprocess.check_call(pylint_command)
+	for component in component_collection:
+		pylint_results = bhamon_development_toolkit.python.lint.run_pylint(python_executable, "test_results", run_identifier, component["packages"][0], simulate)
+		print("")
+
+		component_results = { "name": component["name"] }
+		component_results.update(pylint_results)
+		all_results.append(component_results)
+
+	if any(not result["success"] for result in all_results):
+		raise RuntimeError("Linting failed")
 
 
-def lint_scripts(python_executable, directory):
-	logger.info("Running linter in '%s'", directory)
+def lint_scripts(python_executable, run_identifier, script_directory_collection, simulate):
+	logger.info("Running linter for scripts (RunIdentifier: %s)", run_identifier)
+	print("")
 
-	pylint_command = [ python_executable, "-m", "pylint" ]
-	pylint_command += [ file_path for file_path in glob.glob(os.path.join(directory, "**", "*.py"), recursive = True) ]
+	all_results = []
 
-	logger.info("+ %s", " ".join(pylint_command))
-	subprocess.check_call(pylint_command)
+	for directory in script_directory_collection:
+		pylint_results = bhamon_development_toolkit.python.lint.run_pylint(python_executable, "test_results", run_identifier, directory, simulate)
+		print("")
+
+		directory_results = { "name": directory }
+		directory_results.update(pylint_results)
+		all_results.append(directory_results)
+
+	if any(not result["success"] for result in all_results):
+		raise RuntimeError("Linting failed")
+
+
+def save_results(run_identifier, result_file_path, simulate):
+	test_results = bhamon_development_toolkit.python.lint.get_aggregated_results("test_results", run_identifier)
+
+	if result_file_path:
+		results = bhamon_development_toolkit.workspace.load_results(result_file_path)
+		results["tests"] = results.get("tests", [])
+		results["tests"].append(test_results)
+		if not simulate:
+			bhamon_development_toolkit.workspace.save_results(result_file_path, results)
