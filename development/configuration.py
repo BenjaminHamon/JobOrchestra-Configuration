@@ -1,5 +1,6 @@
 import datetime
 import importlib
+import os
 import subprocess
 import sys
 
@@ -28,7 +29,7 @@ def load_configuration(environment):
 	configuration["copyright"] = "Copyright (c) 2019 Benjamin Hamon"
 
 	configuration["development_toolkit"] = "git+https://github.com/BenjaminHamon/DevelopmentToolkit@{revision}#subdirectory=toolkit"
-	configuration["development_toolkit_revision"] = "ccaa3b07938c45f0700c277f5a079dcf02bd79fa"
+	configuration["development_toolkit_revision"] = "b1c386f93914950249b478a476bcb5347cfa0143"
 	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
 
 	configuration["components"] = [
@@ -38,6 +39,35 @@ def load_configuration(environment):
 		{ "name": "bhamon-build-website-extensions", "path": "website_extensions", "packages": [ "bhamon_build_website_extensions" ] },
 		{ "name": "bhamon-build-worker-extensions", "path": "worker_extensions", "packages": [ "bhamon_build_worker_extensions" ] },
 	]
+
+	configuration["project_identifier_for_artifact_server"] = "BuildService-Configuration"
+
+	configuration["filesets"] = {
+		"distribution": {
+			"path_in_workspace": os.path.join(".artifacts", "distributions", "{component}"),
+			"file_functions": [ _list_distribution_files ],
+		},
+	}
+
+	configuration["artifacts"] = {
+		"package": {
+			"file_name": "{project}_{version}_package",
+			"installation_directory": ".artifacts/distributions",
+			"path_in_repository": "packages",
+
+			"filesets": [
+				{
+					"identifier": "distribution",
+					"path_in_archive": component["name"],
+					"parameters": {
+						"component": component["name"],
+					},
+				}
+
+				for component in configuration["components"]
+			],
+		},
+	}
 
 	return configuration
 
@@ -53,6 +83,7 @@ def get_setuptools_parameters(configuration):
 
 def load_commands():
 	all_modules = [
+		"development.commands.artifact",
 		"development.commands.clean",
 		"development.commands.develop",
 		"development.commands.distribute",
@@ -74,3 +105,9 @@ def import_command(module_name):
 			"module_name": module_name,
 			"exception": sys.exc_info(),
 		}
+
+
+def _list_distribution_files(path_in_workspace, parameters):
+	archive_name = "{component}-{version}-py3-none-any.whl"
+	archive_name = archive_name.format(component = parameters["component"].replace("-", "_"), version = parameters["version"])
+	return [ os.path.join(path_in_workspace, archive_name) ]
