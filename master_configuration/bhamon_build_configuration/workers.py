@@ -5,6 +5,7 @@ def configure_workers():
 def configure_linux_workers():
 	all_projects = [
 		"build-service",
+		"build-service-configuration",
 		"development-toolkit",
 		"example",
 		"image-manager",
@@ -49,6 +50,7 @@ def configure_linux_workers():
 def configure_windows_workers():
 	all_projects = [
 		"build-service",
+		"build-service-configuration",
 		"development-toolkit",
 		"example",
 		"image-manager",

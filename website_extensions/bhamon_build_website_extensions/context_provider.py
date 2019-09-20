@@ -1,6 +1,8 @@
 def get_project_default_branch(project):
 	if project == "build-service":
 		return "master"
+	if project == "build-service-configuration":
+		return "master"
 	if project == "development-toolkit":
 		return "master"
 	if project == "image-manager":
@@ -14,6 +16,8 @@ def get_project_default_branch(project):
 
 def get_project_context_collection(project):
 	if project == "build-service":
+		return [ "Summary" ]
+	if project == "build-service-configuration":
 		return [ "Summary" ]
 	if project == "development-toolkit":
 		return [ "Summary" ]
@@ -29,6 +33,8 @@ def get_project_context_collection(project):
 def get_project_context(project, context):
 	if project == "build-service":
 		return get_build_service_context(context)
+	if project == "build-service-configuration":
+		return get_build_service_configuration_context(context)
 	if project == "development-toolkit":
 		return get_development_toolkit_context(context)
 	if project == "image-manager":
@@ -69,6 +75,39 @@ def get_build_service_filters():
 			"identifier": "distribute",
 			"display_name": "Distribution",
 			"job_identifier": "build-service_distribute",
+		},
+	]
+
+
+def get_build_service_configuration_context(context):
+	project_filters = get_build_service_configuration_filters()
+
+	if context == "Summary":
+		return [ f for f in project_filters ]
+	raise ValueError("Unknown context '%s' for project '%s'" % (context, "build-service-configuration"))
+
+
+def get_build_service_configuration_filters():
+	return [
+		{
+			"identifier": "check_linux",
+			"display_name": "Check Linux",
+			"job_identifier": "build-service-configuration_check_linux",
+		},
+		{
+			"identifier": "check_windows",
+			"display_name": "Check Windows",
+			"job_identifier": "build-service-configuration_check_windows",
+		},
+		{
+			"identifier": "package",
+			"display_name": "Package",
+			"job_identifier": "build-service-configuration_package",
+		},
+		{
+			"identifier": "distribute",
+			"display_name": "Distribution",
+			"job_identifier": "build-service-configuration_distribute",
 		},
 	]
 
