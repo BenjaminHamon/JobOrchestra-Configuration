@@ -10,8 +10,7 @@ import bhamon_build_worker.workspace
 
 import bhamon_build_model_extensions.revision_control.github as github
 import bhamon_build_worker_extensions.revision_control.git as git
-
-import environment
+import bhamon_build_worker_scripts.environment as environment
 
 
 logger = logging.getLogger("Main")

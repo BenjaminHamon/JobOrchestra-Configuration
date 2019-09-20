@@ -38,6 +38,7 @@ def load_configuration(environment):
 		{ "name": "bhamon-build-service-extensions", "path": "service_extensions", "packages": [ "bhamon_build_service_extensions" ] },
 		{ "name": "bhamon-build-website-extensions", "path": "website_extensions", "packages": [ "bhamon_build_website_extensions" ] },
 		{ "name": "bhamon-build-worker-extensions", "path": "worker_extensions", "packages": [ "bhamon_build_worker_extensions" ] },
+		{ "name": "bhamon-build-worker-scripts", "path": "worker_scripts", "packages": [ "bhamon_build_worker_scripts" ] },
 	]
 
 	configuration["project_identifier_for_artifact_server"] = "BuildService-Configuration"

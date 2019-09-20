@@ -5,7 +5,8 @@ import os
 import platform
 import subprocess
 
-import environment
+import bhamon_build_worker_extensions.revision_control.git as git
+import bhamon_build_worker_scripts.environment as environment
 
 
 logger = logging.getLogger("Main")
@@ -25,15 +26,20 @@ def main():
 
 	setup_virtual_environment(environment_instance)
 	print("")
-	show_worker_environment(environment_instance)
+	configure_workspace_environment(environment_instance, worker_configuration)
 	print("")
-	show_worker_configuration(worker_configuration)
+	git.initialize(environment_instance, arguments.repository)
+	print("")
+	git.update(environment_instance, arguments.revision, arguments.results)
 	print("")
 
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--configuration", required = True, help = "set the worker configuration file path")
+	parser.add_argument("--repository", required = True, help = "set the repository uri to clone")
+	parser.add_argument("--revision", required = True, help = "set the revision to update to")
+	parser.add_argument("--results", required = True, help = "set the file path where to store the build results")
 	return parser.parse_args()
 
 
@@ -52,16 +58,23 @@ def setup_virtual_environment(environment_instance):
 	subprocess.check_call(install_pip_command)
 
 
-def show_worker_environment(worker_environment):
-	logger.info("Worker Environment")
-	for key, value in worker_environment.items():
+def configure_workspace_environment(environment_instance, worker_configuration):
+	logger.info("Configuring workspace environment")
+
+	workspace_environment = {
+		"artifact_server_url": worker_configuration["artifact_server_url"],
+		"artifact_server_parameters": worker_configuration["artifact_server_parameters"],
+		"git_executable": environment_instance["git_executable"],
+		"python3_executable": ".venv/scripts/python",
+		"python_package_repository_url": worker_configuration["python_package_repository_url"],
+		"python_package_repository_parameters": worker_configuration["python_package_repository_parameters"],
+	}
+
+	for key, value in workspace_environment.items():
 		logger.info("%s: '%s'", key, value)
 
-
-def show_worker_configuration(worker_configuration):
-	logger.info("Worker Configuration")
-	for key, value in worker_configuration.items():
-		logger.info("%s: '%s'", key, value)
+	with open("environment.json", "w") as workspace_environment_file:
+		json.dump(workspace_environment, workspace_environment_file, indent = 4)
 
 
 if __name__ == "__main__":

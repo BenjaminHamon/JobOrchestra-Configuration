@@ -12,6 +12,8 @@ website_extensions/build/
 website_extensions/dist/
 worker_extensions/build/
 worker_extensions/dist/
+worker_scripts/build/
+worker_scripts/dist/
 
 # Environment
 environment.json

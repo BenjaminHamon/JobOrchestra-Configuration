@@ -17,7 +17,7 @@ def run(environment, configuration, arguments): # pylint: disable = unused-argum
 
 	try:
 		lint_packages(environment["python3_executable"], run_identifier, configuration["components"], arguments.simulate)
-		lint_scripts(environment["python3_executable"], run_identifier, [ "entry_points", "worker_scripts" ], arguments.simulate)
+		lint_scripts(environment["python3_executable"], run_identifier, [ "entry_points" ], arguments.simulate)
 	finally:
 		save_results(run_identifier, arguments.results, arguments.simulate)
 

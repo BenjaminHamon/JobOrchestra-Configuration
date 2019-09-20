@@ -3,8 +3,7 @@ import json
 import logging
 
 import bhamon_build_worker.controller as controller
-
-import environment
+import bhamon_build_worker_scripts.environment as environment
 
 
 def main():

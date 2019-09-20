@@ -6,8 +6,7 @@ import os
 import subprocess
 
 import bhamon_build_worker_extensions.revision_control.git as git
-
-import environment
+import bhamon_build_worker_scripts.environment as environment
 
 
 logger = logging.getLogger("Main")
