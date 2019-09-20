@@ -1,7 +1,8 @@
 repository = "https://github.com/BenjaminHamon/Overmind.Solitaire"
 
-controller_script = "{environment[build_worker_script_root]}/controller.py"
-initialization_script = "{environment[build_worker_script_root]}/solitaire.py"
+controller_script = "bhamon_build_worker_scripts.controller"
+initialization_script = "bhamon_build_worker_scripts.solitaire"
+
 worker_configuration_path = "{environment[build_worker_configuration]}"
 worker_python_executable = "{environment[build_worker_python_executable]}"
 
@@ -49,10 +50,10 @@ def controller():
 		],
 	}
 
-	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
-	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	package_android_job = "solitaire_package_android"
@@ -93,7 +94,7 @@ def package(target_platform):
 		],
 	}
 
-	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]

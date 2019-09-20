@@ -1,5 +1,6 @@
-controller_script = "{environment[build_worker_script_root]}/controller.py"
-initialization_script = "{environment[build_worker_script_root]}/example.py"
+controller_script = "bhamon_build_worker_scripts.controller"
+initialization_script = "bhamon_build_worker_scripts.example"
+
 worker_configuration_path = "{environment[build_worker_configuration]}"
 worker_python_executable = "{environment[build_worker_python_executable]}"
 
@@ -133,7 +134,7 @@ def exception():
 
 
 def environment():
-	initialization_entry_point = [ worker_python_executable, "-u", initialization_script ]
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path ]
 
 	return {
@@ -218,7 +219,7 @@ def large_log_random():
 
 
 def controller_success():
-	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	return {
@@ -244,7 +245,7 @@ def controller_success():
 
 
 def controller_failure():
-	controller_entry_point = [ worker_python_executable, "-u", controller_script ]
+	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	return {

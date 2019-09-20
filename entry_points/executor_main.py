@@ -17,7 +17,6 @@ def main():
 	environment_instance = environment.load_environment()
 	environment_instance["build_worker_configuration"] = os.path.join(os.getcwd(), "build_worker.json").replace("\\", "/")
 	environment_instance["build_worker_python_executable"] = sys.executable.replace("\\", "/")
-	environment_instance["build_worker_script_root"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "worker_scripts")).replace("\\", "/")
 
 	executor_build_directory = os.path.join("builds", arguments.job_identifier + "_" + arguments.build_identifier)
 
