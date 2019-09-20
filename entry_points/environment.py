@@ -7,8 +7,8 @@ import sys
 
 import pymongo
 
-import bhamon_build_model.json_database_client as json_database_client
-import bhamon_build_model.mongo_database_client as mongo_database_client
+from bhamon_build_model.json_database_client import JsonDatabaseClient
+from bhamon_build_model.mongo_database_client import MongoDatabaseClient
 
 
 stdout_log_format = "[{levelname}][{name}] {message}"
@@ -48,9 +48,9 @@ def configure_log_file(log_file_path, log_level):
 
 def create_database_client(database_uri, database_authentication):
 	if database_uri.startswith("json://"):
-		return json_database_client.JsonDatabaseClient(re.sub("^json://", "", database_uri))
+		return JsonDatabaseClient(re.sub("^json://", "", database_uri))
 	if database_uri.startswith("mongodb://"):
-		return mongo_database_client.MongoDatabaseClient(pymongo.MongoClient(database_uri, **database_authentication).get_database())
+		return MongoDatabaseClient(pymongo.MongoClient(database_uri, **database_authentication).get_database())
 	raise ValueError("Unsupported database uri '%s'" % database_uri)
 
 

@@ -33,7 +33,7 @@ def main():
 
 def parse_arguments():
 	main_parser = argparse.ArgumentParser()
-	main_parser.add_argument("--configuration", default = "build_service.json", help = "set the configuration file path")
+	main_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
 
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
 	subparsers.required = True

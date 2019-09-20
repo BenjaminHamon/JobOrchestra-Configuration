@@ -32,10 +32,10 @@ def parse_arguments():
 		return (key_value[0], key_value[1])
 
 	argument_parser = argparse.ArgumentParser()
-	argument_parser.add_argument("--configuration", default = "build_service.json", help = "set the configuration file path")
-	argument_parser.add_argument("--authentication", default = "authentication.json", help = "set the authentication file path")
+	argument_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
+	argument_parser.add_argument("--authentication", default = "authentication.json", metavar = "<path>", help = "set the authentication file path")
 	argument_parser.add_argument("--method", required = True, type = str.upper, choices = [ "GET", "POST" ], help = "set the web request method")
-	argument_parser.add_argument("--route", required = True, help = "set the web request route")
+	argument_parser.add_argument("--route", required = True, metavar = "<route>", help = "set the web request route")
 	argument_parser.add_argument("--parameters", nargs = "+", type = parse_key_value_parameter, default = [], metavar = "<key=value>", help = "set the web request parameters")
 
 	arguments = argument_parser.parse_args()

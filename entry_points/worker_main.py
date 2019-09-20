@@ -31,8 +31,8 @@ def main():
 
 def parse_arguments():
 	argument_parser = argparse.ArgumentParser()
-	argument_parser.add_argument("--identifier", required = True, help = "set the identifier for this worker")
-	argument_parser.add_argument("--configuration", default = "build_service.json", help = "set the configuration file path")
+	argument_parser.add_argument("--identifier", required = True, metavar = "<identifier>", help = "set the identifier for this worker")
+	argument_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
 	return argument_parser.parse_args()
 
 

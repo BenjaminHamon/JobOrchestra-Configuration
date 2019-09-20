@@ -27,8 +27,8 @@ def parse_arguments():
 		return (key_value[0], key_value[1])
 
 	main_parser = argparse.ArgumentParser()
-	main_parser.add_argument("--configuration", required = True, help = "set the worker configuration file path")
-	main_parser.add_argument("--results", required = True, help = "set the file path where to store the build results")
+	main_parser.add_argument("--configuration", required = True, metavar = "<path>", help = "set the worker configuration file path")
+	main_parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the build results")
 
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
 	subparsers.required = True

@@ -33,7 +33,7 @@ def main():
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--configuration", required = True, help = "set the worker configuration file path")
+	parser.add_argument("--configuration", required = True, metavar = "<path>", help = "set the worker configuration file path")
 	return parser.parse_args()
 
 

@@ -36,10 +36,10 @@ def main():
 
 def parse_arguments():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--configuration", required = True, help = "set the worker configuration file path")
-	parser.add_argument("--repository", required = True, help = "set the repository uri to clone")
-	parser.add_argument("--revision", required = True, help = "set the revision to update to")
-	parser.add_argument("--results", required = True, help = "set the file path where to store the build results")
+	parser.add_argument("--configuration", required = True, metavar = "<path>", help = "set the worker configuration file path")
+	parser.add_argument("--repository", required = True, metavar = "<uri>", help = "set the repository uri to clone")
+	parser.add_argument("--revision", required = True, metavar = "<revision>", help = "set the revision to update to")
+	parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the build results")
 	return parser.parse_args()
 
 
