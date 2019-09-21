@@ -33,9 +33,9 @@ def run(environment, configuration, arguments): # pylint: disable = unused-argum
 		setup_component(configuration, component, arguments.simulate)
 	print("")
 
-	for component in configuration["components"]:
-		install_component(python_executable, component, arguments.simulate)
-		print("")
+	logger.info("Installing project packages")
+	development_package_collection = [ os.path.join(".", component["path"]) for component in configuration["components"] ]
+	install_packages(python_executable, python_package_repository, development_package_collection, arguments.simulate)
 
 
 def install_packages(python_executable, python_package_repository, package_collection, simulate):
@@ -62,12 +62,3 @@ def setup_component(configuration, component, simulate):
 	if not simulate:
 		with open(metadata_file_path, "w", encoding = "utf-8") as metadata_file:
 			metadata_file.writelines(metadata_content)
-
-
-def install_component(python_executable, component, simulate):
-	logger.info("Installing development package for '%s'", component["name"])
-
-	install_command = [ python_executable, "-m", "pip", "install", "--upgrade", "--editable", os.path.join(".", component["path"]) ]
-	logger.info("+ %s", " ".join(install_command))
-	if not simulate:
-		subprocess.check_call(install_command)
