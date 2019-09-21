@@ -5,7 +5,6 @@ import logging
 
 import filelock
 
-from bhamon_build_configuration.worker_selector import WorkerSelector
 from bhamon_build_master.master import Master
 from bhamon_build_master.supervisor import Supervisor
 from bhamon_build_master.task_processor import TaskProcessor
@@ -14,6 +13,8 @@ from bhamon_build_model.file_storage import FileStorage
 from bhamon_build_model.job_provider import JobProvider
 from bhamon_build_model.task_provider import TaskProvider
 from bhamon_build_model.worker_provider import WorkerProvider
+
+from bhamon_build_configuration.worker_selector import WorkerSelector
 
 import environment
 import master_configuration
