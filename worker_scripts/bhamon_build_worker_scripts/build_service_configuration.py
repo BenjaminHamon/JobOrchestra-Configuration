@@ -68,6 +68,7 @@ def configure_workspace_environment(environment_instance, worker_configuration):
 		"python3_executable": ".venv/scripts/python",
 		"python_package_repository_url": worker_configuration["python_package_repository_url"],
 		"python_package_repository_parameters": worker_configuration["python_package_repository_parameters"],
+		"python_package_repository_web_url": worker_configuration["python_package_repository_web_url"],
 	}
 
 	for key, value in workspace_environment.items():

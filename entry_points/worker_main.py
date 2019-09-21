@@ -42,8 +42,10 @@ def configure_worker(global_configuration, worker_path):
 		"authentication_file_path": os.path.abspath(os.path.join(worker_path, "authentication.json")),
 		"artifact_server_url": global_configuration["artifact_server_url"],
 		"artifact_server_parameters": global_configuration.get("artifact_server_parameters", {}),
+		"artifact_server_web_url": global_configuration["artifact_server_web_url"],
 		"python_package_repository_url": global_configuration["python_package_repository_url"],
 		"python_package_repository_parameters": global_configuration.get("python_package_repository_parameters", {}),
+		"python_package_repository_web_url": global_configuration["python_package_repository_web_url"],
 	}
 
 	with open(os.path.join(worker_path, "build_worker.json"), "w") as configuration_file:
