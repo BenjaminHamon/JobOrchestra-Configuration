@@ -32,6 +32,15 @@ def load_configuration(environment):
 	configuration["development_toolkit_revision"] = "b1c386f93914950249b478a476bcb5347cfa0143"
 	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
 
+	configuration["project_dependencies"] = [
+		"bhamon-build-cli ~= 1.0",
+		"bhamon-build-model ~= 1.0",
+		"bhamon-build-master ~= 1.0",
+		"bhamon-build-service ~= 1.0",
+		"bhamon-build-website ~= 1.0",
+		"bhamon-build-worker ~= 1.0",
+	]
+
 	configuration["components"] = [
 		{ "name": "bhamon-build-configuration", "path": "master_configuration", "packages": [ "bhamon_build_configuration" ] },
 		{ "name": "bhamon-build-model-extensions", "path": "model_extensions", "packages": [ "bhamon_build_model_extensions" ] },

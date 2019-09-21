@@ -10,4 +10,5 @@ disable =
 	bad-continuation,
 	bad-whitespace,
 	duplicate-code,
+	len-as-condition,
 	missing-docstring,
