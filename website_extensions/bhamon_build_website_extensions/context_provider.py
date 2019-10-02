@@ -50,7 +50,7 @@ def get_build_service_context(context):
 	project_filters = get_build_service_filters()
 
 	if context == "Summary":
-		return [ f for f in project_filters ]
+		return project_filters
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "build-service"))
 
 
@@ -83,7 +83,7 @@ def get_build_service_configuration_context(context):
 	project_filters = get_build_service_configuration_filters()
 
 	if context == "Summary":
-		return [ f for f in project_filters ]
+		return project_filters
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "build-service-configuration"))
 
 
@@ -116,7 +116,7 @@ def get_image_manager_context(context):
 	project_filters = get_image_manager_filters()
 
 	if context == "Summary":
-		return [ f for f in project_filters ]
+		return project_filters
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "image-manager"))
 
 
@@ -151,7 +151,7 @@ def get_development_toolkit_context(context):
 	project_filters = get_development_toolkit_filters()
 
 	if context == "Summary":
-		return [ f for f in project_filters ]
+		return project_filters
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "development-toolkit"))
 
 
@@ -174,7 +174,7 @@ def get_my_website_context(context):
 	project_filters = get_my_website_filters()
 
 	if context == "Summary":
-		return [ f for f in project_filters ]
+		return project_filters
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "my-website"))
 
 
@@ -197,7 +197,7 @@ def get_solitaire_context(context):
 	project_filters = get_solitaire_filters()
 
 	if context == "Summary":
-		return [ f for f in project_filters ]
+		return project_filters
 	raise ValueError("Unknown context '%s' for project '%s'" % (context, "solitaire"))
 
 

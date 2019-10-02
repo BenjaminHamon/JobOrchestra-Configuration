@@ -39,8 +39,7 @@ def parse_arguments():
 	argument_parser.add_argument("--parameters", nargs = "+", type = parse_key_value_parameter, default = [], metavar = "<key=value>", help = "set the web request parameters")
 
 	arguments = argument_parser.parse_args()
-	if hasattr(arguments, "parameters"):
-		arguments.parameters = { key: value for key, value in arguments.parameters }
+	arguments.parameters = dict(arguments.parameters)
 
 	return arguments
 
