@@ -92,11 +92,12 @@ def package():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
-	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
 		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "metadata", "command": project_entry_point + [ "metadata" ] },
 		{ "name": "compile", "command": project_entry_point + [ "compile", "--configuration", "{parameters[configuration]}" ] },
 		{ "name": "test", "command": project_entry_point + [ "test", "--configuration", "{parameters[configuration]}" ] },
@@ -128,11 +129,12 @@ def release():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
-	project_entry_point = [ ".venv/scripts/python", "-u", "Scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
 		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "metadata", "command": project_entry_point + [ "metadata" ] },
 		{ "name": "compile debug", "command": project_entry_point + [ "compile", "--configuration", "Debug" ] },
 		{ "name": "test debug", "command": project_entry_point + [ "test", "--configuration", "Debug" ] },
