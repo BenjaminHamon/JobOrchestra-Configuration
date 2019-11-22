@@ -5,13 +5,17 @@ import logging
 
 import filelock
 
+from bhamon_build_master.job_scheduler import JobScheduler
 from bhamon_build_master.master import Master
 from bhamon_build_master.supervisor import Supervisor
 from bhamon_build_master.task_processor import TaskProcessor
+from bhamon_build_model.authentication_provider import AuthenticationProvider
+from bhamon_build_model.authorization_provider import AuthorizationProvider
 from bhamon_build_model.build_provider import BuildProvider
 from bhamon_build_model.file_storage import FileStorage
 from bhamon_build_model.job_provider import JobProvider
 from bhamon_build_model.task_provider import TaskProvider
+from bhamon_build_model.user_provider import UserProvider
 from bhamon_build_model.worker_provider import WorkerProvider
 
 from bhamon_build_configuration.worker_selector import WorkerSelector
@@ -43,9 +47,12 @@ def create_application(configuration):
 	database_client_instance = environment.create_database_client(configuration["build_database_uri"], configuration["build_database_authentication"])
 	file_storage_instance = FileStorage(configuration["build_file_storage_path"])
 
+	authentication_provider_instance = AuthenticationProvider(database_client_instance)
+	authorization_provider_instance = AuthorizationProvider()
 	build_provider_instance = BuildProvider(database_client_instance, file_storage_instance)
 	job_provider_instance = JobProvider(database_client_instance)
 	task_provider_instance = TaskProvider(database_client_instance)
+	user_provider_instance = UserProvider(database_client_instance)
 	worker_provider_instance = WorkerProvider(database_client_instance)
 
 	task_processor_instance = TaskProcessor(
@@ -60,12 +67,21 @@ def create_application(configuration):
 		host = configuration["build_master_listen_address"],
 		port = configuration["build_master_listen_port"],
 		worker_provider = worker_provider_instance,
+		build_provider = build_provider_instance,
+		user_provider = user_provider_instance,
+		authentication_provider = authentication_provider_instance,
+		authorization_provider = authorization_provider_instance,
+	)
+
+	job_scheduler_instance = JobScheduler(
+		supervisor = supervisor_instance,
 		job_provider = job_provider_instance,
 		build_provider = build_provider_instance,
 		worker_selector = worker_selector_instance,
 	)
 
 	master_instance = Master(
+		job_scheduler = job_scheduler_instance,
 		supervisor = supervisor_instance,
 		task_processor = task_processor_instance,
 		job_provider = job_provider_instance,

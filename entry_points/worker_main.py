@@ -1,11 +1,12 @@
 import argparse
+import getpass
 import json
 import logging
 import os
 
 import filelock
 
-import bhamon_build_worker.worker as worker
+from bhamon_build_worker.worker import Worker
 
 import environment
 
@@ -25,8 +26,12 @@ def main():
 	with filelock.FileLock(os.path.join(worker_path, "build_worker.lock"), 5):
 		environment.configure_log_file(os.path.join(worker_path, worker_log_path), logging.INFO)
 		configure_worker(configuration, worker_path)
+		authentication = load_authentication(worker_path)
+
 		os.chdir(worker_path)
-		worker.run(configuration["build_master_url"], arguments.identifier, executor_script)
+
+		worker_instance = Worker(arguments.identifier, configuration["build_master_url"], authentication["user"], authentication["secret"], executor_script)
+		worker_instance.run()
 
 
 def parse_arguments():
@@ -50,6 +55,24 @@ def configure_worker(global_configuration, worker_path):
 
 	with open(os.path.join(worker_path, "build_worker.json"), "w") as configuration_file:
 		json.dump(local_configuration, configuration_file, indent = 4)
+
+
+def load_authentication(worker_path):
+	authentication_file_path = os.path.abspath(os.path.join(worker_path, "authentication.json"))
+
+	if os.path.exists(authentication_file_path):
+		with open(authentication_file_path, "r") as authentication_file:
+			return json.load(authentication_file)
+
+	authentication = {
+		"user": input("User: "),
+		"secret": getpass.getpass("Secret: "),
+	}
+
+	with open(authentication_file_path, "w") as authentication_file:
+		json.dump(authentication, authentication_file, indent = 4)
+
+	return authentication
 
 
 if __name__ == "__main__":
