@@ -24,8 +24,7 @@ class WorkerSelector:
 		executors = supervisor.get_worker(worker["identifier"]).executors
 
 		try:
-			return (job["properties"]["project"] in worker["properties"]["project"]
-				and worker["properties"]["operating_system"] in job["properties"]["operating_system"]
+			return (worker["properties"]["operating_system"] in job["properties"]["operating_system"]
 				and job["properties"]["is_controller"] == worker["properties"]["is_controller"]
 				and len(executors) < worker["properties"]["executor_limit"])
 
