@@ -1,3 +1,9 @@
+import logging
+
+
+logger = logging.getLogger("WorkerSelector")
+
+
 class WorkerSelector:
 
 	def __init__(self, worker_provider):
@@ -16,7 +22,12 @@ class WorkerSelector:
 
 	def are_compatible(self, supervisor, worker, job): # pylint: disable = no-self-use
 		executors = supervisor.get_worker(worker["identifier"]).executors
-		return (job["properties"]["project"] in worker["properties"]["project"]
-			and worker["properties"]["operating_system"] in job["properties"]["operating_system"]
-			and job["properties"]["is_controller"] == worker["properties"]["is_controller"]
-			and len(executors) < worker["properties"]["executor_limit"])
+
+		try:
+			return (job["properties"]["project"] in worker["properties"]["project"]
+				and worker["properties"]["operating_system"] in job["properties"]["operating_system"]
+				and job["properties"]["is_controller"] == worker["properties"]["is_controller"]
+				and len(executors) < worker["properties"]["executor_limit"])
+
+		except KeyError:
+			return False

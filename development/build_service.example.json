@@ -28,8 +28,39 @@
 	"build_website_url": "http://localhost:5000",
 
 	"build_workers": {
-		"windows_controller": { "path": "controller", "log": "build_worker.log" },
-		"windows_worker_01": { "path": "worker_01", "log": "build_worker.log" },
-		"windows_worker_02": { "path": "worker_02", "log": "build_worker.log" }
+
+		"controller": {
+			"identifier": "{host}_controller",
+			"path": "controller",
+			"log": "build_worker.log",
+
+			"properties": {
+				"is_controller": true,
+				"executor_limit": 100
+			}
+		},
+
+		"worker_01": {
+			"identifier": "{host}_worker_01",
+			"path": "worker_01",
+			"log": "build_worker.log",
+
+			"properties": {
+				"is_controller": false,
+				"executor_limit": 1
+			}
+		},
+
+		"worker_02": {
+			"identifier": "{host}_worker_02",
+			"path": "worker_02",
+			"log": "build_worker.log",
+
+			"properties": {
+				"is_controller": false,
+				"executor_limit": 1
+			}
+		}
+
 	}
 }

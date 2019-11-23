@@ -3,6 +3,8 @@ import getpass
 import json
 import logging
 import os
+import platform
+import socket
 
 import filelock
 
@@ -38,15 +40,20 @@ def parse_arguments():
 	return argument_parser.parse_args()
 
 
-def create_application(worker_identifier, configuration, executor_script):
+def create_application(local_worker_identifier, configuration, executor_script):
+	worker_definition = configuration["build_workers"][local_worker_identifier]
+	worker_identifier = worker_definition["identifier"].format(host = socket.gethostname())
+
 	write_local_configuration(configuration)
 	authentication = load_authentication()
+	properties = load_properties(worker_definition)
 
 	return Worker(
 		identifier = worker_identifier,
 		master_uri = configuration["build_master_url"],
 		user = authentication["user"],
 		secret = authentication["secret"],
+		properties = properties,
 		executor_script = executor_script,
 	)
 
@@ -85,6 +92,17 @@ def load_authentication():
 		json.dump(authentication, authentication_file, indent = 4)
 
 	return authentication
+
+
+def load_properties(worker_definition):
+	properties = {
+		"host": socket.gethostname(),
+		"operating_system": platform.system().lower(),
+	}
+
+	properties.update(worker_definition.get("properties", {}))
+
+	return properties
 
 
 if __name__ == "__main__":
