@@ -23,14 +23,11 @@ def main():
 	worker_log_path = configuration["build_workers"][arguments.identifier]["log"]
 	os.makedirs(worker_path, exist_ok = True)
 
-	with filelock.FileLock(os.path.join(worker_path, "build_worker.lock"), 5):
-		environment.configure_log_file(os.path.join(worker_path, worker_log_path), logging.INFO)
-		configure_worker(configuration, worker_path)
-		authentication = load_authentication(worker_path)
+	os.chdir(worker_path)
 
-		os.chdir(worker_path)
-
-		worker_instance = Worker(arguments.identifier, configuration["build_master_url"], authentication["user"], authentication["secret"], executor_script)
+	with filelock.FileLock("build_worker.lock", 5):
+		environment.configure_log_file(worker_log_path, logging.INFO)
+		worker_instance = create_application(arguments.identifier, configuration, executor_script)
 		worker_instance.run()
 
 
@@ -41,10 +38,25 @@ def parse_arguments():
 	return argument_parser.parse_args()
 
 
-def configure_worker(global_configuration, worker_path):
+def create_application(worker_identifier, configuration, executor_script):
+	write_local_configuration(configuration)
+	authentication = load_authentication()
+
+	return Worker(
+		identifier = worker_identifier,
+		master_uri = configuration["build_master_url"],
+		user = authentication["user"],
+		secret = authentication["secret"],
+		executor_script = executor_script,
+	)
+
+
+def write_local_configuration(global_configuration):
+	configuration_file_path = "build_worker.json"
+
 	local_configuration = {
 		"build_service_url": global_configuration["build_service_url"],
-		"authentication_file_path": os.path.abspath(os.path.join(worker_path, "authentication.json")),
+		"authentication_file_path": os.path.abspath("authentication.json"),
 		"artifact_server_url": global_configuration["artifact_server_url"],
 		"artifact_server_parameters": global_configuration.get("artifact_server_parameters", {}),
 		"artifact_server_web_url": global_configuration["artifact_server_web_url"],
@@ -53,12 +65,12 @@ def configure_worker(global_configuration, worker_path):
 		"python_package_repository_web_url": global_configuration["python_package_repository_web_url"],
 	}
 
-	with open(os.path.join(worker_path, "build_worker.json"), "w") as configuration_file:
+	with open(configuration_file_path, "w") as configuration_file:
 		json.dump(local_configuration, configuration_file, indent = 4)
 
 
-def load_authentication(worker_path):
-	authentication_file_path = os.path.abspath(os.path.join(worker_path, "authentication.json"))
+def load_authentication():
+	authentication_file_path = "authentication.json"
 
 	if os.path.exists(authentication_file_path):
 		with open(authentication_file_path, "r") as authentication_file:
