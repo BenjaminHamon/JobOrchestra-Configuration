@@ -7,8 +7,10 @@ import flask
 from bhamon_orchestra_model.authentication_provider import AuthenticationProvider
 from bhamon_orchestra_model.authorization_provider import AuthorizationProvider
 from bhamon_orchestra_model.database.file_storage import FileStorage
+from bhamon_orchestra_model.file_server_client import FileServerClient
 from bhamon_orchestra_model.job_provider import JobProvider
 from bhamon_orchestra_model.project_provider import ProjectProvider
+from bhamon_orchestra_model.revision_control.github import GitHubClient
 from bhamon_orchestra_model.run_provider import RunProvider
 from bhamon_orchestra_model.task_provider import TaskProvider
 from bhamon_orchestra_model.user_provider import UserProvider
@@ -71,6 +73,12 @@ def create_application(configuration):
 	service.register_handlers(application)
 	service.register_routes(application)
 	service_extensions.register_routes(application)
+
+	application.external_services = {
+		"artifacts": FileServerClient("Artifact Server", configuration["artifact_server_web_url"]),
+		"github": GitHubClient(configuration.get("github_access_token", None)),
+		"python_packages": FileServerClient("Python Package Repository", configuration["python_package_repository_web_url"]),
+	}
 
 	application.config["GITHUB_ACCESS_TOKEN"] = configuration.get("github_access_token", None)
 
