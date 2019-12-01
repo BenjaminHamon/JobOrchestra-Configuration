@@ -5,9 +5,9 @@ import types
 
 from bhamon_build_model.authentication_provider import AuthenticationProvider
 from bhamon_build_model.authorization_provider import AuthorizationProvider
-from bhamon_build_model.build_provider import BuildProvider
-from bhamon_build_model.file_storage import FileStorage
+from bhamon_build_model.database.file_storage import FileStorage
 from bhamon_build_model.job_provider import JobProvider
+from bhamon_build_model.run_provider import RunProvider
 from bhamon_build_model.task_provider import TaskProvider
 from bhamon_build_model.user_provider import UserProvider
 from bhamon_build_model.worker_provider import WorkerProvider
@@ -54,8 +54,8 @@ def create_application(configuration):
 
 	application.authentication_provider = AuthenticationProvider(database_client_instance)
 	application.authorization_provider = AuthorizationProvider()
-	application.build_provider = BuildProvider(database_client_instance, file_storage_instance)
 	application.job_provider = JobProvider(database_client_instance)
+	application.run_provider = RunProvider(database_client_instance, file_storage_instance)
 	application.task_provider = TaskProvider(database_client_instance)
 	application.user_provider = UserProvider(database_client_instance)
 	application.worker_provider = WorkerProvider(database_client_instance)

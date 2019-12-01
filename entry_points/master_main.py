@@ -11,9 +11,9 @@ from bhamon_build_master.supervisor import Supervisor
 from bhamon_build_master.task_processor import TaskProcessor
 from bhamon_build_model.authentication_provider import AuthenticationProvider
 from bhamon_build_model.authorization_provider import AuthorizationProvider
-from bhamon_build_model.build_provider import BuildProvider
-from bhamon_build_model.file_storage import FileStorage
+from bhamon_build_model.database.file_storage import FileStorage
 from bhamon_build_model.job_provider import JobProvider
+from bhamon_build_model.run_provider import RunProvider
 from bhamon_build_model.task_provider import TaskProvider
 from bhamon_build_model.user_provider import UserProvider
 from bhamon_build_model.worker_provider import WorkerProvider
@@ -32,7 +32,7 @@ def main():
 		configuration = json.load(configuration_file)
 	environment.configure_log_file(configuration["build_master_log_file_path"], logging.INFO)
 
-	with filelock.FileLock("build_master.lock", 5):
+	with filelock.FileLock("master.lock", 5):
 		application = create_application(configuration)
 		application.run()
 
@@ -49,7 +49,7 @@ def create_application(configuration):
 
 	authentication_provider_instance = AuthenticationProvider(database_client_instance)
 	authorization_provider_instance = AuthorizationProvider()
-	build_provider_instance = BuildProvider(database_client_instance, file_storage_instance)
+	run_provider_instance = RunProvider(database_client_instance, file_storage_instance)
 	job_provider_instance = JobProvider(database_client_instance)
 	task_provider_instance = TaskProvider(database_client_instance)
 	user_provider_instance = UserProvider(database_client_instance)
@@ -67,7 +67,7 @@ def create_application(configuration):
 		host = configuration["build_master_listen_address"],
 		port = configuration["build_master_listen_port"],
 		worker_provider = worker_provider_instance,
-		build_provider = build_provider_instance,
+		run_provider = run_provider_instance,
 		user_provider = user_provider_instance,
 		authentication_provider = authentication_provider_instance,
 		authorization_provider = authorization_provider_instance,
@@ -76,7 +76,7 @@ def create_application(configuration):
 	job_scheduler_instance = JobScheduler(
 		supervisor = supervisor_instance,
 		job_provider = job_provider_instance,
-		build_provider = build_provider_instance,
+		run_provider = run_provider_instance,
 		worker_selector = worker_selector_instance,
 	)
 

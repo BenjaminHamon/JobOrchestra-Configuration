@@ -27,7 +27,7 @@ def main():
 
 	os.chdir(worker_path)
 
-	with filelock.FileLock("build_worker.lock", 5):
+	with filelock.FileLock("worker.lock", 5):
 		environment.configure_log_file(worker_log_path, logging.INFO)
 		worker_instance = create_application(arguments.identifier, configuration, executor_script)
 		worker_instance.run()

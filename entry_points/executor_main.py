@@ -18,16 +18,16 @@ def main():
 	environment_instance["build_worker_configuration"] = os.path.join(os.getcwd(), "build_worker.json").replace("\\", "/")
 	environment_instance["build_worker_python_executable"] = sys.executable.replace("\\", "/")
 
-	executor_build_directory = os.path.join("builds", arguments.job_identifier + "_" + arguments.build_identifier)
+	executor_run_directory = os.path.join("runs", arguments.job_identifier + "_" + arguments.run_identifier)
 
-	with filelock.FileLock(os.path.join(executor_build_directory, "build_executor.lock"), 5):
-		executor.run(arguments.job_identifier, arguments.build_identifier, environment_instance)
+	with filelock.FileLock(os.path.join(executor_run_directory, "executor.lock"), 5):
+		executor.run(arguments.job_identifier, arguments.run_identifier, environment_instance)
 
 
 def parse_arguments():
 	argument_parser = argparse.ArgumentParser()
 	argument_parser.add_argument("job_identifier", help = "set the job identifier")
-	argument_parser.add_argument("build_identifier", help = "set the build identifier")
+	argument_parser.add_argument("run_identifier", help = "set the run identifier")
 	return argument_parser.parse_args()
 
 

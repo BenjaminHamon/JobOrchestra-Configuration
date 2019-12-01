@@ -32,8 +32,8 @@
 			<thead>
 				<tr>
 					<th>Revision</th>
-					{% for build_filter in project_context %}
-					<th><a href="{{ url_for('job_index', job_identifier = build_filter['job_identifier']) }}">{{ build_filter['display_name'] }}</a></th>
+					{% for run_filter in project_context %}
+					<th><a href="{{ url_for('job_index', job_identifier = run_filter['job_identifier']) }}">{{ run_filter['display_name'] }}</a></th>
 					{% endfor %}
 				</tr>
 			</thead>
@@ -46,12 +46,12 @@
 							<p class="date">{{ revision['date'] }}</p>
 						</div>
 					</td>
-					{% for build_filter in project_context %}
+					{% for run_filter in project_context %}
 					<td>
-						{% for build in revision['builds_by_filter'][build_filter['identifier']] %}
+						{% for run in revision['runs_by_filter'][run_filter['identifier']] %}
 						<div class="status-group">
-							<div class="status-indicator {{ build['status'] }}" title="{{ build['status'] }}"></div>
-							<a href="{{ url_for('build_index', build_identifier = build['identifier']) }}">{{ build['identifier'][:18] }}</a>
+							<div class="status-indicator {{ run['status'] }}" title="{{ run['status'] }}"></div>
+							<a href="{{ url_for('run_index', run_identifier = run['identifier']) }}">{{ run['identifier'][:18] }}</a>
 						</div>
 						{% endfor %}
 					</td>

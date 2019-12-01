@@ -27,19 +27,19 @@ def project_index(project_identifier):
 	status_parameters = {
 		"branch": project_branch,
 		"revision_limit": 20,
-		"build_limit": 1000,
+		"run_limit": 1000,
 		"access_token": access_token,
 	}
 
 	project_status = service_client.get("/project/{project_identifier}/status".format(**locals()), status_parameters)
-	project_status = [ revision for revision in project_status if len(revision["builds"]) > 0 ][ : status_limit ]
+	project_status = [ revision for revision in project_status if len(revision["runs"]) > 0 ][ : status_limit ]
 
 	for revision in project_status:
-		revision["builds_by_filter"] = { f["identifier"]: [] for f in project_context }
-		for build in revision["builds"]:
-			for build_filter in project_context:
-				if build["job"] == build_filter["job_identifier"] and build_filter.get("condition", lambda build: True)(build):
-					revision["builds_by_filter"][build_filter["identifier"]].append(build)
+		revision["runs_by_filter"] = { f["identifier"]: [] for f in project_context }
+		for run in revision["runs"]:
+			for run_filter in project_context:
+				if run["job"] == run_filter["job_identifier"] and run_filter.get("condition", lambda run: True)(run):
+					revision["runs_by_filter"][run_filter["identifier"]].append(run)
 
 	view_data = {
 		"project_identifier": project_identifier,

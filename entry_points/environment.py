@@ -7,8 +7,8 @@ import sys
 
 import pymongo
 
-from bhamon_build_model.json_database_client import JsonDatabaseClient
-from bhamon_build_model.mongo_database_client import MongoDatabaseClient
+from bhamon_build_model.database.json_database_client import JsonDatabaseClient
+from bhamon_build_model.database.mongo_database_client import MongoDatabaseClient
 
 
 stdout_log_format = "[{levelname}][{name}] {message}"

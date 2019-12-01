@@ -79,20 +79,20 @@ class Project:
 		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
 
 
-	def update_build_results(self, build_results):
+	def update_run_results(self, run_results):
 		if self.revision_control is not None:
-			if "revision_control" in build_results:
-				build_results["revision_control"]["url"] = self.get_revision_url(build_results["revision_control"]["revision"])
+			if "revision_control" in run_results:
+				run_results["revision_control"]["url"] = self.get_revision_url(run_results["revision_control"]["revision"])
 
-		for test_run in build_results.get("tests", []):
+		for test_run in run_results.get("tests", []):
 			test_run["summary_text"] = self.generate_test_summary_text(test_run)
 
 		if self.artifact_repository is not None:
-			for artifact in build_results.get("artifacts", []):
+			for artifact in run_results.get("artifacts", []):
 				artifact["url"] = self.resolve_artifact_url(artifact)
 
 		if self.python_package_repository is not None:
-			for distribution in build_results.get("distributions", []):
+			for distribution in run_results.get("distributions", []):
 				distribution["url"] = self.resolve_python_distribution_url(distribution)
 
 

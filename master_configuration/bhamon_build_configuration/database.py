@@ -7,7 +7,7 @@ logger = logging.getLogger("Database")
 
 
 def register_commands(subparsers):
-	command_parser = subparsers.add_parser("initialize-database", help = "initialize the build database")
+	command_parser = subparsers.add_parser("initialize-database", help = "initialize the database")
 	command_parser.set_defaults(handler = initialize_database)
 
 
@@ -30,8 +30,8 @@ def initialize_mongo_database(database_uri, database_authentication):
 
 	print("")
 
-	logger.info("Creating build index")
-	database["build"].create_index("identifier", name = "identifier_unique", unique = True)
+	logger.info("Creating run index")
+	database["run"].create_index("identifier", name = "identifier_unique", unique = True)
 	logger.info("Creating job index")
 	database["job"].create_index("identifier", name = "identifier_unique", unique = True)
 	logger.info("Creating task index")

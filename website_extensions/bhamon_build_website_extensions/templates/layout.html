@@ -26,7 +26,7 @@
 			</div>
 		</header>
 
-		{% if config['WEBSITE_ANNOUNCEMENT'] %}
+		{% if 'WEBSITE_ANNOUNCEMENT' in config %}
 		<div id="announcement" class="{{ config['WEBSITE_ANNOUNCEMENT_TYPE'] }}">
 			<p>{{ config['WEBSITE_ANNOUNCEMENT'] }}</p>
 		</div>
@@ -42,7 +42,7 @@
 			{% if authorize_view('nav-main') %}
 			<div>
 				<a href="{{ url_for('job_collection_index') }}">Jobs</a>
-				<a href="{{ url_for('build_collection_index') }}">Builds</a>
+				<a href="{{ url_for('run_collection_index') }}">Runs</a>
 				<a href="{{ url_for('worker_collection_index') }}">Workers</a>
 				<a href="{{ url_for('task_collection_index') }}">Tasks</a>
 			</div>

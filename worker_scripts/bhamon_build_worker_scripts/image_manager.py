@@ -48,7 +48,7 @@ def parse_arguments():
 	parser.add_argument("--type", required = True, choices = [ "controller", "worker" ], help = "set the workspace type (controller, worker)")
 	parser.add_argument("--repository", required = True, metavar = "<uri>", help = "set the repository uri to clone")
 	parser.add_argument("--revision", required = True, metavar = "<revision>", help = "set the revision to update to")
-	parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the build results")
+	parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the run results")
 	return parser.parse_args()
 
 

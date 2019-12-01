@@ -28,19 +28,19 @@ def parse_arguments():
 
 	main_parser = argparse.ArgumentParser()
 	main_parser.add_argument("--configuration", required = True, metavar = "<path>", help = "set the worker configuration file path")
-	main_parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the build results")
+	main_parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the run results")
 
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
 	subparsers.required = True
 
-	command_parser = subparsers.add_parser("trigger", help = "trigger a build")
-	command_parser.add_argument("job_identifier", help = "set the job to trigger a build for")
+	command_parser = subparsers.add_parser("trigger", help = "trigger a run")
+	command_parser.add_argument("job_identifier", help = "set the job to trigger a run for")
 	command_parser.add_argument("--parameters", nargs = "*", type = parse_key_value_parameter, default = [],
 		metavar = "<key=value>", help = "set parameters for the artifact")
-	command_parser.set_defaults(func = trigger_build)
+	command_parser.set_defaults(func = trigger_run)
 
-	command_parser = subparsers.add_parser("wait", help = "wait for triggered builds")
-	command_parser.set_defaults(func = wait_build)
+	command_parser = subparsers.add_parser("wait", help = "wait for triggered runs")
+	command_parser.set_defaults(func = wait_run)
 
 	arguments = main_parser.parse_args()
 	if hasattr(arguments, "parameters"):
@@ -49,12 +49,12 @@ def parse_arguments():
 	return arguments
 
 
-def trigger_build(service_url, arguments, authorization):
-	controller.trigger_build(service_url, arguments.results, arguments.job_identifier, arguments.parameters, authorization)
+def trigger_run(service_url, arguments, authorization):
+	controller.trigger_run(service_url, arguments.results, arguments.job_identifier, arguments.parameters, authorization)
 
 
-def wait_build(service_url, arguments, authorization):
-	controller.wait_build(service_url, arguments.results, authorization)
+def wait_run(service_url, arguments, authorization):
+	controller.wait_run(service_url, arguments.results, authorization)
 
 
 if __name__ == "__main__":
