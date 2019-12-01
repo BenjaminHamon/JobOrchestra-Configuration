@@ -45,6 +45,7 @@ def project_index(project_identifier):
 		"project_identifier": project_identifier,
 		"project_branch": project_branch,
 		"project_branch_collection": project_branch_collection,
+		"project_context_identifier": context_identifier,
 		"project_context": project_context,
 		"project_context_collection": project_context_collection,
 		"project_status": project_status,

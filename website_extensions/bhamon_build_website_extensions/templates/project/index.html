@@ -19,7 +19,7 @@
 			<label for="input-context">Context</label>
 			<select id="input-context" name="context">
 				{% for context in project_context_collection %}
-					{% if project_context["identifier"] == branch %}
+					{% if project_context_identifier == context %}
 				<option selected>{{ context }}</option>
 					{% else %}
 				<option>{{ context }}</option>
