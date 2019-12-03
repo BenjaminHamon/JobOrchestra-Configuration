@@ -15,12 +15,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 
 
 parameters.update({
-	"name": "bhamon-build-configuration",
-	"description": "Configuration for the build master",
+	"name": "bhamon-orchestra-configuration",
+	"description": "Configuration for the Job Orchestra master",
 
 	"packages": [
-		"bhamon_build_configuration",
-		"bhamon_build_configuration/projects",
+		"bhamon_orchestra_configuration",
+		"bhamon_orchestra_configuration/projects",
 	],
 
 	"python_requires": "~= 3.5",

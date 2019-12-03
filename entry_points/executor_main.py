@@ -5,7 +5,7 @@ import sys
 
 import filelock
 
-import bhamon_build_worker.executor as executor
+import bhamon_orchestra_worker.executor as executor
 
 import environment
 
@@ -15,8 +15,8 @@ def main():
 	environment.configure_logging(logging.INFO)
 
 	environment_instance = environment.load_environment()
-	environment_instance["build_worker_configuration"] = os.path.join(os.getcwd(), "build_worker.json").replace("\\", "/")
-	environment_instance["build_worker_python_executable"] = sys.executable.replace("\\", "/")
+	environment_instance["orchestra_worker_configuration"] = os.path.join(os.getcwd(), "worker.json").replace("\\", "/")
+	environment_instance["orchestra_worker_python_executable"] = sys.executable.replace("\\", "/")
 
 	executor_run_directory = os.path.join("runs", arguments.job_identifier + "_" + arguments.run_identifier)
 

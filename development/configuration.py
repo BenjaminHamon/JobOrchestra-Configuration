@@ -8,8 +8,8 @@ import sys
 
 def load_configuration(environment):
 	configuration = {
-		"project": "bhamon-build-configuration",
-		"project_name": "Build Service Configuration",
+		"project": "bhamon-orchestra-configuration",
+		"project_name": "Job Orchestra Configuration",
 		"project_version": { "identifier": "2.0" },
 	}
 
@@ -26,7 +26,7 @@ def load_configuration(environment):
 
 	configuration["author"] = "Benjamin Hamon"
 	configuration["author_email"] = "hamon.benjamin@gmail.com"
-	configuration["project_url"] = "https://github.com/BenjaminHamon/BuildService"
+	configuration["project_url"] = "https://github.com/BenjaminHamon/JobOrchestra"
 	configuration["copyright"] = "Copyright (c) 2019 Benjamin Hamon"
 
 	configuration["development_toolkit"] = "git+https://github.com/BenjaminHamon/DevelopmentToolkit@{revision}#subdirectory=toolkit"
@@ -34,24 +34,24 @@ def load_configuration(environment):
 	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
 
 	configuration["project_dependencies"] = [
-		"bhamon-build-cli ~= 2.0",
-		"bhamon-build-model ~= 2.0",
-		"bhamon-build-master ~= 2.0",
-		"bhamon-build-service ~= 2.0",
-		"bhamon-build-website ~= 2.0",
-		"bhamon-build-worker ~= 2.0",
+		"bhamon-orchestra-cli ~= 2.0",
+		"bhamon-orchestra-model ~= 2.0",
+		"bhamon-orchestra-master ~= 2.0",
+		"bhamon-orchestra-service ~= 2.0",
+		"bhamon-orchestra-website ~= 2.0",
+		"bhamon-orchestra-worker ~= 2.0",
 	]
 
 	configuration["components"] = [
-		{ "name": "bhamon-build-configuration", "path": "master_configuration", "packages": [ "bhamon_build_configuration" ] },
-		{ "name": "bhamon-build-model-extensions", "path": "model_extensions", "packages": [ "bhamon_build_model_extensions" ] },
-		{ "name": "bhamon-build-service-extensions", "path": "service_extensions", "packages": [ "bhamon_build_service_extensions" ] },
-		{ "name": "bhamon-build-website-extensions", "path": "website_extensions", "packages": [ "bhamon_build_website_extensions" ] },
-		{ "name": "bhamon-build-worker-extensions", "path": "worker_extensions", "packages": [ "bhamon_build_worker_extensions" ] },
-		{ "name": "bhamon-build-worker-scripts", "path": "worker_scripts", "packages": [ "bhamon_build_worker_scripts" ] },
+		{ "name": "bhamon-orchestra-configuration", "path": "master_configuration", "packages": [ "bhamon_orchestra_configuration" ] },
+		{ "name": "bhamon-orchestra-model-extensions", "path": "model_extensions", "packages": [ "bhamon_orchestra_model_extensions" ] },
+		{ "name": "bhamon-orchestra-service-extensions", "path": "service_extensions", "packages": [ "bhamon_orchestra_service_extensions" ] },
+		{ "name": "bhamon-orchestra-website-extensions", "path": "website_extensions", "packages": [ "bhamon_orchestra_website_extensions" ] },
+		{ "name": "bhamon-orchestra-worker-extensions", "path": "worker_extensions", "packages": [ "bhamon_orchestra_worker_extensions" ] },
+		{ "name": "bhamon-orchestra-worker-scripts", "path": "worker_scripts", "packages": [ "bhamon_orchestra_worker_scripts" ] },
 	]
 
-	configuration["project_identifier_for_artifact_server"] = "BuildService-Configuration"
+	configuration["project_identifier_for_artifact_server"] = "JobOrchestra-Configuration"
 
 	configuration["filesets"] = {
 		"distribution": {

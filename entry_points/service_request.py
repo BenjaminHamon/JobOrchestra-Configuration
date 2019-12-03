@@ -13,7 +13,7 @@ def main():
 
 	response = send_request(
 		method = arguments.method,
-		service_url = configuration["build_service_url"],
+		service_url = configuration["orchestra_service_url"],
 		route = arguments.route,
 		authentication = (authentication["user"], authentication["secret"]) if authentication else None,
 		parameters = arguments.parameters,
@@ -32,7 +32,7 @@ def parse_arguments():
 		return (key_value[0], key_value[1])
 
 	argument_parser = argparse.ArgumentParser()
-	argument_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
+	argument_parser.add_argument("--configuration", default = "orchestra.json", metavar = "<path>", help = "set the configuration file path")
 	argument_parser.add_argument("--authentication", default = "authentication.json", metavar = "<path>", help = "set the authentication file path")
 	argument_parser.add_argument("--method", required = True, type = str.upper, choices = [ "GET", "POST" ], help = "set the web request method")
 	argument_parser.add_argument("--route", required = True, metavar = "<route>", help = "set the web request route")

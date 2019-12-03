@@ -3,17 +3,17 @@ import json
 import logging
 import types
 
-from bhamon_build_model.authentication_provider import AuthenticationProvider
-from bhamon_build_model.authorization_provider import AuthorizationProvider
-from bhamon_build_model.database.file_storage import FileStorage
-from bhamon_build_model.job_provider import JobProvider
-from bhamon_build_model.run_provider import RunProvider
-from bhamon_build_model.task_provider import TaskProvider
-from bhamon_build_model.user_provider import UserProvider
-from bhamon_build_model.worker_provider import WorkerProvider
+from bhamon_orchestra_model.authentication_provider import AuthenticationProvider
+from bhamon_orchestra_model.authorization_provider import AuthorizationProvider
+from bhamon_orchestra_model.database.file_storage import FileStorage
+from bhamon_orchestra_model.job_provider import JobProvider
+from bhamon_orchestra_model.run_provider import RunProvider
+from bhamon_orchestra_model.task_provider import TaskProvider
+from bhamon_orchestra_model.user_provider import UserProvider
+from bhamon_orchestra_model.worker_provider import WorkerProvider
 
-import bhamon_build_cli.admin_controller as admin_controller
-import bhamon_build_configuration.database as database_configuration
+import bhamon_orchestra_cli.admin_controller as admin_controller
+import bhamon_orchestra_configuration.database as database_configuration
 
 import environment
 
@@ -33,7 +33,7 @@ def main():
 
 def parse_arguments():
 	main_parser = argparse.ArgumentParser()
-	main_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
+	main_parser.add_argument("--configuration", default = "orchestra.json", metavar = "<path>", help = "set the configuration file path")
 
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
 	subparsers.required = True
@@ -45,12 +45,12 @@ def parse_arguments():
 
 
 def create_application(configuration):
-	database_client_instance = environment.create_database_client(configuration["build_database_uri"], configuration["build_database_authentication"])
-	file_storage_instance = FileStorage(configuration["build_file_storage_path"])
+	database_client_instance = environment.create_database_client(configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"])
+	file_storage_instance = FileStorage(configuration["orchestra_file_storage_path"])
 
 	application = types.SimpleNamespace()
-	application.database_uri = configuration["build_database_uri"]
-	application.database_authentication = configuration["build_database_authentication"]
+	application.database_uri = configuration["orchestra_database_uri"]
+	application.database_authentication = configuration["orchestra_database_authentication"]
 
 	application.authentication_provider = AuthenticationProvider(database_client_instance)
 	application.authorization_provider = AuthorizationProvider()

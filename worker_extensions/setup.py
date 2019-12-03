@@ -15,12 +15,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 
 
 parameters.update({
-	"name": "bhamon-build-worker-extensions",
-	"description": "Extensions for build workers",
+	"name": "bhamon-orchestra-worker-extensions",
+	"description": "Extensions for the worker component of Job Orchestra",
 
 	"packages": [
-		"bhamon_build_worker_extensions",
-		"bhamon_build_worker_extensions/revision_control",
+		"bhamon_orchestra_worker_extensions",
+		"bhamon_orchestra_worker_extensions/revision_control",
 	],
 
 	"python_requires": "~= 3.5",

@@ -15,9 +15,9 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 
 
 parameters.update({
-	"name": "bhamon-build-service-extensions",
-	"description": "Extensions for the build service",
-	"packages": [ "bhamon_build_service_extensions" ],
+	"name": "bhamon-orchestra-service-extensions",
+	"description": "Extensions for the service component of Job Orchestra",
+	"packages": [ "bhamon_orchestra_service_extensions" ],
 	"python_requires": "~= 3.5",
 })
 

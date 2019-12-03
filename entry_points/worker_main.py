@@ -8,7 +8,7 @@ import socket
 
 import filelock
 
-from bhamon_build_worker.worker import Worker
+from bhamon_orchestra_worker.worker import Worker
 
 import environment
 
@@ -21,8 +21,8 @@ def main():
 	with open(arguments.configuration, "r") as configuration_file:
 		configuration = json.load(configuration_file)
 
-	worker_path = configuration["build_workers"][arguments.identifier]["path"]
-	worker_log_path = configuration["build_workers"][arguments.identifier]["log"]
+	worker_path = configuration["orchestra_workers"][arguments.identifier]["path"]
+	worker_log_path = configuration["orchestra_workers"][arguments.identifier]["log"]
 	os.makedirs(worker_path, exist_ok = True)
 
 	os.chdir(worker_path)
@@ -36,12 +36,12 @@ def main():
 def parse_arguments():
 	argument_parser = argparse.ArgumentParser()
 	argument_parser.add_argument("--identifier", required = True, metavar = "<identifier>", help = "set the identifier for this worker")
-	argument_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
+	argument_parser.add_argument("--configuration", default = "orchestra.json", metavar = "<path>", help = "set the configuration file path")
 	return argument_parser.parse_args()
 
 
 def create_application(local_worker_identifier, configuration, executor_script):
-	worker_definition = configuration["build_workers"][local_worker_identifier]
+	worker_definition = configuration["orchestra_workers"][local_worker_identifier]
 	worker_identifier = worker_definition["identifier"].format(host = socket.gethostname())
 
 	write_local_configuration(configuration)
@@ -50,7 +50,7 @@ def create_application(local_worker_identifier, configuration, executor_script):
 
 	return Worker(
 		identifier = worker_identifier,
-		master_uri = configuration["build_master_url"],
+		master_uri = configuration["orchestra_master_url"],
 		user = authentication["user"],
 		secret = authentication["secret"],
 		properties = properties,
@@ -59,10 +59,10 @@ def create_application(local_worker_identifier, configuration, executor_script):
 
 
 def write_local_configuration(global_configuration):
-	configuration_file_path = "build_worker.json"
+	configuration_file_path = "worker.json"
 
 	local_configuration = {
-		"build_service_url": global_configuration["build_service_url"],
+		"orchestra_service_url": global_configuration["orchestra_service_url"],
 		"authentication_file_path": os.path.abspath("authentication.json"),
 		"artifact_server_url": global_configuration["artifact_server_url"],
 		"artifact_server_parameters": global_configuration.get("artifact_server_parameters", {}),

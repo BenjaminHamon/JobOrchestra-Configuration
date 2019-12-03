@@ -15,12 +15,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 
 
 parameters.update({
-	"name": "bhamon-build-model-extensions",
-	"description": "Extensions for build model",
+	"name": "bhamon-orchestra-model-extensions",
+	"description": "Extensions for the model library of Job Orchestra",
 
 	"packages": [
-		"bhamon_build_model_extensions",
-		"bhamon_build_model_extensions/revision_control",
+		"bhamon_orchestra_model_extensions",
+		"bhamon_orchestra_model_extensions/revision_control",
 	],
 
 	"install_requires": [ "requests ~= 2.21" ],

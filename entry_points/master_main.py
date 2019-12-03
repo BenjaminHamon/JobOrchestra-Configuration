@@ -5,20 +5,20 @@ import logging
 
 import filelock
 
-from bhamon_build_master.job_scheduler import JobScheduler
-from bhamon_build_master.master import Master
-from bhamon_build_master.supervisor import Supervisor
-from bhamon_build_master.task_processor import TaskProcessor
-from bhamon_build_model.authentication_provider import AuthenticationProvider
-from bhamon_build_model.authorization_provider import AuthorizationProvider
-from bhamon_build_model.database.file_storage import FileStorage
-from bhamon_build_model.job_provider import JobProvider
-from bhamon_build_model.run_provider import RunProvider
-from bhamon_build_model.task_provider import TaskProvider
-from bhamon_build_model.user_provider import UserProvider
-from bhamon_build_model.worker_provider import WorkerProvider
+from bhamon_orchestra_master.job_scheduler import JobScheduler
+from bhamon_orchestra_master.master import Master
+from bhamon_orchestra_master.supervisor import Supervisor
+from bhamon_orchestra_master.task_processor import TaskProcessor
+from bhamon_orchestra_model.authentication_provider import AuthenticationProvider
+from bhamon_orchestra_model.authorization_provider import AuthorizationProvider
+from bhamon_orchestra_model.database.file_storage import FileStorage
+from bhamon_orchestra_model.job_provider import JobProvider
+from bhamon_orchestra_model.run_provider import RunProvider
+from bhamon_orchestra_model.task_provider import TaskProvider
+from bhamon_orchestra_model.user_provider import UserProvider
+from bhamon_orchestra_model.worker_provider import WorkerProvider
 
-from bhamon_build_configuration.worker_selector import WorkerSelector
+from bhamon_orchestra_configuration.worker_selector import WorkerSelector
 
 import environment
 import master_configuration
@@ -30,7 +30,7 @@ def main():
 
 	with open(arguments.configuration, "r") as configuration_file:
 		configuration = json.load(configuration_file)
-	environment.configure_log_file(configuration["build_master_log_file_path"], logging.INFO)
+	environment.configure_log_file(configuration["orchestra_master_log_file_path"], logging.INFO)
 
 	with filelock.FileLock("master.lock", 5):
 		application = create_application(configuration)
@@ -39,13 +39,13 @@ def main():
 
 def parse_arguments():
 	argument_parser = argparse.ArgumentParser()
-	argument_parser.add_argument("--configuration", default = "build_service.json", metavar = "<path>", help = "set the configuration file path")
+	argument_parser.add_argument("--configuration", default = "orchestra.json", metavar = "<path>", help = "set the configuration file path")
 	return argument_parser.parse_args()
 
 
 def create_application(configuration):
-	database_client_instance = environment.create_database_client(configuration["build_database_uri"], configuration["build_database_authentication"])
-	file_storage_instance = FileStorage(configuration["build_file_storage_path"])
+	database_client_instance = environment.create_database_client(configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"])
+	file_storage_instance = FileStorage(configuration["orchestra_file_storage_path"])
 
 	authentication_provider_instance = AuthenticationProvider(database_client_instance)
 	authorization_provider_instance = AuthorizationProvider()
@@ -64,8 +64,8 @@ def create_application(configuration):
 	)
 
 	supervisor_instance = Supervisor(
-		host = configuration["build_master_listen_address"],
-		port = configuration["build_master_listen_port"],
+		host = configuration["orchestra_master_listen_address"],
+		port = configuration["orchestra_master_listen_port"],
 		worker_provider = worker_provider_instance,
 		run_provider = run_provider_instance,
 		user_provider = user_provider_instance,
