@@ -20,7 +20,10 @@ def main():
 	)
 
 	if response:
-		print(json.dumps(response, indent = 4))
+		if isinstance(response, str):
+			print(response)
+		else:
+			print(json.dumps(response, indent = 4))
 
 
 def parse_arguments():
@@ -59,7 +62,10 @@ def get(service_url, route, authentication, parameters = None):
 
 	response = requests.get(service_url + route, auth = authentication, headers = headers, params = parameters)
 	response.raise_for_status()
-	return response.json()
+
+	if response.headers["Content-Type"] == "application/json":
+		return response.json()
+	return response.text
 
 
 def post(service_url, route, authentication, data = None):
