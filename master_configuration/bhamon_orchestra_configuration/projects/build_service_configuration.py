@@ -2,8 +2,8 @@ repository = "https://github.com/BenjaminHamon/BuildService-Configuration"
 
 initialization_script = "bhamon_orchestra_worker_scripts.build_service_configuration"
 
-worker_configuration_path = "{environment[build_worker_configuration]}"
-worker_python_executable = "{environment[build_worker_python_executable]}"
+worker_configuration_path = "{environment[orchestra_worker_configuration]}"
+worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 
 
 def configure_services(environment):
