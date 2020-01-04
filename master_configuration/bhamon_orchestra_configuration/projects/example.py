@@ -1,5 +1,4 @@
 controller_script = "bhamon_orchestra_worker_scripts.controller"
-initialization_script = "bhamon_orchestra_worker_scripts.example"
 
 worker_configuration_path = "{environment[orchestra_worker_configuration]}"
 worker_python_executable = "{environment[orchestra_worker_python_executable]}"
@@ -18,8 +17,10 @@ def configure_jobs():
 		exception(),
 		environment(),
 		parameters(),
+		html_log(),
 		large_log(),
 		large_log_random(),
+		slow_log(),
 		controller_success(),
 		controller_failure(),
 	]
@@ -134,8 +135,9 @@ def exception():
 
 
 def environment():
-	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
-	initialization_parameters = [ "--configuration", worker_configuration_path ]
+	script = "bhamon_orchestra_worker_scripts.examples.environment"
+	command = [ worker_python_executable, "-u", "-m", script ]
+	command_parameters = [ "--configuration", worker_configuration_path ]
 
 	return {
 		"identifier": "example_environment",
@@ -151,7 +153,7 @@ def environment():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "initialization", "command": initialization_entry_point + initialization_parameters },
+			{ "name": "initialization", "command": command + command_parameters },
 		],
 	}
 
@@ -174,6 +176,26 @@ def parameters():
 
 		"steps": [
 			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('{parameters[text_to_print]}')" ] },
+		],
+	}
+
+
+def html_log():
+	return {
+		"identifier": "example_html-log",
+		"description": "Example job generating log files containing html.",
+		"workspace": "example",
+
+		"properties": {
+			"project": "example",
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [],
+
+		"steps": [
+			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('<p>hello</p>')" ] },
 		],
 	}
 
@@ -214,6 +236,26 @@ def large_log_random():
 
 		"steps": [
 			{ "name": "write", "command": [ worker_python_executable, "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ] },
+		],
+	}
+
+
+def slow_log():
+	return {
+		"identifier": "example_slow_log",
+		"description": "Example job generating a log over some time.",
+		"workspace": "example",
+
+		"properties": {
+			"project": "example",
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [],
+
+		"steps": [
+			{ "name": "initialization", "command": [ worker_python_executable, "-u", "-m", "bhamon_orchestra_worker_scripts.examples.slow_log" ] },
 		],
 	}
 

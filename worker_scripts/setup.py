@@ -20,6 +20,7 @@ parameters.update({
 
 	"packages": [
 		"bhamon_orchestra_worker_scripts",
+		"bhamon_orchestra_worker_scripts/examples",
 	],
 
 	"python_requires": "~= 3.5",
