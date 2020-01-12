@@ -20,7 +20,6 @@ parameters.update({
 
 	"packages": [
 		"bhamon_orchestra_model_extensions",
-		"bhamon_orchestra_model_extensions/revision_control",
 	],
 
 	"install_requires": [ "requests ~= 2.21" ],

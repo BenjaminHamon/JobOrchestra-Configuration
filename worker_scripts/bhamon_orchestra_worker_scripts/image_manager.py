@@ -6,9 +6,9 @@ import platform
 import re
 import subprocess
 
+from bhamon_orchestra_model.revision_control.github import GitHubClient
 import bhamon_orchestra_worker.workspace
 
-import bhamon_orchestra_model_extensions.revision_control.github as github
 import bhamon_orchestra_worker_extensions.revision_control.git as git
 import bhamon_orchestra_worker_scripts.environment as environment
 
@@ -88,8 +88,9 @@ def configure_workspace_environment(environment_instance, worker_configuration):
 
 
 def resolve_controller_revision(repository, revision, result_file_path):
-	match = re.search(r"^https://github.com/(?P<owner>[a-zA-Z0-9_\-\.]+)/(?P<repository>[a-zA-Z0-9_\-\.]+)$", repository)
-	revision_data = github.get_revision(match.group("owner"), match.group("repository"), revision)
+	github_client_instance = GitHubClient()
+	match = re.search(r"^https://github.com/(?P<repository>[a-zA-Z0-9_\-\.]+/[a-zA-Z0-9_\-\.]+)$", repository)
+	revision_data = github_client_instance.get_revision(match.group("repository"), revision)
 
 	results = bhamon_orchestra_worker.workspace.load_results(result_file_path)
 	results["revision_control"] = { "revision": revision_data["identifier"], "date": revision_data["date"] }
