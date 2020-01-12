@@ -22,7 +22,6 @@ parameters.update({
 		"bhamon_orchestra_model_extensions",
 	],
 
-	"install_requires": [ "requests ~= 2.21" ],
 	"python_requires": "~= 3.5",
 })
 

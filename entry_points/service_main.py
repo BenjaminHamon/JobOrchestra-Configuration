@@ -20,7 +20,6 @@ import bhamon_orchestra_service.service as service
 import bhamon_orchestra_service_extensions.service as service_extensions
 
 import environment
-import master_configuration
 
 
 def main():
@@ -60,13 +59,6 @@ def create_application(configuration):
 	application.task_provider = TaskProvider(database_client_instance)
 	application.user_provider = UserProvider(database_client_instance)
 	application.worker_provider = WorkerProvider(database_client_instance)
-
-	environment_instance = {
-		"artifact_server_url": configuration["artifact_server_web_url"],
-		"python_package_repository_url": configuration["python_package_repository_web_url"],
-	}
-
-	application.project_collection = master_configuration.configure_projects(environment_instance)
 
 	service.configure(application)
 	service_extensions.configure_overrides()
