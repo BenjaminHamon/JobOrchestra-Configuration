@@ -5,7 +5,8 @@ import os
 import platform
 import subprocess
 
-import bhamon_orchestra_worker_extensions.revision_control.git as git
+from bhamon_orchestra_worker.revision_control.git import GitClient
+
 import bhamon_orchestra_worker_scripts.environment as environment
 
 
@@ -24,13 +25,15 @@ def main():
 	if "__PYVENV_LAUNCHER__" in os.environ:
 		del os.environ["__PYVENV_LAUNCHER__"]
 
+	git_client_instance = GitClient(environment_instance["git_executable"])
+
 	setup_virtual_environment(environment_instance)
 	print("")
 	configure_workspace_environment(environment_instance, worker_configuration)
 	print("")
-	git.initialize(environment_instance, arguments.repository)
+	git_client_instance.initialize(arguments.repository)
 	print("")
-	git.update(environment_instance, arguments.revision, arguments.results)
+	git_client_instance.update(arguments.revision, arguments.results)
 	print("")
 
 

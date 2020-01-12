@@ -20,7 +20,6 @@ parameters.update({
 
 	"packages": [
 		"bhamon_orchestra_worker_extensions",
-		"bhamon_orchestra_worker_extensions/revision_control",
 	],
 
 	"python_requires": "~= 3.5",
