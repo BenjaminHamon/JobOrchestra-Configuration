@@ -2,7 +2,8 @@ import argparse
 import json
 import logging
 
-import bhamon_orchestra_worker.controller as controller
+from bhamon_orchestra_worker.controller import Controller
+
 import bhamon_orchestra_worker_scripts.environment as environment
 
 
@@ -15,7 +16,9 @@ def main():
 	with open(configuration["authentication_file_path"], "r") as authentication_file:
 		authentication = json.load(authentication_file)
 
-	arguments.func(configuration["orchestra_service_url"], arguments, (authentication["user"], authentication["secret"]))
+	controller_instance = Controller(configuration["orchestra_service_url"], (authentication["user"], authentication["secret"]))
+
+	arguments.func(controller_instance, arguments)
 
 
 def parse_arguments():
@@ -49,12 +52,12 @@ def parse_arguments():
 	return arguments
 
 
-def trigger_run(service_url, arguments, authorization):
-	controller.trigger_run(service_url, arguments.results, arguments.job_identifier, arguments.parameters, authorization)
+def trigger_run(controller_instance, arguments):
+	controller_instance.trigger_run(arguments.results, arguments.job_identifier, arguments.parameters)
 
 
-def wait_run(service_url, arguments, authorization):
-	controller.wait_run(service_url, arguments.results, authorization)
+def wait_run(controller_instance, arguments):
+	controller_instance.wait_run(arguments.results)
 
 
 if __name__ == "__main__":
