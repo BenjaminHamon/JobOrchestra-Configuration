@@ -30,10 +30,10 @@ def empty():
 	return {
 		"identifier": "example_empty",
 		"description": "Example job doing nothing.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -47,10 +47,10 @@ def hello():
 	return {
 		"identifier": "example_hello",
 		"description": "Example job printing hello.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -68,10 +68,10 @@ def sleep():
 	return {
 		"identifier": "example_sleep",
 		"description": "Example job sleeping for a few seconds.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -90,10 +90,10 @@ def failure():
 	return {
 		"identifier": "example_failure",
 		"description": "Example job with a failing step.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -114,10 +114,10 @@ def exception():
 	return {
 		"identifier": "example_exception",
 		"description": "Example job with a configuration error.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -142,10 +142,10 @@ def environment():
 	return {
 		"identifier": "example_environment",
 		"description": "Example job using environment.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -162,10 +162,10 @@ def parameters():
 	return {
 		"identifier": "example_parameters",
 		"description": "Example job with parameters.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -184,10 +184,10 @@ def html_log():
 	return {
 		"identifier": "example_html-log",
 		"description": "Example job generating log files containing html.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -204,10 +204,10 @@ def large_log():
 	return {
 		"identifier": "example_large-log",
 		"description": "Example job generating large log files.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -224,10 +224,10 @@ def large_log_random():
 	return {
 		"identifier": "example_large-log-random",
 		"description": "Example job generating large log files with random content.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -244,10 +244,10 @@ def slow_log():
 	return {
 		"identifier": "example_slow_log",
 		"description": "Example job generating a log over some time.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -267,10 +267,10 @@ def controller_success():
 	return {
 		"identifier": "example_controller-success",
 		"description": "Example controller job.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
 		},
@@ -293,10 +293,10 @@ def controller_failure():
 	return {
 		"identifier": "example_controller-failure",
 		"description": "Example controller job.",
+		"project": "example",
 		"workspace": "example",
 
 		"properties": {
-			"project": "example",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
 		},

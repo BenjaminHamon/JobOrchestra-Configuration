@@ -17,9 +17,8 @@ def configure_services(environment):
 		},
 
 		"revision_control": {
-			"service": "github",
-			"owner": "BenjaminHamon",
-			"repository": "Overmind.Solitaire",
+			"type": "github",
+			"repository": "BenjaminHamon/Overmind.Solitaire",
 		}
 	}
 
@@ -37,10 +36,10 @@ def controller():
 	job = {
 		"identifier": "solitaire_controller",
 		"description": "Trigger all jobs for the Solitaire project.",
+		"project": "solitaire",
 		"workspace": "solitaire",
 
 		"properties": {
-			"project": "solitaire",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
 		},
@@ -80,10 +79,10 @@ def package(target_platform):
 	job = {
 		"identifier": "solitaire_package_" + target_platform.lower(),
 		"description": "Build and package the Solitaire project.",
+		"project": "solitaire",
 		"workspace": "solitaire",
 
 		"properties": {
-			"project": "solitaire",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},

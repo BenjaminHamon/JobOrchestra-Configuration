@@ -23,7 +23,17 @@ def reload_modules():
 	importlib.reload(worker_selector)
 
 
-def configure():
+def configure(environment):
+	all_projects = [
+		{ "identifier": "build-service", "services": project_build_service.configure_services(environment) },
+		{ "identifier": "build-service-configuration", "services": project_build_service_configuration.configure_services(environment) },
+		{ "identifier": "development-toolkit", "services": project_development_toolkit.configure_services(environment) },
+		{ "identifier": "example", "services": project_example.configure_services(environment) },
+		{ "identifier": "image-manager", "services": project_image_manager.configure_services(environment) },
+		{ "identifier": "my-website", "services": project_my_website.configure_services(environment) },
+		{ "identifier": "solitaire", "services": project_solitaire.configure_services(environment) },
+	]
+
 	all_jobs = []
 	all_jobs += project_build_service.configure_jobs()
 	all_jobs += project_build_service_configuration.configure_jobs()
@@ -34,6 +44,7 @@ def configure():
 	all_jobs += project_solitaire.configure_jobs()
 
 	return {
+		"projects": all_projects,
 		"jobs": all_jobs,
 	}
 

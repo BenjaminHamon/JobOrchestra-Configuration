@@ -7,7 +7,6 @@
 		<link rel="stylesheet" href="{{ url_for('static', filename = 'font_awesome/css/solid.css') }}">
 		<link rel="stylesheet" href="{{ url_for('static', filename = 'generic.css') }}">
 		<link rel="stylesheet" href="{{ url_for('static', filename = 'orchestra.css') }}">
-		<link rel="stylesheet" href="{{ url_for('static', filename = 'orchestra_extensions.css') }}">
 	</head>
 
 	<body>
@@ -41,6 +40,7 @@
 			{% endif %}
 			{% if authorize_view('nav-main') %}
 			<div>
+				<a href="{{ url_for('project_collection_index') }}">Projects</a>
 				<a href="{{ url_for('job_collection_index') }}">Jobs</a>
 				<a href="{{ url_for('run_collection_index') }}">Runs</a>
 				<a href="{{ url_for('worker_collection_index') }}">Workers</a>
@@ -51,12 +51,12 @@
 				<a href="{{ url_for('python_package_repository_home') }}">Python Packages</a>
 			</div>
 			<div>
-				<a href="{{ url_for('project_index', project_identifier = 'build-service') }}">Build Service</a>
-				<a href="{{ url_for('project_index', project_identifier = 'build-service-configuration') }}">Build Service Configuration</a>
-				<a href="{{ url_for('project_index', project_identifier = 'development-toolkit') }}">Development Toolkit</a>
-				<a href="{{ url_for('project_index', project_identifier = 'image-manager') }}">Image Manager</a>
-				<a href="{{ url_for('project_index', project_identifier = 'my-website') }}">My Website</a>
-				<a href="{{ url_for('project_index', project_identifier = 'solitaire') }}">Solitaire</a>
+				<a href="{{ url_for('project_status', project_identifier = 'build-service') }}">Build Service</a>
+				<a href="{{ url_for('project_status', project_identifier = 'build-service-configuration') }}">Build Service Configuration</a>
+				<a href="{{ url_for('project_status', project_identifier = 'development-toolkit') }}">Development Toolkit</a>
+				<a href="{{ url_for('project_status', project_identifier = 'image-manager') }}">Image Manager</a>
+				<a href="{{ url_for('project_status', project_identifier = 'my-website') }}">My Website</a>
+				<a href="{{ url_for('project_status', project_identifier = 'solitaire') }}">Solitaire</a>
 			</div>
 			{% endif %}
 		</nav>

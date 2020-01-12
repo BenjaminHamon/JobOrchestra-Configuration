@@ -19,9 +19,8 @@ def configure_services(environment):
 		},
 
 		"revision_control": {
-			"service": "github",
-			"owner": "BenjaminHamon",
-			"repository": "Overmind.ImageManager",
+			"type": "github",
+			"repository": "BenjaminHamon/Overmind.ImageManager",
 		}
 	}
 
@@ -38,10 +37,10 @@ def controller():
 	job = {
 		"identifier": "image-manager_controller",
 		"description": "Trigger all jobs for the ImageManager project.",
+		"project": "image-manager",
 		"workspace": "image-manager",
 
 		"properties": {
-			"project": "image-manager",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
 		},
@@ -75,10 +74,10 @@ def package():
 	job = {
 		"identifier": "image-manager_package",
 		"description": "Build and package the ImageManager project.",
+		"project": "image-manager",
 		"workspace": "image-manager",
 
 		"properties": {
-			"project": "image-manager",
 			"operating_system": [ "windows" ],
 			"is_controller": False,
 		},
@@ -113,10 +112,10 @@ def release():
 	job = {
 		"identifier": "image-manager_release",
 		"description": "Build and package the ImageManager project for release.",
+		"project": "image-manager",
 		"workspace": "image-manager",
 
 		"properties": {
-			"project": "image-manager",
 			"operating_system": [ "windows" ],
 			"is_controller": False,
 		},

@@ -18,9 +18,8 @@ def configure_services(environment):
 		},
 
 		"revision_control": {
-			"service": "github",
-			"owner": "BenjaminHamon",
-			"repository": "MyWebsite",
+			"type": "github",
+			"repository": "BenjaminHamon/MyWebsite",
 		}
 	}
 
@@ -36,10 +35,10 @@ def check():
 	job = {
 		"identifier": "my-website_check",
 		"description": "Run checks for the MyWebsite project.",
+		"project": "my-website",
 		"workspace": "my-website",
 
 		"properties": {
-			"project": "my-website",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -68,10 +67,10 @@ def distribute():
 	job = {
 		"identifier": "my-website_distribute",
 		"description": "Generate and upload distribution packages for the MyWebsite project.",
+		"project": "my-website",
 		"workspace": "my-website",
 
 		"properties": {
-			"project": "my-website",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},

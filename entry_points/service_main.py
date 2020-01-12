@@ -8,6 +8,7 @@ from bhamon_orchestra_model.authentication_provider import AuthenticationProvide
 from bhamon_orchestra_model.authorization_provider import AuthorizationProvider
 from bhamon_orchestra_model.database.file_storage import FileStorage
 from bhamon_orchestra_model.job_provider import JobProvider
+from bhamon_orchestra_model.project_provider import ProjectProvider
 from bhamon_orchestra_model.run_provider import RunProvider
 from bhamon_orchestra_model.task_provider import TaskProvider
 from bhamon_orchestra_model.user_provider import UserProvider
@@ -52,6 +53,7 @@ def create_application(configuration):
 	application.authentication_provider = AuthenticationProvider(database_client_instance)
 	application.authorization_provider = AuthorizationProvider()
 	application.job_provider = JobProvider(database_client_instance)
+	application.project_provider = ProjectProvider(database_client_instance)
 	application.run_provider = RunProvider(database_client_instance, file_storage_instance)
 	application.task_provider = TaskProvider(database_client_instance)
 	application.user_provider = UserProvider(database_client_instance)
@@ -69,6 +71,8 @@ def create_application(configuration):
 	service.register_handlers(application)
 	service.register_routes(application)
 	service_extensions.register_routes(application)
+
+	application.config["GITHUB_ACCESS_TOKEN"] = configuration.get("github_access_token", None)
 
 	return application
 

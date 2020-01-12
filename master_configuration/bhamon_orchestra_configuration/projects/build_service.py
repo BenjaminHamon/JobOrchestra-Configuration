@@ -21,9 +21,8 @@ def configure_services(environment):
 		},
 
 		"revision_control": {
-			"service": "github",
-			"owner": "BenjaminHamon",
-			"repository": "BuildService",
+			"type": "github",
+			"repository": "BenjaminHamon/BuildService",
 		}
 	}
 
@@ -41,10 +40,10 @@ def check(platform):
 	job = {
 		"identifier": "build-service_check_" + platform,
 		"description": "Run checks for the BuildService project.",
+		"project": "build-service",
 		"workspace": "build-service",
 
 		"properties": {
-			"project": "build-service",
 			"operating_system": [ platform ],
 			"is_controller": False,
 		},
@@ -74,10 +73,10 @@ def package():
 	job = {
 		"identifier": "build-service_package",
 		"description": "Generate distribution packages for the BuildService project.",
+		"project": "build-service",
 		"workspace": "build-service",
 
 		"properties": {
-			"project": "build-service",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -111,10 +110,10 @@ def distribute():
 	job = {
 		"identifier": "build-service_distribute",
 		"description": "Upload distribution packages for the BuildService project to the python package repository.",
+		"project": "build-service",
 		"workspace": "build-service",
 
 		"properties": {
-			"project": "build-service",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},

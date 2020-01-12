@@ -1,6 +1,3 @@
-import bhamon_orchestra_model_extensions.revision_control.github as revision_control_github
-
-
 class Project:
 
 
@@ -8,75 +5,6 @@ class Project:
 		self.artifact_repository = services.get("artifact_repository", None)
 		self.python_package_repository = services.get("python_package_repository", None)
 		self.revision_control = services.get("revision_control", None)
-
-
-	def get_branch_list(self, access_token = None):
-		if self.revision_control["service"] == "github":
-			parameters = {
-				"owner": self.revision_control["owner"],
-				"repository": self.revision_control["repository"],
-				"access_token": access_token,
-			}
-
-			return revision_control_github.get_branch_list(**parameters)
-
-		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
-
-
-	def get_revision_list(self, branch = None, limit = None, access_token = None):
-		if self.revision_control["service"] == "github":
-			parameters = {
-				"owner": self.revision_control["owner"],
-				"repository": self.revision_control["repository"],
-				"branch": branch,
-				"limit": limit,
-				"access_token": access_token,
-			}
-
-			return revision_control_github.get_revision_list(**parameters)
-
-		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
-
-
-	def get_revision(self, revision, access_token = None):
-		if self.revision_control["service"] == "github":
-			parameters = {
-				"owner": self.revision_control["owner"],
-				"repository": self.revision_control["repository"],
-				"revision": revision,
-				"access_token": access_token,
-			}
-
-			return revision_control_github.get_revision(**parameters)
-
-		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
-
-
-	def get_revision_url(self, revision):
-		if self.revision_control["service"] == "github":
-			parameters = {
-				"owner": self.revision_control["owner"],
-				"repository": self.revision_control["repository"],
-				"revision": revision,
-			}
-
-			return revision_control_github.get_revision_url(**parameters)
-
-		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
-
-
-	def resolve_revision(self, revision, access_token = None):
-		if self.revision_control["service"] == "github":
-			parameters = {
-				"owner": self.revision_control["owner"],
-				"repository": self.revision_control["repository"],
-				"revision": revision,
-				"access_token": access_token,
-			}
-
-			return revision_control_github.get_revision(**parameters)["identifier"]
-
-		raise ValueError("Unsupported revision control: '%s'" % self.revision_control["service"])
 
 
 	def update_run_results(self, run_results):
@@ -112,3 +40,11 @@ class Project:
 	def resolve_python_distribution_url(self, distribution):
 		archive_name = distribution["name"].replace("-", "_") + "-" + distribution["version"]
 		return self.python_package_repository["url"] + "/" + distribution["name"] + "/" + archive_name + self.python_package_repository["distribution_extension"]
+
+
+	def get_revision_url(self, revision): # pylint: disable = unused-argument
+		if self.revision_control["type"] == "github":
+			repository = self.revision_control["repository"] # pylint: disable = possibly-unused-variable
+			return "https://github.com/{repository}/commit/{revision}".format(**locals())
+
+		raise ValueError("Unsupported service '%s'" % self.revision_control["type"])

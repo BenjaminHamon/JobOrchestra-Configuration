@@ -18,9 +18,8 @@ def configure_services(environment):
 		},
 
 		"revision_control": {
-			"service": "github",
-			"owner": "BenjaminHamon",
-			"repository": "DevelopmentToolkit",
+			"type": "github",
+			"repository": "BenjaminHamon/DevelopmentToolkit",
 		}
 	}
 
@@ -36,10 +35,10 @@ def check():
 	job = {
 		"identifier": "development-toolkit_check",
 		"description": "Run checks for the DevelopmentToolkit project.",
+		"project": "development-toolkit",
 		"workspace": "development-toolkit",
 
 		"properties": {
-			"project": "development-toolkit",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
@@ -68,10 +67,10 @@ def distribute():
 	job = {
 		"identifier": "development-toolkit_distribute",
 		"description": "Generate and upload distribution packages for the DevelopmentToolkit project.",
+		"project": "development-toolkit",
 		"workspace": "development-toolkit",
 
 		"properties": {
-			"project": "development-toolkit",
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
