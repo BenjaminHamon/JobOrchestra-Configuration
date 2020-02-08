@@ -23,7 +23,7 @@ def main():
 	if "__PYVENV_LAUNCHER__" in os.environ:
 		del os.environ["__PYVENV_LAUNCHER__"]
 
-	setup_virtual_environment(environment_instance)
+	setup_virtual_environment(environment_instance["python3_system_executable"])
 	print("")
 	show_worker_environment(environment_instance)
 	print("")
@@ -37,10 +37,10 @@ def parse_arguments():
 	return parser.parse_args()
 
 
-def setup_virtual_environment(environment_instance):
+def setup_virtual_environment(python_system_executable):
 	logger.info("Setting up python virtual environment")
 
-	setup_venv_command = [ environment_instance["python3_system_executable"], "-m", "venv", ".venv" ]
+	setup_venv_command = [ python_system_executable, "-m", "venv", ".venv" ]
 	logger.info("+ %s", " ".join(setup_venv_command))
 	subprocess.check_call(setup_venv_command)
 

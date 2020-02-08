@@ -34,9 +34,9 @@ def main():
 	elif arguments.type == "worker":
 		git_client_instance = GitClient(environment_instance["git_executable"])
 
-		setup_virtual_environment(environment_instance)
+		setup_virtual_environment(environment_instance["python3_system_executable"])
 		print("")
-		configure_workspace_environment(environment_instance, worker_configuration)
+		configure_workspace_environment(worker_configuration)
 		print("")
 		git_client_instance.initialize(arguments.repository)
 		print("")
@@ -54,10 +54,10 @@ def parse_arguments():
 	return parser.parse_args()
 
 
-def setup_virtual_environment(environment_instance):
+def setup_virtual_environment(python_system_executable):
 	logger.info("Setting up python virtual environment")
 
-	setup_venv_command = [ environment_instance["python3_system_executable"], "-m", "venv", ".venv" ]
+	setup_venv_command = [ python_system_executable, "-m", "venv", ".venv" ]
 	logger.info("+ %s", " ".join(setup_venv_command))
 	subprocess.check_call(setup_venv_command)
 
@@ -69,14 +69,13 @@ def setup_virtual_environment(environment_instance):
 	subprocess.check_call(install_pip_command)
 
 
-def configure_workspace_environment(environment_instance, worker_configuration):
+def configure_workspace_environment(worker_configuration):
 	logger.info("Configuring workspace environment")
 
 	workspace_environment = {
+		"python3_executable": ".venv/scripts/python",
 		"artifact_server_url": worker_configuration["artifact_server_url"],
 		"artifact_server_parameters": worker_configuration["artifact_server_parameters"],
-		"git_executable": environment_instance["git_executable"],
-		"unity_2019_executable": environment_instance["unity_2019_executable"],
 	}
 
 	for key, value in workspace_environment.items():
