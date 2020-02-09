@@ -41,7 +41,11 @@ def configure(environment):
 	all_jobs += project_my_website.configure_jobs()
 	all_jobs += project_solitaire.configure_jobs()
 
+	all_schedules = []
+	all_schedules += project_example.configure_schedules()
+
 	return {
 		"projects": all_projects,
 		"jobs": all_jobs,
+		"schedules": all_schedules,
 	}

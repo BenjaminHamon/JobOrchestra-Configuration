@@ -310,3 +310,21 @@ def controller_failure():
 			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 		],
 	}
+
+
+def configure_schedules():
+	return [
+		hello_nightly(),
+	]
+
+
+def hello_nightly():
+	return {
+		"identifier": "example_hello_continuous",
+		"project": "example",
+		"job": "example_hello",
+
+		"parameters": {},
+
+		"expression": "* * * * *",
+	}
