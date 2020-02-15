@@ -3,7 +3,7 @@ import bhamon_orchestra_service_extensions.run_controller as run_controller_exte
 
 
 def configure_overrides():
-	run_controller.get_run_results = run_controller_extensions.get_run_results
+	run_controller.get_results = run_controller_extensions.get_results
 
 
 def register_routes(application): # pylint: disable = unused-argument
