@@ -1,6 +1,6 @@
-repository = "https://github.com/BenjaminHamon/BuildService"
+repository = "https://github.com/BenjaminHamon/JobOrchestra-Configuration"
 
-initialization_script = "bhamon_orchestra_worker_scripts.build_service"
+initialization_script = "bhamon_orchestra_worker_scripts.job_orchestra_configuration"
 
 worker_configuration_path = "{environment[orchestra_worker_configuration]}"
 worker_python_executable = "{environment[orchestra_worker_python_executable]}"
@@ -9,7 +9,7 @@ worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 def configure_services(environment):
 	return {
 		"artifact_repository": {
-			"url": environment["artifact_server_url"] + "/" + "BuildService",
+			"url": environment["artifact_server_url"] + "/" + "JobOrchestra-Configuration",
 			"file_types": {
 				"package": { "path_in_repository": "packages", "file_extension": ".zip" },
 			},
@@ -22,7 +22,7 @@ def configure_services(environment):
 
 		"revision_control": {
 			"type": "github",
-			"repository": "BenjaminHamon/BuildService",
+			"repository": "BenjaminHamon/JobOrchestra-Configuration",
 		}
 	}
 
@@ -38,10 +38,10 @@ def configure_jobs():
 
 def check(platform):
 	job = {
-		"identifier": "build-service_check_" + platform,
-		"description": "Run checks for the BuildService project.",
-		"project": "build-service",
-		"workspace": "build-service",
+		"identifier": "job-orchestra-configuration_check_" + platform,
+		"description": "Run checks for the JobOrchestra-Configuration-Configuration project.",
+		"project": "job-orchestra-configuration",
+		"workspace": "job-orchestra-configuration",
 
 		"properties": {
 			"operating_system": [ platform ],
@@ -63,7 +63,6 @@ def check(platform):
 		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
 		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
-		{ "name": "test", "command": project_entry_point + [ "test" ] },
 	]
 
 	return job
@@ -71,10 +70,10 @@ def check(platform):
 
 def package():
 	job = {
-		"identifier": "build-service_package",
-		"description": "Generate distribution packages for the BuildService project.",
-		"project": "build-service",
-		"workspace": "build-service",
+		"identifier": "job-orchestra-configuration_package",
+		"description": "Generate distribution packages for the JobOrchestra-Configuration project.",
+		"project": "job-orchestra-configuration",
+		"workspace": "job-orchestra-configuration",
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
@@ -96,7 +95,6 @@ def package():
 		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
 		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
-		{ "name": "test", "command": project_entry_point + [ "test" ] },
 		{ "name": "distribute package", "command": project_entry_point + [ "distribute", "package" ] },
 		{ "name": "artifact package", "command": project_entry_point + [ "artifact", "package", "package" ] },
 		{ "name": "artifact verify", "command": project_entry_point + [ "artifact", "verify", "package" ] },
@@ -108,10 +106,10 @@ def package():
 
 def distribute():
 	job = {
-		"identifier": "build-service_distribute",
-		"description": "Upload distribution packages for the BuildService project to the python package repository.",
-		"project": "build-service",
-		"workspace": "build-service",
+		"identifier": "job-orchestra-configuration_distribute",
+		"description": "Upload distribution packages for the JobOrchestra-Configuration project to the python package repository.",
+		"project": "job-orchestra-configuration",
+		"workspace": "job-orchestra-configuration",
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],

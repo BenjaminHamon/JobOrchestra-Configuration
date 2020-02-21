@@ -1,11 +1,11 @@
 def get_project_default_branch(project):
-	if project == "build-service":
-		return "master"
-	if project == "build-service-configuration":
-		return "master"
 	if project == "development-toolkit":
 		return "master"
 	if project == "image-manager":
+		return "master"
+	if project == "job-orchestra":
+		return "master"
+	if project == "job-orchestra-configuration":
 		return "master"
 	if project == "my-website":
 		return "master"
@@ -15,13 +15,13 @@ def get_project_default_branch(project):
 
 
 def get_project_context_collection(project):
-	if project == "build-service":
-		return [ "Summary" ]
-	if project == "build-service-configuration":
-		return [ "Summary" ]
 	if project == "development-toolkit":
 		return [ "Summary" ]
 	if project == "image-manager":
+		return [ "Summary" ]
+	if project == "job-orchestra":
+		return [ "Summary" ]
+	if project == "job-orchestra-configuration":
 		return [ "Summary" ]
 	if project == "my-website":
 		return [ "Summary" ]
@@ -31,14 +31,14 @@ def get_project_context_collection(project):
 
 
 def get_project_context(project, context):
-	if project == "build-service":
-		return get_build_service_context(context)
-	if project == "build-service-configuration":
-		return get_build_service_configuration_context(context)
 	if project == "development-toolkit":
 		return get_development_toolkit_context(context)
 	if project == "image-manager":
 		return get_image_manager_context(context)
+	if project == "job-orchestra":
+		return get_job_orchestra_context(context)
+	if project == "job-orchestra-configuration":
+		return get_job_orchestra_configuration_context(context)
 	if project == "my-website":
 		return get_my_website_context(context)
 	if project == "solitaire":
@@ -46,68 +46,25 @@ def get_project_context(project, context):
 	raise ValueError("Unknown project: '%s'" % project)
 
 
-def get_build_service_context(context):
-	project_filters = get_build_service_filters()
+def get_development_toolkit_context(context):
+	project_filters = get_development_toolkit_filters()
 
 	if context == "Summary":
 		return project_filters
-	raise ValueError("Unknown context '%s' for project '%s'" % (context, "build-service"))
+	raise ValueError("Unknown context '%s' for project '%s'" % (context, "development-toolkit"))
 
 
-def get_build_service_filters():
+def get_development_toolkit_filters():
 	return [
 		{
-			"identifier": "check_linux",
-			"display_name": "Check Linux",
-			"job_identifier": "build-service_check_linux",
-		},
-		{
-			"identifier": "check_windows",
-			"display_name": "Check Windows",
-			"job_identifier": "build-service_check_windows",
-		},
-		{
-			"identifier": "package",
-			"display_name": "Package",
-			"job_identifier": "build-service_package",
+			"identifier": "check",
+			"display_name": "Check",
+			"job_identifier": "development-toolkit_check",
 		},
 		{
 			"identifier": "distribute",
 			"display_name": "Distribution",
-			"job_identifier": "build-service_distribute",
-		},
-	]
-
-
-def get_build_service_configuration_context(context):
-	project_filters = get_build_service_configuration_filters()
-
-	if context == "Summary":
-		return project_filters
-	raise ValueError("Unknown context '%s' for project '%s'" % (context, "build-service-configuration"))
-
-
-def get_build_service_configuration_filters():
-	return [
-		{
-			"identifier": "check_linux",
-			"display_name": "Check Linux",
-			"job_identifier": "build-service-configuration_check_linux",
-		},
-		{
-			"identifier": "check_windows",
-			"display_name": "Check Windows",
-			"job_identifier": "build-service-configuration_check_windows",
-		},
-		{
-			"identifier": "package",
-			"display_name": "Package",
-			"job_identifier": "build-service-configuration_package",
-		},
-		{
-			"identifier": "distribute",
-			"display_name": "Distribution",
-			"job_identifier": "build-service-configuration_distribute",
+			"job_identifier": "development-toolkit_distribute",
 		},
 	]
 
@@ -147,25 +104,68 @@ def get_image_manager_filters():
 	]
 
 
-def get_development_toolkit_context(context):
-	project_filters = get_development_toolkit_filters()
+def get_job_orchestra_context(context):
+	project_filters = get_job_orchestra_filters()
 
 	if context == "Summary":
 		return project_filters
-	raise ValueError("Unknown context '%s' for project '%s'" % (context, "development-toolkit"))
+	raise ValueError("Unknown context '%s' for project '%s'" % (context, "job-orchestra"))
 
 
-def get_development_toolkit_filters():
+def get_job_orchestra_filters():
 	return [
 		{
-			"identifier": "check",
-			"display_name": "Check",
-			"job_identifier": "development-toolkit_check",
+			"identifier": "check_linux",
+			"display_name": "Check Linux",
+			"job_identifier": "job-orchestra_check_linux",
+		},
+		{
+			"identifier": "check_windows",
+			"display_name": "Check Windows",
+			"job_identifier": "job-orchestra_check_windows",
+		},
+		{
+			"identifier": "package",
+			"display_name": "Package",
+			"job_identifier": "job-orchestra_package",
 		},
 		{
 			"identifier": "distribute",
 			"display_name": "Distribution",
-			"job_identifier": "development-toolkit_distribute",
+			"job_identifier": "job-orchestra_distribute",
+		},
+	]
+
+
+def get_job_orchestra_configuration_context(context):
+	project_filters = get_job_orchestra_configuration_filters()
+
+	if context == "Summary":
+		return project_filters
+	raise ValueError("Unknown context '%s' for project '%s'" % (context, "job-orchestra-configuration"))
+
+
+def get_job_orchestra_configuration_filters():
+	return [
+		{
+			"identifier": "check_linux",
+			"display_name": "Check Linux",
+			"job_identifier": "job-orchestra-configuration_check_linux",
+		},
+		{
+			"identifier": "check_windows",
+			"display_name": "Check Windows",
+			"job_identifier": "job-orchestra-configuration_check_windows",
+		},
+		{
+			"identifier": "package",
+			"display_name": "Package",
+			"job_identifier": "job-orchestra-configuration_package",
+		},
+		{
+			"identifier": "distribute",
+			"display_name": "Distribution",
+			"job_identifier": "job-orchestra-configuration_distribute",
 		},
 	]
 
