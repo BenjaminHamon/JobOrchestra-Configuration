@@ -14,7 +14,7 @@ from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
 import bhamon_orchestra_cli.admin_controller as admin_controller
-import bhamon_orchestra_configuration.database as database_configuration
+import bhamon_orchestra_cli.database_controller as database_controller
 
 import environment
 
@@ -39,8 +39,8 @@ def parse_arguments():
 	subparsers = main_parser.add_subparsers(title = "commands", metavar = "<command>")
 	subparsers.required = True
 
-	database_configuration.register_commands(subparsers)
 	admin_controller.register_commands(subparsers)
+	database_controller.register_commands(subparsers)
 
 	return main_parser.parse_args()
 
