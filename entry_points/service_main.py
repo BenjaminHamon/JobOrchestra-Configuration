@@ -19,7 +19,8 @@ from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
 import bhamon_orchestra_service.service as service
-import bhamon_orchestra_service_extensions.service as service_extensions
+
+import bhamon_orchestra_configuration.run_result_transformer as run_result_transformer
 
 import environment
 
@@ -64,11 +65,11 @@ def create_application(configuration):
 	application.user_provider = UserProvider(database_client_instance, date_time_provider_instance)
 	application.worker_provider = WorkerProvider(database_client_instance, date_time_provider_instance)
 
+	application.run_result_transformer = transform_run_results
+
 	service.configure(application)
-	service_extensions.configure_overrides()
 	service.register_handlers(application)
 	service.register_routes(application)
-	service_extensions.register_routes(application)
 
 	application.external_services = {
 		"artifacts": FileServerClient("Artifact Server", configuration["artifact_server_web_url"]),
@@ -79,6 +80,11 @@ def create_application(configuration):
 	application.config["GITHUB_ACCESS_TOKEN"] = configuration.get("github_access_token", None)
 
 	return application
+
+
+def transform_run_results(project_identifier, run_identifier, run_results): # pylint: disable = unused-argument
+	project = flask.current_app.project_provider.get(project_identifier)
+	return run_result_transformer.transform_run_results(project, run_results)
 
 
 if __name__ == "__main__":

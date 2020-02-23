@@ -1,24 +1,10 @@
 import logging
 
-import flask
+
+logger = logging.getLogger("RunResultTransformer")
 
 
-logger = logging.getLogger("RunController")
-
-
-def get_results(project_identifier, run_identifier):
-	project = flask.current_app.project_provider.get(project_identifier)
-	run_results = flask.current_app.run_provider.get_results(project_identifier, run_identifier)
-
-	try:
-		_update_results(project, run_results)
-	except KeyError:
-		logger.warning("Failed to update results for run %s", run_identifier, exc_info = True)
-
-	return flask.jsonify(run_results)
-
-
-def _update_results(project, run_results):
+def transform_run_results(project, run_results):
 	if "revision_control" in project["services"]:
 		if "revision_control" in run_results:
 			run_results["revision_control"]["url"] = _get_revision_url(project, run_results["revision_control"]["revision"])
@@ -33,6 +19,8 @@ def _update_results(project, run_results):
 	if "python_package_repository" in project["services"]:
 		for distribution in run_results.get("distributions", []):
 			distribution["url"] = _resolve_python_distribution_url(project, distribution)
+
+	return run_results
 
 
 def _generate_test_summary_text(test_run):
