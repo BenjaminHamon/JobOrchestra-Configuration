@@ -6,6 +6,15 @@ worker_configuration_path = "{environment[orchestra_worker_configuration]}"
 worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 
 
+def configure_project(environment):
+	return {
+		"identifier": "my-website",
+		"jobs": configure_jobs(),
+		"schedules": [],
+		"services": configure_services(environment),
+	}
+
+
 def configure_services(environment):
 	return {
 		"artifact_repository": {
@@ -33,9 +42,8 @@ def configure_jobs():
 
 def check():
 	job = {
-		"identifier": "my-website_check",
+		"identifier": "check",
 		"description": "Run checks for the MyWebsite project.",
-		"project": "my-website",
 		"workspace": "my-website",
 
 		"properties": {
@@ -65,9 +73,8 @@ def check():
 
 def distribute():
 	job = {
-		"identifier": "my-website_distribute",
+		"identifier": "distribute",
 		"description": "Generate and upload distribution packages for the MyWebsite project.",
-		"project": "my-website",
 		"workspace": "my-website",
 
 		"properties": {

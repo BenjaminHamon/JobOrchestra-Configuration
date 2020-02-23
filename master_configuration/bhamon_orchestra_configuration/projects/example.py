@@ -4,8 +4,13 @@ worker_configuration_path = "{environment[orchestra_worker_configuration]}"
 worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 
 
-def configure_services(environment_instance): # pylint: disable = unused-argument
-	return {}
+def configure_project():
+	return {
+		"identifier": "example",
+		"jobs": configure_jobs(),
+		"schedules": [],
+		"services": [],
+	}
 
 
 def configure_jobs():
@@ -28,9 +33,8 @@ def configure_jobs():
 
 def empty():
 	return {
-		"identifier": "example_empty",
+		"identifier": "empty",
 		"description": "Example job doing nothing.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -45,9 +49,8 @@ def empty():
 
 def hello():
 	return {
-		"identifier": "example_hello",
+		"identifier": "hello",
 		"description": "Example job printing hello.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -66,9 +69,8 @@ def hello():
 
 def sleep():
 	return {
-		"identifier": "example_sleep",
+		"identifier": "sleep",
 		"description": "Example job sleeping for a few seconds.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -88,9 +90,8 @@ def sleep():
 
 def failure():
 	return {
-		"identifier": "example_failure",
+		"identifier": "failure",
 		"description": "Example job with a failing step.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -112,9 +113,8 @@ def failure():
 
 def exception():
 	return {
-		"identifier": "example_exception",
+		"identifier": "exception",
 		"description": "Example job with a configuration error.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -140,9 +140,8 @@ def environment():
 	command_parameters = [ "--configuration", worker_configuration_path ]
 
 	return {
-		"identifier": "example_environment",
+		"identifier": "environment",
 		"description": "Example job using environment.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -160,9 +159,8 @@ def environment():
 
 def parameters():
 	return {
-		"identifier": "example_parameters",
+		"identifier": "parameters",
 		"description": "Example job with parameters.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -182,9 +180,8 @@ def parameters():
 
 def html_log():
 	return {
-		"identifier": "example_html-log",
+		"identifier": "html-log",
 		"description": "Example job generating log files containing html.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -202,9 +199,8 @@ def html_log():
 
 def large_log():
 	return {
-		"identifier": "example_large-log",
+		"identifier": "large-log",
 		"description": "Example job generating large log files.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -222,9 +218,8 @@ def large_log():
 
 def large_log_random():
 	return {
-		"identifier": "example_large-log-random",
+		"identifier": "large-log-random",
 		"description": "Example job generating large log files with random content.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -242,9 +237,8 @@ def large_log_random():
 
 def slow_log():
 	return {
-		"identifier": "example_slow_log",
+		"identifier": "slow_log",
 		"description": "Example job generating a log over some time.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -265,9 +259,8 @@ def controller_success():
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	return {
-		"identifier": "example_controller-success",
+		"identifier": "controller-success",
 		"description": "Example controller job.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -278,9 +271,9 @@ def controller_success():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example_hello" ] },
-			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example_sleep" ] },
-			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example_hello" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "hello" ] },
+			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "sleep" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "hello" ] },
 			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 		],
 	}
@@ -291,9 +284,8 @@ def controller_failure():
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
 	return {
-		"identifier": "example_controller-failure",
+		"identifier": "controller-failure",
 		"description": "Example controller job.",
-		"project": "example",
 		"workspace": "example",
 
 		"properties": {
@@ -304,9 +296,9 @@ def controller_failure():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example_hello" ] },
-			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example_sleep" ] },
-			{ "name": "trigger_failure", "command": controller_entry_point + controller_parameters + [ "trigger", "example_failure" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "hello" ] },
+			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "sleep" ] },
+			{ "name": "trigger_failure", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "failure" ] },
 			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 		],
 	}
@@ -320,9 +312,8 @@ def configure_schedules():
 
 def hello_nightly():
 	return {
-		"identifier": "example_hello_continuous",
-		"project": "example",
-		"job": "example_hello",
+		"identifier": "hello_continuous",
+		"job": "hello",
 
 		"parameters": {},
 

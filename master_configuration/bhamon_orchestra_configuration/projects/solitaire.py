@@ -7,6 +7,15 @@ worker_configuration_path = "{environment[orchestra_worker_configuration]}"
 worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 
 
+def configure_project(environment):
+	return {
+		"identifier": "solitaire",
+		"jobs": configure_jobs(),
+		"schedules": [],
+		"services": configure_services(environment),
+	}
+
+
 def configure_services(environment):
 	return {
 		"artifact_repository": {
@@ -34,9 +43,8 @@ def configure_jobs():
 
 def controller():
 	job = {
-		"identifier": "solitaire_controller",
+		"identifier": "controller",
 		"description": "Trigger all jobs for the Solitaire project.",
-		"project": "solitaire",
 		"workspace": "solitaire",
 
 		"properties": {
@@ -55,20 +63,17 @@ def controller():
 	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
-	package_android_job = "solitaire_package_android"
-	package_linux_job = "solitaire_package_linux"
-	package_windows_job = "solitaire_package_windows"
 	package_debug_parameters = [ "--parameters", "configuration=Debug", "revision={results[revision_control][revision]}" ]
 	package_release_parameters = [ "--parameters", "configuration=Release", "revision={results[revision_control][revision]}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
-		{ "name": "trigger_package_android_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_android_job ] + package_debug_parameters },
-		{ "name": "trigger_package_android_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_android_job ] + package_release_parameters },
-		{ "name": "trigger_package_linux_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_linux_job ] + package_debug_parameters },
-		{ "name": "trigger_package_linux_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_linux_job ] + package_release_parameters },
-		{ "name": "trigger_package_windows_debug", "command": controller_entry_point + controller_parameters + [ "trigger", package_windows_job ] + package_debug_parameters },
-		{ "name": "trigger_package_windows_release", "command": controller_entry_point + controller_parameters + [ "trigger", package_windows_job ] + package_release_parameters },
+		{ "name": "trigger_package_android_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_android" ] + package_debug_parameters },
+		{ "name": "trigger_package_android_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_android" ] + package_release_parameters },
+		{ "name": "trigger_package_linux_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_linux" ] + package_debug_parameters },
+		{ "name": "trigger_package_linux_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_linux" ] + package_release_parameters },
+		{ "name": "trigger_package_windows_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_windows" ] + package_debug_parameters },
+		{ "name": "trigger_package_windows_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_windows" ] + package_release_parameters },
 		{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 	]
 
@@ -77,9 +82,8 @@ def controller():
 
 def package(target_platform):
 	job = {
-		"identifier": "solitaire_package_" + target_platform.lower(),
+		"identifier": "package_%s" % target_platform.lower(),
 		"description": "Build and package the Solitaire project.",
-		"project": "solitaire",
 		"workspace": "solitaire",
 
 		"properties": {

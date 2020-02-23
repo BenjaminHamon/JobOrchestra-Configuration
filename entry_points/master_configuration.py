@@ -23,29 +23,15 @@ def reload_modules():
 
 def configure(environment):
 	all_projects = [
-		{ "identifier": "development-toolkit", "services": project_development_toolkit.configure_services(environment) },
-		{ "identifier": "example", "services": project_example.configure_services(environment) },
-		{ "identifier": "image-manager", "services": project_image_manager.configure_services(environment) },
-		{ "identifier": "job-orchestra-configuration", "services": project_job_orchestra_configuration.configure_services(environment) },
-		{ "identifier": "job-orchestra", "services": project_job_orchestra.configure_services(environment) },
-		{ "identifier": "my-website", "services": project_my_website.configure_services(environment) },
-		{ "identifier": "solitaire", "services": project_solitaire.configure_services(environment) },
+		project_development_toolkit.configure_project(environment),
+		project_example.configure_project(),
+		project_image_manager.configure_project(environment),
+		project_job_orchestra_configuration.configure_project(environment),
+		project_job_orchestra.configure_project(environment),
+		project_my_website.configure_project(environment),
+		project_solitaire.configure_project(environment),
 	]
-
-	all_jobs = []
-	all_jobs += project_development_toolkit.configure_jobs()
-	all_jobs += project_example.configure_jobs()
-	all_jobs += project_image_manager.configure_jobs()
-	all_jobs += project_job_orchestra.configure_jobs()
-	all_jobs += project_job_orchestra_configuration.configure_jobs()
-	all_jobs += project_my_website.configure_jobs()
-	all_jobs += project_solitaire.configure_jobs()
-
-	all_schedules = []
-	all_schedules += project_example.configure_schedules()
 
 	return {
 		"projects": all_projects,
-		"jobs": all_jobs,
-		"schedules": all_schedules,
 	}

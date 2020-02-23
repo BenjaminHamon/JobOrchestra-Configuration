@@ -6,6 +6,15 @@ worker_configuration_path = "{environment[orchestra_worker_configuration]}"
 worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 
 
+def configure_project(environment):
+	return {
+		"identifier": "job-orchestra",
+		"jobs": configure_jobs(),
+		"schedules": [],
+		"services": configure_services(environment),
+	}
+
+
 def configure_services(environment):
 	return {
 		"artifact_repository": {
@@ -38,9 +47,8 @@ def configure_jobs():
 
 def check(platform):
 	job = {
-		"identifier": "job-orchestra_check_" + platform,
+		"identifier": "check_%s" % platform,
 		"description": "Run checks for the JobOrchestra project.",
-		"project": "job-orchestra",
 		"workspace": "job-orchestra",
 
 		"properties": {
@@ -71,9 +79,8 @@ def check(platform):
 
 def package():
 	job = {
-		"identifier": "job-orchestra_package",
+		"identifier": "package",
 		"description": "Generate distribution packages for the JobOrchestra project.",
-		"project": "job-orchestra",
 		"workspace": "job-orchestra",
 
 		"properties": {
@@ -108,9 +115,8 @@ def package():
 
 def distribute():
 	job = {
-		"identifier": "job-orchestra_distribute",
+		"identifier": "distribute",
 		"description": "Upload distribution packages for the JobOrchestra project to the python package repository.",
-		"project": "job-orchestra",
 		"workspace": "job-orchestra",
 
 		"properties": {
