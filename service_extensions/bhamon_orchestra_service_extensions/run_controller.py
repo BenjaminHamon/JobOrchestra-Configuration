@@ -6,15 +6,14 @@ import flask
 logger = logging.getLogger("RunController")
 
 
-def get_results(run_identifier):
-	run = flask.current_app.run_provider.get(run_identifier)
-	run_results = flask.current_app.run_provider.get_results(run_identifier)
+def get_results(project_identifier, run_identifier):
+	project = flask.current_app.project_provider.get(project_identifier)
+	run_results = flask.current_app.run_provider.get_results(project_identifier, run_identifier)
 
 	try:
-		project = flask.current_app.project_provider.get(run["project"])
 		_update_results(project, run_results)
 	except KeyError:
-		logger.warning("Failed to resolve artifacts urls for %s %s", run["job"], run["identifier"], exc_info = True)
+		logger.warning("Failed to update results for run %s", run_identifier, exc_info = True)
 
 	return flask.jsonify(run_results)
 
