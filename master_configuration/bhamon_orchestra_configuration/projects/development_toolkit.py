@@ -9,6 +9,7 @@ worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 def configure_project(environment):
 	return {
 		"identifier": "development-toolkit",
+		"display_name": "Development Toolkit",
 		"jobs": configure_jobs(),
 		"schedules": [],
 		"services": configure_services(environment),
@@ -43,6 +44,7 @@ def configure_jobs():
 def check():
 	job = {
 		"identifier": "check",
+		"display_name": "Check",
 		"description": "Run checks for the DevelopmentToolkit project.",
 		"workspace": "development-toolkit",
 
@@ -74,6 +76,7 @@ def check():
 def distribute():
 	job = {
 		"identifier": "distribute",
+		"display_name": "Distribute",
 		"description": "Generate and upload distribution packages for the DevelopmentToolkit project.",
 		"workspace": "development-toolkit",
 

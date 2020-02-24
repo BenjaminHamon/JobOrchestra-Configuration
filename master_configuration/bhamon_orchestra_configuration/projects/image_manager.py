@@ -10,6 +10,7 @@ worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 def configure_project(environment):
 	return {
 		"identifier": "image-manager",
+		"display_name": "Image Manager",
 		"jobs": configure_jobs(),
 		"schedules": [],
 		"services": configure_services(environment),
@@ -45,6 +46,7 @@ def configure_jobs():
 def controller():
 	job = {
 		"identifier": "controller",
+		"display_name": "Controller",
 		"description": "Trigger all jobs for the ImageManager project.",
 		"workspace": "image-manager",
 
@@ -80,6 +82,7 @@ def controller():
 def package():
 	job = {
 		"identifier": "package",
+		"display_name": "Package",
 		"description": "Build and package the ImageManager project.",
 		"workspace": "image-manager",
 
@@ -117,6 +120,7 @@ def package():
 def release():
 	job = {
 		"identifier": "release",
+		"display_name": "Release",
 		"description": "Build and package the ImageManager project for release.",
 		"workspace": "image-manager",
 

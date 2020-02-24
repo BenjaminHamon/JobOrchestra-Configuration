@@ -1,3 +1,6 @@
+import bhamon_orchestra_configuration.formatter as formatter
+
+
 repository = "https://github.com/BenjaminHamon/Overmind.Solitaire"
 
 controller_script = "bhamon_orchestra_worker_scripts.controller"
@@ -10,6 +13,7 @@ worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 def configure_project(environment):
 	return {
 		"identifier": "solitaire",
+		"display_name": "Solitaire",
 		"jobs": configure_jobs(),
 		"schedules": [],
 		"services": configure_services(environment),
@@ -35,15 +39,16 @@ def configure_services(environment):
 def configure_jobs():
 	return [
 		controller(),
-		package("Android"),
-		package("Linux"),
-		package("Windows"),
+		package("android"),
+		package("linux"),
+		package("windows"),
 	]
 
 
 def controller():
 	job = {
 		"identifier": "controller",
+		"display_name": "Controller",
 		"description": "Trigger all jobs for the Solitaire project.",
 		"workspace": "solitaire",
 
@@ -82,7 +87,8 @@ def controller():
 
 def package(target_platform):
 	job = {
-		"identifier": "package_%s" % target_platform.lower(),
+		"identifier": "package_%s" % target_platform,
+		"display_name": "Package for %s" % formatter.platform_to_display_name(target_platform),
 		"description": "Build and package the Solitaire project.",
 		"workspace": "solitaire",
 

@@ -7,8 +7,9 @@ worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 def configure_project():
 	return {
 		"identifier": "example",
+		"display_name": "Example",
 		"jobs": configure_jobs(),
-		"schedules": [],
+		"schedules": configure_schedules(),
 		"services": [],
 	}
 
@@ -34,6 +35,7 @@ def configure_jobs():
 def empty():
 	return {
 		"identifier": "empty",
+		"display_name": "Empty",
 		"description": "Example job doing nothing.",
 		"workspace": "example",
 
@@ -50,6 +52,7 @@ def empty():
 def hello():
 	return {
 		"identifier": "hello",
+		"display_name": "Hello",
 		"description": "Example job printing hello.",
 		"workspace": "example",
 
@@ -70,6 +73,7 @@ def hello():
 def sleep():
 	return {
 		"identifier": "sleep",
+		"display_name": "Sleep",
 		"description": "Example job sleeping for a few seconds.",
 		"workspace": "example",
 
@@ -91,6 +95,7 @@ def sleep():
 def failure():
 	return {
 		"identifier": "failure",
+		"display_name": "Failure",
 		"description": "Example job with a failing step.",
 		"workspace": "example",
 
@@ -114,6 +119,7 @@ def failure():
 def exception():
 	return {
 		"identifier": "exception",
+		"display_name": "Exception",
 		"description": "Example job with a configuration error.",
 		"workspace": "example",
 
@@ -141,6 +147,7 @@ def environment():
 
 	return {
 		"identifier": "environment",
+		"display_name": "Environment",
 		"description": "Example job using environment.",
 		"workspace": "example",
 
@@ -160,6 +167,7 @@ def environment():
 def parameters():
 	return {
 		"identifier": "parameters",
+		"display_name": "Parameters",
 		"description": "Example job with parameters.",
 		"workspace": "example",
 
@@ -181,6 +189,7 @@ def parameters():
 def html_log():
 	return {
 		"identifier": "html-log",
+		"display_name": "HTML Log",
 		"description": "Example job generating log files containing html.",
 		"workspace": "example",
 
@@ -200,6 +209,7 @@ def html_log():
 def large_log():
 	return {
 		"identifier": "large-log",
+		"display_name": "Large Log",
 		"description": "Example job generating large log files.",
 		"workspace": "example",
 
@@ -219,6 +229,7 @@ def large_log():
 def large_log_random():
 	return {
 		"identifier": "large-log-random",
+		"display_name": "Large Log Random",
 		"description": "Example job generating large log files with random content.",
 		"workspace": "example",
 
@@ -238,6 +249,7 @@ def large_log_random():
 def slow_log():
 	return {
 		"identifier": "slow_log",
+		"display_name": "Slow Log",
 		"description": "Example job generating a log over some time.",
 		"workspace": "example",
 
@@ -260,6 +272,7 @@ def controller_success():
 
 	return {
 		"identifier": "controller-success",
+		"display_name": "Controller Success",
 		"description": "Example controller job.",
 		"workspace": "example",
 
@@ -285,6 +298,7 @@ def controller_failure():
 
 	return {
 		"identifier": "controller-failure",
+		"display_name": "Controller Failure",
 		"description": "Example controller job.",
 		"workspace": "example",
 
@@ -306,13 +320,14 @@ def controller_failure():
 
 def configure_schedules():
 	return [
-		hello_nightly(),
+		hello_continuous(),
 	]
 
 
-def hello_nightly():
+def hello_continuous():
 	return {
 		"identifier": "hello_continuous",
+		"display_name": "Hello Continuous",
 		"job": "hello",
 
 		"parameters": {},

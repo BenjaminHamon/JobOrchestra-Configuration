@@ -43,6 +43,7 @@ def parse_arguments():
 def create_application(local_worker_identifier, configuration, executor_script):
 	worker_definition = configuration["orchestra_workers"][local_worker_identifier]
 	worker_identifier = worker_definition["identifier"].format(host = socket.gethostname())
+	worker_display_name = worker_definition.get("display_name", worker_identifier).format(host = socket.gethostname())
 
 	write_local_configuration(configuration)
 	authentication = load_authentication()
@@ -53,6 +54,7 @@ def create_application(local_worker_identifier, configuration, executor_script):
 		master_uri = configuration["orchestra_master_url"],
 		user = authentication["user"],
 		secret = authentication["secret"],
+		display_name = worker_display_name,
 		properties = properties,
 		executor_script = executor_script,
 	)

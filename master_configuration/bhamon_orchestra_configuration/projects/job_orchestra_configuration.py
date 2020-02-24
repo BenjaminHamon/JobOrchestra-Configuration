@@ -1,3 +1,6 @@
+import bhamon_orchestra_configuration.formatter as formatter
+
+
 repository = "https://github.com/BenjaminHamon/JobOrchestra-Configuration"
 
 initialization_script = "bhamon_orchestra_worker_scripts.job_orchestra_configuration"
@@ -9,6 +12,7 @@ worker_python_executable = "{environment[orchestra_worker_python_executable]}"
 def configure_project(environment):
 	return {
 		"identifier": "job-orchestra-configuration",
+		"display_name": "Job Orchestra Configuration",
 		"jobs": configure_jobs(),
 		"schedules": [],
 		"services": configure_services(environment),
@@ -48,6 +52,7 @@ def configure_jobs():
 def check(platform):
 	job = {
 		"identifier": "check_%s" % platform,
+		"display_name": "Check %s" % formatter.platform_to_display_name(platform),
 		"description": "Run checks for the JobOrchestra-Configuration-Configuration project.",
 		"workspace": "job-orchestra-configuration",
 
@@ -79,6 +84,7 @@ def check(platform):
 def package():
 	job = {
 		"identifier": "package",
+		"display_name": "Package",
 		"description": "Generate distribution packages for the JobOrchestra-Configuration project.",
 		"workspace": "job-orchestra-configuration",
 
@@ -114,6 +120,7 @@ def package():
 def distribute():
 	job = {
 		"identifier": "distribute",
+		"display_name": "Distribute",
 		"description": "Upload distribution packages for the JobOrchestra-Configuration project to the python package repository.",
 		"workspace": "job-orchestra-configuration",
 
