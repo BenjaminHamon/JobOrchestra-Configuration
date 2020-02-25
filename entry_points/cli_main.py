@@ -13,10 +13,14 @@ from bhamon_orchestra_model.task_provider import TaskProvider
 from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
+import bhamon_orchestra_cli
 import bhamon_orchestra_cli.admin_controller as admin_controller
 import bhamon_orchestra_cli.database_controller as database_controller
 
 import environment
+
+
+logger = logging.getLogger("Main")
 
 
 def main():
@@ -26,6 +30,7 @@ def main():
 	with open(arguments.configuration, "r") as configuration_file:
 		configuration = json.load(configuration_file)
 
+	logger.info("Job Orchestra %s", bhamon_orchestra_cli.__version__)
 	application = create_application(configuration)
 	result = arguments.handler(application, arguments)
 	if result is not None:

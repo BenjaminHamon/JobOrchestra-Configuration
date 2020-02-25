@@ -23,10 +23,15 @@ from bhamon_orchestra_model.task_provider import TaskProvider
 from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
+import bhamon_orchestra_master
+
 from bhamon_orchestra_configuration.worker_selector import WorkerSelector
 
 import environment
 import master_configuration
+
+
+logger = logging.getLogger("Master")
 
 
 def main():
@@ -38,6 +43,7 @@ def main():
 	environment.configure_log_file(configuration["orchestra_master_log_file_path"], logging.INFO)
 
 	with filelock.FileLock("master.lock", 5):
+		logger.info("Job Orchestra %s", bhamon_orchestra_master.__version__)
 		application = create_application(configuration)
 		application.run()
 

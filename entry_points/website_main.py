@@ -17,6 +17,9 @@ import bhamon_orchestra_website_extensions.website as website_extensions
 import environment
 
 
+logger = logging.getLogger("Website")
+
+
 def main():
 	environment.configure_logging(logging.INFO)
 	arguments = parse_arguments()
@@ -31,6 +34,7 @@ def main():
 		"port": configuration["orchestra_website_listen_port"],
 	}
 
+	logger.info("Job Orchestra %s", bhamon_orchestra_website.__version__)
 	application = create_application(configuration)
 	application.config["WEBSITE_ANNOUNCEMENT"] = "Development Environment"
 	application.config["WEBSITE_ANNOUNCEMENT_TYPE"] = "warning"

@@ -18,11 +18,15 @@ from bhamon_orchestra_model.task_provider import TaskProvider
 from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
+import bhamon_orchestra_service
 import bhamon_orchestra_service.service as service
 
 import bhamon_orchestra_configuration.run_result_transformer as run_result_transformer
 
 import environment
+
+
+logger = logging.getLogger("Service")
 
 
 def main():
@@ -39,6 +43,7 @@ def main():
 		"port": configuration["orchestra_service_listen_port"],
 	}
 
+	logger.info("Job Orchestra %s", bhamon_orchestra_service.__version__)
 	application = create_application(configuration)
 	application.run(**development_options)
 

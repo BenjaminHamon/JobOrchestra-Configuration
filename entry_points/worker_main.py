@@ -10,7 +10,12 @@ import filelock
 
 from bhamon_orchestra_worker.worker import Worker
 
+import bhamon_orchestra_worker
+
 import environment
+
+
+logger = logging.getLogger("Worker")
 
 
 def main():
@@ -29,6 +34,7 @@ def main():
 
 	with filelock.FileLock("worker.lock", 5):
 		environment.configure_log_file(worker_log_path, logging.INFO)
+		logger.info("Job Orchestra %s", bhamon_orchestra_worker.__version__)
 		worker_instance = create_application(arguments.identifier, configuration, executor_script)
 		worker_instance.run()
 
