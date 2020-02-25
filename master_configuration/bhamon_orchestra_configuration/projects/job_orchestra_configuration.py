@@ -1,6 +1,3 @@
-import bhamon_orchestra_configuration.formatter as formatter
-
-
 repository = "https://github.com/BenjaminHamon/JobOrchestra-Configuration"
 
 initialization_script = "bhamon_orchestra_worker_scripts.job_orchestra_configuration"
@@ -52,8 +49,8 @@ def configure_jobs():
 def check(platform):
 	job = {
 		"identifier": "check_%s" % platform,
-		"display_name": "Check %s" % formatter.platform_to_display_name(platform),
-		"description": "Run checks for the JobOrchestra-Configuration-Configuration project.",
+		"display_name": "Check %s" % platform.capitalize(),
+		"description": "Run checks for the JobOrchestra-Configuration-Configuration project on %s." % platform.capitalize(),
 		"workspace": "job-orchestra-configuration",
 
 		"properties": {

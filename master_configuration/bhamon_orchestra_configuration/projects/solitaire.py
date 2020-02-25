@@ -1,6 +1,3 @@
-import bhamon_orchestra_configuration.formatter as formatter
-
-
 repository = "https://github.com/BenjaminHamon/Overmind.Solitaire"
 
 controller_script = "bhamon_orchestra_worker_scripts.controller"
@@ -39,9 +36,12 @@ def configure_services(environment):
 def configure_jobs():
 	return [
 		controller(),
-		package("android"),
-		package("linux"),
-		package("windows"),
+		package("android", "debug"),
+		package("android", "release"),
+		package("linux", "debug"),
+		package("linux", "release"),
+		package("windows", "debug"),
+		package("windows", "release"),
 	]
 
 
@@ -68,28 +68,25 @@ def controller():
 	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
 	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 
-	package_debug_parameters = [ "--parameters", "configuration=Debug", "revision={results[revision_control][revision]}" ]
-	package_release_parameters = [ "--parameters", "configuration=Release", "revision={results[revision_control][revision]}" ]
-
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
-		{ "name": "trigger_package_android_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_android" ] + package_debug_parameters },
-		{ "name": "trigger_package_android_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_android" ] + package_release_parameters },
-		{ "name": "trigger_package_linux_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_linux" ] + package_debug_parameters },
-		{ "name": "trigger_package_linux_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_linux" ] + package_release_parameters },
-		{ "name": "trigger_package_windows_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_windows" ] + package_debug_parameters },
-		{ "name": "trigger_package_windows_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_windows" ] + package_release_parameters },
+		{ "name": "trigger_package_android_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_android_debug" ] },
+		{ "name": "trigger_package_android_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_android_release" ] },
+		{ "name": "trigger_package_linux_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_linux_debug" ] },
+		{ "name": "trigger_package_linux_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_linux_release" ] },
+		{ "name": "trigger_package_windows_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_windows_debug" ] },
+		{ "name": "trigger_package_windows_release", "command": controller_entry_point + controller_parameters + [ "trigger", "solitaire", "package_windows_release" ] },
 		{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
 	]
 
 	return job
 
 
-def package(target_platform):
+def package(target_platform, configuration):
 	job = {
-		"identifier": "package_%s" % target_platform,
-		"display_name": "Package for %s" % formatter.platform_to_display_name(target_platform),
-		"description": "Build and package the Solitaire project.",
+		"identifier": "package_%s_%s" % (target_platform, configuration),
+		"display_name": "Package %s %s" % (target_platform.capitalize(), configuration.capitalize()),
+		"description": "Build and package the Solitaire project for %s and with the %s configuration." % (target_platform.capitalize(), configuration.capitalize()),
 		"workspace": "solitaire",
 
 		"properties": {
@@ -99,7 +96,6 @@ def package(target_platform):
 
 		"parameters": [
 			{ "key": "revision", "description": "Revision for the source repository" },
-			{ "key": "configuration", "description": "Package configuration" },
 		],
 	}
 
@@ -107,12 +103,12 @@ def package(target_platform):
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
-	artifact_parameters = [ "package", "--parameters", "platform=" + target_platform, "configuration={parameters[configuration]}" ]
+	artifact_parameters = [ "package", "--parameters", "platform=" + target_platform.capitalize(), "configuration=" + configuration.capitalize() ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
 		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
-		{ "name": "build", "command": project_entry_point + [ "package", "--platform", target_platform, "--configuration", "{parameters[configuration]}" ] },
+		{ "name": "build", "command": project_entry_point + [ "package", "--platform", target_platform.capitalize(), "--configuration", configuration.capitalize() ] },
 		{ "name": "package", "command": project_entry_point + [ "artifact", "package" ] + artifact_parameters },
 		{ "name": "verify", "command": project_entry_point + [ "artifact", "verify" ] + artifact_parameters },
 		{ "name": "upload", "command": project_entry_point + [ "artifact", "upload" ] + artifact_parameters },
