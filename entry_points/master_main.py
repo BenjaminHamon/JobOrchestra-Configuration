@@ -1,6 +1,5 @@
 import argparse
 import functools
-import importlib
 import json
 import logging
 
@@ -106,8 +105,6 @@ def create_application(configuration): # pylint: disable = too-many-locals
 		worker_selector = worker_selector_instance,
 	)
 
-	configuration_loader = functools.partial(reload_configuration, environment_instance = environment_instance)
-
 	master_instance = Master(
 		project_provider = project_provider_instance,
 		job_provider = job_provider_instance,
@@ -116,18 +113,11 @@ def create_application(configuration): # pylint: disable = too-many-locals
 		job_scheduler = job_scheduler_instance,
 		supervisor = supervisor_instance,
 		task_processor = task_processor_instance,
-		configuration_loader = configuration_loader,
 	)
 
-	master_instance.register_default_tasks()
+	master_instance.apply_configuration(master_configuration.configure(environment_instance))
 
 	return master_instance
-
-
-def reload_configuration(environment_instance):
-	importlib.reload(master_configuration)
-	master_configuration.reload_modules()
-	return master_configuration.configure(environment_instance)
 
 
 if __name__ == "__main__":
