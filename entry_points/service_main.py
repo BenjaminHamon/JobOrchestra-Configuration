@@ -14,7 +14,6 @@ from bhamon_orchestra_model.project_provider import ProjectProvider
 from bhamon_orchestra_model.revision_control.github import GitHubClient
 from bhamon_orchestra_model.run_provider import RunProvider
 from bhamon_orchestra_model.schedule_provider import ScheduleProvider
-from bhamon_orchestra_model.task_provider import TaskProvider
 from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
@@ -66,7 +65,6 @@ def create_application(configuration):
 	application.project_provider = ProjectProvider(database_client_instance, date_time_provider_instance)
 	application.run_provider = RunProvider(database_client_instance, file_storage_instance, date_time_provider_instance)
 	application.schedule_provider = ScheduleProvider(database_client_instance, date_time_provider_instance)
-	application.task_provider = TaskProvider(database_client_instance, date_time_provider_instance)
 	application.user_provider = UserProvider(database_client_instance, date_time_provider_instance)
 	application.worker_provider = WorkerProvider(database_client_instance, date_time_provider_instance)
 
