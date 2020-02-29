@@ -268,7 +268,8 @@ def slow_log():
 
 def controller_success():
 	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
-	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	controller_entry_point += [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	trigger_source_parameters = [ "--source-project", "{project_identifier}", "--source-run", "{run_identifier}" ]
 
 	return {
 		"identifier": "controller-success",
@@ -284,17 +285,18 @@ def controller_success():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "hello" ] },
-			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "sleep" ] },
-			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "hello" ] },
-			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters },
+			{ "name": "trigger_sleep", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters },
+			{ "name": "trigger_hello", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters },
+			{ "name": "wait", "command": controller_entry_point + [ "wait" ] },
 		],
 	}
 
 
 def controller_failure():
 	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
-	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	controller_entry_point += [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	trigger_source_parameters = [ "--source-project", "{project_identifier}", "--source-run", "{run_identifier}" ]
 
 	return {
 		"identifier": "controller-failure",
@@ -310,10 +312,10 @@ def controller_failure():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "trigger_hello", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "hello" ] },
-			{ "name": "trigger_sleep", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "sleep" ] },
-			{ "name": "trigger_failure", "command": controller_entry_point + controller_parameters + [ "trigger", "example", "failure" ] },
-			{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
+			{ "name": "trigger_hello", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters },
+			{ "name": "trigger_sleep", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters },
+			{ "name": "trigger_failure", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "failure" ] + trigger_source_parameters },
+			{ "name": "wait", "command": controller_entry_point + [ "wait" ] },
 		],
 	}
 

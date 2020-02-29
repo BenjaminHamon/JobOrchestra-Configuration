@@ -65,13 +65,14 @@ def controller():
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
-	controller_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	controller_entry_point += [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	trigger_source_parameters = [ "--source-project", "{project_identifier}", "--source-run", "{run_identifier}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
-		{ "name": "trigger_package_debug", "command": controller_entry_point + controller_parameters + [ "trigger", "image-manager", "package_debug" ] },
-		{ "name": "trigger_package_release", "command": controller_entry_point + controller_parameters + [ "trigger", "image-manager", "package_release" ] },
-		{ "name": "wait", "command": controller_entry_point + controller_parameters + [ "wait" ] },
+		{ "name": "trigger_package_debug", "command": controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "package_debug" ] + trigger_source_parameters },
+		{ "name": "trigger_package_release", "command": controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "package_release" ] + trigger_source_parameters },
+		{ "name": "wait", "command": controller_entry_point + [ "wait" ] },
 	]
 
 	return job
