@@ -50,14 +50,13 @@ def parse_arguments():
 
 
 def create_application(configuration):
+	database_administration_instance = environment.create_database_administration(configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"])
 	database_client_instance = environment.create_database_client(configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"])
 	file_storage_instance = FileStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
 
 	application = types.SimpleNamespace()
-	application.database_uri = configuration["orchestra_database_uri"]
-	application.database_authentication = configuration["orchestra_database_authentication"]
-
+	application.database_administration = database_administration_instance
 	application.authentication_provider = AuthenticationProvider(database_client_instance, date_time_provider_instance)
 	application.authorization_provider = AuthorizationProvider()
 	application.job_provider = JobProvider(database_client_instance, date_time_provider_instance)
