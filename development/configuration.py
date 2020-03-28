@@ -44,10 +44,6 @@ def load_configuration(environment):
 
 	configuration["components"] = [
 		{ "name": "bhamon-orchestra-configuration", "path": "master_configuration" },
-		{ "name": "bhamon-orchestra-model-extensions", "path": "model_extensions" },
-		{ "name": "bhamon-orchestra-service-extensions", "path": "service_extensions" },
-		{ "name": "bhamon-orchestra-website-extensions", "path": "website_extensions" },
-		{ "name": "bhamon-orchestra-worker-extensions", "path": "worker_extensions" },
 		{ "name": "bhamon-orchestra-worker-scripts", "path": "worker_scripts" },
 	]
 
