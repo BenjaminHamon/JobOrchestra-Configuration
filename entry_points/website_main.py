@@ -11,8 +11,8 @@ from bhamon_orchestra_model.date_time_provider import DateTimeProvider
 import bhamon_orchestra_website
 import bhamon_orchestra_website.website as website
 
-import bhamon_orchestra_website_extensions
-import bhamon_orchestra_website_extensions.website as website_extensions
+import bhamon_orchestra_configuration
+import bhamon_orchestra_configuration.website_extensions as website_extensions
 
 import environment
 
@@ -57,7 +57,7 @@ def create_application(configuration):
 	application.secret_key = configuration["orchestra_website_secret"]
 
 	resource_paths = [
-		os.path.dirname(bhamon_orchestra_website_extensions.__file__),
+		os.path.dirname(bhamon_orchestra_configuration.__file__),
 		os.path.dirname(bhamon_orchestra_website.__file__),
 	]
 
