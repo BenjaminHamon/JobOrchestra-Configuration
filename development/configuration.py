@@ -30,7 +30,7 @@ def load_configuration(environment):
 	configuration["copyright"] = "Copyright (c) 2019 Benjamin Hamon"
 
 	configuration["development_toolkit"] = "git+https://github.com/BenjaminHamon/DevelopmentToolkit@{revision}#subdirectory=toolkit"
-	configuration["development_toolkit_revision"] = "b1c386f93914950249b478a476bcb5347cfa0143"
+	configuration["development_toolkit_revision"] = "5e12ab4651373b0399201075ea9e78cb0015b091"
 	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
 
 	configuration["project_dependencies"] = [
@@ -43,12 +43,12 @@ def load_configuration(environment):
 	]
 
 	configuration["components"] = [
-		{ "name": "bhamon-orchestra-configuration", "path": "master_configuration", "packages": [ "bhamon_orchestra_configuration" ] },
-		{ "name": "bhamon-orchestra-model-extensions", "path": "model_extensions", "packages": [ "bhamon_orchestra_model_extensions" ] },
-		{ "name": "bhamon-orchestra-service-extensions", "path": "service_extensions", "packages": [ "bhamon_orchestra_service_extensions" ] },
-		{ "name": "bhamon-orchestra-website-extensions", "path": "website_extensions", "packages": [ "bhamon_orchestra_website_extensions" ] },
-		{ "name": "bhamon-orchestra-worker-extensions", "path": "worker_extensions", "packages": [ "bhamon_orchestra_worker_extensions" ] },
-		{ "name": "bhamon-orchestra-worker-scripts", "path": "worker_scripts", "packages": [ "bhamon_orchestra_worker_scripts" ] },
+		{ "name": "bhamon-orchestra-configuration", "path": "master_configuration" },
+		{ "name": "bhamon-orchestra-model-extensions", "path": "model_extensions" },
+		{ "name": "bhamon-orchestra-service-extensions", "path": "service_extensions" },
+		{ "name": "bhamon-orchestra-website-extensions", "path": "website_extensions" },
+		{ "name": "bhamon-orchestra-worker-extensions", "path": "worker_extensions" },
+		{ "name": "bhamon-orchestra-worker-scripts", "path": "worker_scripts" },
 	]
 
 	configuration["project_identifier_for_artifact_server"] = "JobOrchestra-Configuration"

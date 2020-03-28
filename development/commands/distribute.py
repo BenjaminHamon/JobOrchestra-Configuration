@@ -24,7 +24,7 @@ def configure_argument_parser(environment, configuration, subparsers): # pylint:
 	parser = subparsers.add_parser("distribute", help = "create distribution packages")
 	parser.add_argument("distribute_commands", type = parse_command_parameter,
 		metavar = "<command[+command]>", help = "set the command(s) to execute for the distribution, separated by '+' (%s)" % ", ".join(available_commands))
-	return parser
+	parser.set_defaults(func = run)
 
 
 def run(environment, configuration, arguments): # pylint: disable = unused-argument
@@ -55,7 +55,7 @@ def run(environment, configuration, arguments): # pylint: disable = unused-argum
 def setup(configuration, component, simulate):
 	logger.info("Generating metadata for '%s'", component["name"])
 
-	metadata_file_path = os.path.join(component["path"], component["packages"][0], "__metadata__.py")
+	metadata_file_path = os.path.join(component["path"], component["name"].replace("-", "_"), "__metadata__.py")
 	metadata_content = ""
 	metadata_content += "__copyright__ = \"%s\"\n" % configuration["copyright"]
 	metadata_content += "__version__ = \"%s\"\n" % configuration["project_version"]["full"]
