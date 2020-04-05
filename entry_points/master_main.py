@@ -70,10 +70,6 @@ def create_application(configuration): # pylint: disable = too-many-locals
 	user_provider_instance = UserProvider(database_client_instance, date_time_provider_instance)
 	worker_provider_instance = WorkerProvider(database_client_instance, date_time_provider_instance)
 
-	worker_selector_instance = WorkerSelector(
-		worker_provider = worker_provider_instance,
-	)
-
 	protocol_factory = functools.partial(
 		WebSocketServerProtocol,
 		user_provider = user_provider_instance,
@@ -89,13 +85,18 @@ def create_application(configuration): # pylint: disable = too-many-locals
 		protocol_factory = protocol_factory,
 	)
 
-	job_scheduler_instance = JobScheduler(
+	worker_selector_instance = WorkerSelector(
+		worker_provider = worker_provider_instance,
 		supervisor = supervisor_instance,
-		date_time_provider = date_time_provider_instance,
+	)
+
+	job_scheduler_instance = JobScheduler(
 		job_provider = job_provider_instance,
 		run_provider = run_provider_instance,
 		schedule_provider = schedule_provider_instance,
+		supervisor = supervisor_instance,
 		worker_selector = worker_selector_instance,
+		date_time_provider = date_time_provider_instance,
 	)
 
 	master_instance = Master(

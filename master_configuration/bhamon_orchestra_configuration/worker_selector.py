@@ -1,32 +1,24 @@
 import logging
 
+from bhamon_orchestra_master.worker_selector import WorkerSelector as WorkerSelectorBase
+
 
 logger = logging.getLogger("WorkerSelector")
 
 
-class WorkerSelector:
-
-	def __init__(self, worker_provider):
-		self._worker_provider = worker_provider
+class WorkerSelector(WorkerSelectorBase):
 
 
-	def __call__(self, supervisor, job):
-		return self.select_worker(supervisor, job)
+	def are_compatible(self, worker: dict, job: dict, run: dict) -> bool: # pylint: disable = unused-argument
+		""" Check if a worker is able to execute the specified run """
 
-
-	def select_worker(self, supervisor, job):
-		all_workers = self._worker_provider.get_list()
-		all_available_workers = (worker for worker in all_workers if supervisor.is_worker_available(worker["identifier"]))
-		return next((worker["identifier"] for worker in all_available_workers if self.are_compatible(supervisor, worker, job)), None)
-
-
-	def are_compatible(self, supervisor, worker, job): # pylint: disable = no-self-use
-		executors = supervisor.get_worker(worker["identifier"]).executors
+		executors = self._supervisor.get_worker(worker["identifier"]).executors
 
 		try:
-			return (worker["properties"]["operating_system"] in job["properties"]["operating_system"]
-				and job["properties"]["is_controller"] == worker["properties"]["is_controller"]
-				and len(executors) < worker["properties"]["executor_limit"])
+			return worker["properties"]["operating_system"] in job["properties"]["operating_system"] \
+				and job["properties"]["is_controller"] == worker["properties"]["is_controller"] \
+				and len(executors) < worker["properties"]["executor_limit"]
 
 		except KeyError:
+			logger.warning("Missing property for matching job and worker", exc_info = True)
 			return False
