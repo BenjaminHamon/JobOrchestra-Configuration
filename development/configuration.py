@@ -38,7 +38,9 @@ def load_configuration(environment):
 
 	configuration["project_identifier_for_artifact_server"] = "JobOrchestra-Configuration"
 
-	configuration["filesets"] = load_filesets()
+	configuration["artifact_directory"] = "artifacts"
+
+	configuration["filesets"] = load_filesets(configuration)
 	configuration["artifacts"] = load_artifacts(configuration)
 
 	return configuration
@@ -60,10 +62,10 @@ def load_project_version(git_executable, identifier):
 	}
 
 
-def load_filesets():
+def load_filesets(configuration):
 	return {
 		"distribution": {
-			"path_in_workspace": os.path.join(".artifacts", "distributions", "{component}"),
+			"path_in_workspace": os.path.join(configuration["artifact_directory"], "distributions", "{component}"),
 			"file_functions": [ _list_distribution_files ],
 		},
 	}
