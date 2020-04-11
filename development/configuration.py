@@ -1,3 +1,4 @@
+import copy
 import datetime
 import glob
 import importlib
@@ -8,21 +9,10 @@ import sys
 
 def load_configuration(environment):
 	configuration = {
-		"project": "bhamon-orchestra-configuration",
+		"project_identifier": "bhamon-orchestra-configuration",
 		"project_name": "Job Orchestra Configuration",
-		"project_version": { "identifier": "2.0" },
+		"project_version": load_project_version(environment["git_executable"], "2.0"),
 	}
-
-	branch = subprocess.check_output([ environment["git_executable"], "rev-parse", "--abbrev-ref", "HEAD" ]).decode("utf-8").strip()
-	revision = subprocess.check_output([ environment["git_executable"], "rev-parse", "--short=10", "HEAD" ]).decode("utf-8").strip()
-	revision_date = int(subprocess.check_output([ environment["git_executable"], "show", "--no-patch", "--format=%ct", revision ]).decode("utf-8").strip())
-	revision_date = datetime.datetime.utcfromtimestamp(revision_date).replace(microsecond = 0).isoformat() + "Z"
-
-	configuration["project_version"]["branch"] = branch
-	configuration["project_version"]["revision"] = revision
-	configuration["project_version"]["date"] = revision_date
-	configuration["project_version"]["numeric"] = "{identifier}".format(**configuration["project_version"])
-	configuration["project_version"]["full"] = "{identifier}+{revision}".format(**configuration["project_version"])
 
 	configuration["author"] = "Benjamin Hamon"
 	configuration["author_email"] = "hamon.benjamin@gmail.com"
@@ -49,17 +39,44 @@ def load_configuration(environment):
 
 	configuration["project_identifier_for_artifact_server"] = "JobOrchestra-Configuration"
 
-	configuration["filesets"] = {
+	configuration["artifact_directory"] = "artifacts"
+
+	configuration["filesets"] = load_filesets(configuration)
+	configuration["artifacts"] = load_artifacts(configuration)
+
+	return configuration
+
+
+def load_project_version(git_executable, identifier):
+	branch = subprocess.check_output([ git_executable, "rev-parse", "--abbrev-ref", "HEAD" ], universal_newlines = True).strip()
+	revision = subprocess.check_output([ git_executable, "rev-parse", "--short=10", "HEAD" ], universal_newlines = True).strip()
+	revision_date = int(subprocess.check_output([ git_executable, "show", "--no-patch", "--format=%ct", revision ], universal_newlines = True).strip())
+	revision_date = datetime.datetime.utcfromtimestamp(revision_date).replace(microsecond = 0).isoformat() + "Z"
+
+	return {
+		"identifier": identifier,
+		"numeric": identifier,
+		"full": identifier + "+" + revision,
+		"branch": branch,
+		"revision": revision,
+		"date": revision_date,
+	}
+
+
+def load_filesets(configuration):
+	return {
 		"distribution": {
-			"path_in_workspace": os.path.join(".artifacts", "distributions", "{component}"),
+			"path_in_workspace": os.path.join(configuration["artifact_directory"], "distributions", "{component}"),
 			"file_functions": [ _list_distribution_files ],
 		},
 	}
 
-	configuration["artifacts"] = {
+
+def load_artifacts(configuration):
+	return {
 		"package": {
-			"file_name": "{project}_{version}_package",
-			"installation_directory": ".artifacts/distributions",
+			"file_name": "{project}_{version}+{revision}_package",
+			"installation_directory": os.path.join(configuration["artifact_directory"], "distributions"),
 			"path_in_repository": "packages",
 
 			"filesets": [
@@ -75,8 +92,6 @@ def load_configuration(environment):
 			],
 		},
 	}
-
-	return configuration
 
 
 def get_setuptools_parameters(configuration):
@@ -101,6 +116,7 @@ def load_commands():
 		"development.commands.clean",
 		"development.commands.develop",
 		"development.commands.distribute",
+		"development.commands.info",
 		"development.commands.lint",
 	]
 
@@ -122,6 +138,7 @@ def import_command(module_name):
 
 
 def _list_distribution_files(path_in_workspace, parameters):
-	archive_name = "{component}-{version}-py3-none-any.whl"
-	archive_name = archive_name.format(component = parameters["component"].replace("-", "_"), version = parameters["version"])
+	parameters = copy.deepcopy(parameters)
+	parameters["component"] = parameters["component"].replace("-", "_")
+	archive_name = "{component}-{version}+{revision}-py3-none-any.whl".format(**parameters)
 	return [ os.path.join(path_in_workspace, archive_name) ]
