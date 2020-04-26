@@ -15,11 +15,12 @@ parameters = development.configuration.get_setuptools_parameters(configuration_i
 
 
 parameters.update({
-	"name": "bhamon-build-worker-scripts",
-	"description": "Scripts for build workers",
+	"name": "bhamon-orchestra-worker-scripts",
+	"description": "Scripts for workers",
 
 	"packages": [
-		"bhamon_build_worker_scripts",
+		"bhamon_orchestra_worker_scripts",
+		"bhamon_orchestra_worker_scripts/examples",
 	],
 
 	"python_requires": "~= 3.5",

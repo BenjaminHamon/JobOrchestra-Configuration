@@ -14,16 +14,22 @@ configuration_instance = development.configuration.load_configuration(environmen
 parameters = development.configuration.get_setuptools_parameters(configuration_instance)
 
 
+resource_patterns = [ 'static/**/*.css', 'static/**/*.js', 'templates/**/*.html' ]
+
 parameters.update({
-	"name": "bhamon-build-configuration",
-	"description": "Configuration for the build master",
+	"name": "bhamon-orchestra-configuration",
+	"description": "Configuration for the Job Orchestra master",
 
 	"packages": [
-		"bhamon_build_configuration",
-		"bhamon_build_configuration/projects",
+		"bhamon_orchestra_configuration",
+		"bhamon_orchestra_configuration/projects",
 	],
 
 	"python_requires": "~= 3.5",
+
+	"package_data": {
+		"bhamon_orchestra_configuration": development.configuration.list_package_data("bhamon_orchestra_configuration", resource_patterns),
+	},
 })
 
 setuptools.setup(**parameters)
