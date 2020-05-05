@@ -11,7 +11,7 @@ def load_configuration(environment):
 	configuration = {
 		"project_identifier": "bhamon-orchestra-configuration",
 		"project_name": "Job Orchestra Configuration",
-		"project_version": load_project_version(environment["git_executable"], "2.0"),
+		"project_version": load_project_version(environment["git_executable"], "3.0"),
 	}
 
 	configuration["author"] = "Benjamin Hamon"
@@ -24,12 +24,12 @@ def load_configuration(environment):
 	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
 
 	configuration["project_dependencies"] = [
-		"bhamon-orchestra-cli ~= 2.0",
-		"bhamon-orchestra-model ~= 2.0",
-		"bhamon-orchestra-master ~= 2.0",
-		"bhamon-orchestra-service ~= 2.0",
-		"bhamon-orchestra-website ~= 2.0",
-		"bhamon-orchestra-worker ~= 2.0",
+		"bhamon-orchestra-cli ~= 3.0",
+		"bhamon-orchestra-model ~= 3.0",
+		"bhamon-orchestra-master ~= 3.0",
+		"bhamon-orchestra-service ~= 3.0",
+		"bhamon-orchestra-website ~= 3.0",
+		"bhamon-orchestra-worker ~= 3.0",
 	]
 
 	configuration["components"] = [
