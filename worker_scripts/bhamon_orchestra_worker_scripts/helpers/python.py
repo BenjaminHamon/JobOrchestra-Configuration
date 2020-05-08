@@ -1,6 +1,7 @@
 import logging
 import os
 import platform
+import shutil
 import subprocess
 
 
@@ -9,6 +10,9 @@ logger = logging.getLogger("Python")
 
 def setup_virtual_environment(python_system_executable):
 	logger.info("Setting up python virtual environment")
+
+	if os.path.exists(".venv"):
+		shutil.rmtree(".venv")
 
 	setup_venv_command = [ python_system_executable, "-m", "venv", ".venv" ]
 	logger.info("+ %s", " ".join(setup_venv_command))
