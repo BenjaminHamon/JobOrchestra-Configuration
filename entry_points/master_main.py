@@ -22,6 +22,7 @@ from bhamon_orchestra_model.worker_provider import WorkerProvider
 
 import bhamon_orchestra_master
 
+import bhamon_orchestra_configuration
 from bhamon_orchestra_configuration.worker_selector import WorkerSelector
 
 import environment
@@ -41,6 +42,7 @@ def main():
 
 	with filelock.FileLock("master.lock", 5):
 		logger.info("Job Orchestra %s", bhamon_orchestra_master.__version__)
+		logger.info("Configuration %s", bhamon_orchestra_configuration.__version__)
 		application = create_application(configuration)
 		application.run()
 
