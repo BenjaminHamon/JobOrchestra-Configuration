@@ -62,7 +62,7 @@ def check():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
-	project_entry_point = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
@@ -94,7 +94,7 @@ def distribute():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
-	project_entry_point = [ ".venv/scripts/python", "-u", "scripts/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
