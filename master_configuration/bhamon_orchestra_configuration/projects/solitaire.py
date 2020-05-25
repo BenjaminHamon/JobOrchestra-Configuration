@@ -110,6 +110,7 @@ def package(target_platform, configuration):
 	job["steps"] = [
 		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters },
 		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
+		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
 		{ "name": "build", "command": project_entry_point + [ "package", "--platform", target_platform.capitalize(), "--configuration", configuration.capitalize() ] },
 		{ "name": "package", "command": project_entry_point + [ "artifact", "package" ] + artifact_parameters },
 		{ "name": "verify", "command": project_entry_point + [ "artifact", "verify" ] + artifact_parameters },
