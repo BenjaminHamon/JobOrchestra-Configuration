@@ -24,7 +24,7 @@ def main():
 	environment.configure_logging(logging.INFO)
 	arguments = parse_arguments()
 
-	with open(arguments.configuration, "r") as configuration_file:
+	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
 	environment.configure_log_file(configuration["orchestra_website_log_file_path"], logging.INFO)
 

@@ -6,9 +6,9 @@ import requests
 
 def main():
 	arguments = parse_arguments()
-	with open(arguments.configuration, "r") as configuration_file:
+	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
-	with open(arguments.authentication, "r") as authentication_file:
+	with open(arguments.authentication, mode = "r", encoding = "utf-8") as authentication_file:
 		authentication = json.load(authentication_file)
 
 	response = send_request(

@@ -23,7 +23,7 @@ def main():
 	arguments = parse_arguments()
 	executor_script = os.path.abspath(os.path.join(os.path.dirname(__file__), "executor_main.py"))
 
-	with open(arguments.configuration, "r") as configuration_file:
+	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
 
 	worker_path = configuration["orchestra_workers"][arguments.identifier]["path"]
@@ -80,7 +80,7 @@ def write_local_configuration(global_configuration):
 		"python_package_repository_web_url": global_configuration["python_package_repository_web_url"],
 	}
 
-	with open(configuration_file_path, "w") as configuration_file:
+	with open(configuration_file_path, mode = "w", encoding = "utf-8") as configuration_file:
 		json.dump(local_configuration, configuration_file, indent = 4)
 
 
@@ -88,7 +88,7 @@ def load_authentication():
 	authentication_file_path = "authentication.json"
 
 	if os.path.exists(authentication_file_path):
-		with open(authentication_file_path, "r") as authentication_file:
+		with open(authentication_file_path, mode = "r", encoding = "utf-8") as authentication_file:
 			return json.load(authentication_file)
 
 	authentication = {
@@ -96,7 +96,7 @@ def load_authentication():
 		"secret": getpass.getpass("Secret: "),
 	}
 
-	with open(authentication_file_path, "w") as authentication_file:
+	with open(authentication_file_path, mode = "w", encoding = "utf-8") as authentication_file:
 		json.dump(authentication, authentication_file, indent = 4)
 
 	return authentication

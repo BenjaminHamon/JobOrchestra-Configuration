@@ -11,9 +11,9 @@ def main():
 	environment.configure_logging(logging.INFO)
 	arguments = parse_arguments()
 
-	with open(arguments.configuration, "r") as configuration_file:
+	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
-	with open(configuration["authentication_file_path"], "r") as authentication_file:
+	with open(configuration["authentication_file_path"], mode = "r", encoding = "utf-8") as authentication_file:
 		authentication = json.load(authentication_file)
 
 	controller_instance = Controller(configuration["orchestra_service_url"], (authentication["user"], authentication["secret"]))

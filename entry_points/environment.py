@@ -85,5 +85,5 @@ def load_environment():
 def load_transform(transform_file_path):
 	if not os.path.exists(transform_file_path):
 		return {}
-	with open(transform_file_path) as transform_file:
+	with open(transform_file_path, mode = "r", encoding = "utf-8") as transform_file:
 		return json.load(transform_file)

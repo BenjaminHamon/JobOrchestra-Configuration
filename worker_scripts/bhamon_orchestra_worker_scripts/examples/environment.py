@@ -16,7 +16,7 @@ def main():
 	environment_instance = environment.load_environment()
 
 	arguments = parse_arguments()
-	with open(arguments.configuration, "r") as configuration_file:
+	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		worker_configuration = json.load(configuration_file)
 
 	# Prevent active pyvenv from overriding a python executable specified in a command

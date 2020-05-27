@@ -17,7 +17,7 @@ def main():
 	environment_instance = environment.load_environment()
 
 	arguments = parse_arguments()
-	with open(arguments.configuration, "r") as configuration_file:
+	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		worker_configuration = json.load(configuration_file)
 
 	# Prevent active pyvenv from overriding a python executable specified in a command
@@ -60,7 +60,7 @@ def configure_workspace_environment(worker_configuration):
 	for key, value in workspace_environment.items():
 		logger.info("%s: '%s'", key, value)
 
-	with open("environment.json", "w") as workspace_environment_file:
+	with open("environment.json", mode = "w", encoding = "utf-8") as workspace_environment_file:
 		json.dump(workspace_environment, workspace_environment_file, indent = 4)
 
 
