@@ -23,7 +23,8 @@ def configure_jobs():
 		exception(),
 		environment(),
 		parameters(),
-		html_log(),
+		log_with_special_characters(),
+		log_with_html(),
 		large_log(),
 		large_log_random(),
 		slow_log(),
@@ -186,10 +187,30 @@ def parameters():
 	}
 
 
-def html_log():
+def log_with_special_characters():
 	return {
-		"identifier": "html-log",
-		"display_name": "HTML Log",
+		"identifier": "log-with-special-characters",
+		"display_name": "Log with Special Characters",
+		"description": "Example job generating log files containing special characters.",
+		"workspace": "example",
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+
+		"parameters": [],
+
+		"steps": [
+			{ "name": "write", "command": [ worker_python_executable, "-c", "print('… é ² √ 👍')" ] },
+		],
+	}
+
+
+def log_with_html():
+	return {
+		"identifier": "log-with-html",
+		"display_name": "Log with HTML",
 		"description": "Example job generating log files containing html.",
 		"workspace": "example",
 
@@ -201,7 +222,7 @@ def html_log():
 		"parameters": [],
 
 		"steps": [
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('<p>hello</p>')" ] },
+			{ "name": "write", "command": [ worker_python_executable, "-c", "print('<p>hello</p>')" ] },
 		],
 	}
 
