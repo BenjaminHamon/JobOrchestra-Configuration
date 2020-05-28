@@ -19,8 +19,9 @@ logger = logging.getLogger("Worker")
 
 
 def main():
-	environment.configure_logging(logging.INFO)
 	arguments = parse_arguments()
+	environment_instance = environment.load_environment()
+	environment.configure_logging(environment_instance, arguments)
 	executor_script = os.path.abspath(os.path.join(os.path.dirname(__file__), "executor_main.py"))
 
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
@@ -33,7 +34,7 @@ def main():
 	os.chdir(worker_path)
 
 	with filelock.FileLock("worker.lock", 5):
-		environment.configure_log_file(worker_log_path, logging.INFO)
+		environment.configure_log_file(environment_instance, worker_log_path)
 		logger.info("Job Orchestra %s", bhamon_orchestra_worker.__version__)
 		worker_instance = create_application(arguments.identifier, configuration, executor_script)
 		worker_instance.run()

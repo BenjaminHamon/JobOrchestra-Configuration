@@ -29,12 +29,14 @@ logger = logging.getLogger("Service")
 
 
 def main():
-	environment.configure_logging(logging.INFO)
 	arguments = parse_arguments()
+	environment_instance = environment.load_environment()
+	environment.configure_logging(environment_instance, arguments)
 
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
-	environment.configure_log_file(configuration["orchestra_service_log_file_path"], logging.INFO)
+
+	environment.configure_log_file(environment_instance, configuration["orchestra_service_log_file_path"])
 
 	development_options = {
 		"debug": True,

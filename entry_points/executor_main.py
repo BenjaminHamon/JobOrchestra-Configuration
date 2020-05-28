@@ -18,9 +18,9 @@ logger = logging.getLogger("Executor")
 
 def main():
 	arguments = parse_arguments()
-	environment.configure_logging(logging.INFO)
-
 	environment_instance = environment.load_environment()
+	environment.configure_logging(environment_instance, arguments)
+
 	environment_instance["orchestra_worker_configuration"] = os.path.join(os.getcwd(), "worker.json").replace("\\", "/")
 	environment_instance["orchestra_worker_python_executable"] = sys.executable.replace("\\", "/")
 
