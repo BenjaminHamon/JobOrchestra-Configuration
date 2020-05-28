@@ -62,11 +62,11 @@ def configure_workspace_environment(worker_configuration):
 		"artifact_server_parameters": worker_configuration["artifact_server_parameters"],
 	}
 
-	for key, value in workspace_environment.items():
-		logger.info("%s: '%s'", key, value)
+	for key, value in sorted(workspace_environment.items()):
+		logger.info("%s: %s", key, value.__repr__())
 
 	with open("environment.json", mode = "w", encoding = "utf-8") as workspace_environment_file:
-		json.dump(workspace_environment, workspace_environment_file, indent = 4)
+		json.dump(workspace_environment, workspace_environment_file, indent = 4, sort_keys = True)
 
 
 def resolve_controller_revision(repository, revision, result_file_path):

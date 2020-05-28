@@ -57,11 +57,11 @@ def configure_workspace_environment(worker_configuration):
 		"python_package_repository_web_url": worker_configuration["python_package_repository_web_url"],
 	}
 
-	for key, value in workspace_environment.items():
-		logger.info("%s: '%s'", key, value)
+	for key, value in sorted(workspace_environment.items()):
+		logger.info("%s: %s", key, value.__repr__())
 
 	with open("environment.json", mode = "w", encoding = "utf-8") as workspace_environment_file:
-		json.dump(workspace_environment, workspace_environment_file, indent = 4)
+		json.dump(workspace_environment, workspace_environment_file, indent = 4, sort_keys = True)
 
 
 if __name__ == "__main__":
