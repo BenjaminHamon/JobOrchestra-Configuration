@@ -7,9 +7,13 @@ from bhamon_orchestra_worker.controller import Controller
 import bhamon_orchestra_worker_scripts.environment as environment
 
 
+logger = logging.getLogger("Main")
+
+
 def main():
-	environment.configure_logging(logging.INFO)
 	arguments = parse_arguments()
+	environment_instance = environment.load_environment()
+	environment.configure_logging(environment_instance, None)
 
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)

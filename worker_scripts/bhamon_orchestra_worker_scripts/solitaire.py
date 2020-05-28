@@ -16,10 +16,10 @@ logger = logging.getLogger("Main")
 
 
 def main():
-	environment.configure_logging(logging.INFO)
-	environment_instance = environment.load_environment()
-
 	arguments = parse_arguments()
+	environment_instance = environment.load_environment()
+	environment.configure_logging(environment_instance, None)
+
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		worker_configuration = json.load(configuration_file)
 
