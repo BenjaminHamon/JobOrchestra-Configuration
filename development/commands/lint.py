@@ -20,6 +20,8 @@ def configure_argument_parser(environment, configuration, subparsers): # pylint:
 
 
 def run(environment, configuration, arguments): # pylint: disable = unused-argument
+	python_executable = environment["python3_executable"]
+
 	session_success = True
 	result_directory = os.path.join(configuration["artifact_directory"], "lint_results")
 
@@ -29,8 +31,7 @@ def run(environment, configuration, arguments): # pylint: disable = unused-argum
 		os.makedirs(os.path.join(result_directory, arguments.identifier))
 
 	for component in configuration["components"]:
-		pylint_results = python_lint.run_pylint(environment["python3_executable"], result_directory, arguments.identifier,
-				component["name"].replace("-", "_"), simulate = arguments.simulate)
+		pylint_results = python_lint.run_pylint(python_executable, result_directory, arguments.identifier, component["name"].replace("-", "_"), simulate = arguments.simulate)
 		if not pylint_results["success"]:
 			session_success = False
 
@@ -45,6 +46,10 @@ def run(environment, configuration, arguments): # pylint: disable = unused-argum
 				session_success = False
 
 			print("")
+
+	pylint_results = python_lint.run_pylint(python_executable, result_directory, arguments.identifier, "entry_points", simulate = arguments.simulate)
+	if not pylint_results["success"]:
+		session_success = False
 
 	if arguments.results:
 		save_results(arguments.results, result_directory, arguments.identifier, simulate = arguments.simulate)
