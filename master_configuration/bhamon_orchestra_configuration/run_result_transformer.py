@@ -5,6 +5,9 @@ logger = logging.getLogger("RunResultTransformer")
 
 
 def transform_run_results(project, run_results):
+	if run_results is None:
+		return None
+
 	if "revision_control" in project["services"]:
 		if "revision_control" in run_results:
 			run_results["revision_control"]["url"] = _get_revision_url(project, run_results["revision_control"]["revision"])
