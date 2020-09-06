@@ -21,7 +21,7 @@ def load_configuration(environment):
 
 	configuration["development_toolkit"] = "git+https://github.com/BenjaminHamon/DevelopmentToolkit@{revision}#subdirectory=toolkit"
 	configuration["development_toolkit_revision"] = "5e12ab4651373b0399201075ea9e78cb0015b091"
-	configuration["development_dependencies"] = [ "pylint", "pymongo", "wheel" ]
+	configuration["development_dependencies"] = [ "psycopg2", "pylint", "pymongo", "SQLAlchemy", "wheel" ]
 
 	configuration["project_dependencies"] = [
 		"bhamon-orchestra-cli ~= 3.0",

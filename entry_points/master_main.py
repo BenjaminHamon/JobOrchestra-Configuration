@@ -1,5 +1,6 @@
 import argparse
 import functools
+import importlib
 import json
 import logging
 
@@ -61,7 +62,12 @@ def create_application(configuration): # pylint: disable = too-many-locals
 		"python_package_repository_url": configuration["python_package_repository_web_url"],
 	}
 
-	database_client_factory = environment.create_database_client_factory(configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"])
+	database_metadata = None
+	if configuration["orchestra_database_uri"].startswith("postgresql://"):
+		database_metadata = importlib.import_module("bhamon_orchestra_model.database.sql_database_model").metadata
+
+	database_client_factory = environment.create_database_client_factory(
+			configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"], database_metadata)
 	file_storage_instance = FileStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
 
