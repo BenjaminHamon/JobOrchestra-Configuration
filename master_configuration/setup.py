@@ -25,7 +25,7 @@ parameters.update({
 		"bhamon_orchestra_configuration/projects",
 	],
 
-	"python_requires": "~= 3.5",
+	"python_requires": "~= 3.7",
 
 	"package_data": {
 		"bhamon_orchestra_configuration": development.configuration.list_package_data("bhamon_orchestra_configuration", resource_patterns),

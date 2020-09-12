@@ -24,7 +24,7 @@ parameters.update({
 		"bhamon_orchestra_worker_scripts/helpers",
 	],
 
-	"python_requires": "~= 3.5",
+	"python_requires": "~= 3.7",
 })
 
 setuptools.setup(**parameters)
