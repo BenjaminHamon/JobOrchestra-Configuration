@@ -43,11 +43,24 @@ def configure_jobs():
 
 
 def check():
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+
 	job = {
 		"identifier": "check",
 		"display_name": "Check",
 		"description": "Run checks for the MyWebsite project.",
-		"workspace": "my-website",
+
+		"definition": {
+			"commands": [
+				initialization_entry_point + initialization_parameters,
+				project_entry_point + [ "clean" ],
+				project_entry_point + [ "develop" ],
+				project_entry_point + [ "lint" ],
+			],
+		},
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
@@ -58,51 +71,40 @@ def check():
 			{ "key": "revision", "description": "Revision for the source repository" },
 		],
 	}
-
-	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
-	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
-	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
-	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
-
-	job["steps"] = [
-		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
-		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
-		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
-		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
-	]
 
 	return job
 
 
 def distribute():
-	job = {
-		"identifier": "distribute",
-		"display_name": "Distribute",
-		"description": "Generate and upload distribution packages for the MyWebsite project.",
-		"workspace": "my-website",
-
-		"properties": {
-			"operating_system": [ "linux", "windows" ],
-			"is_controller": False,
-		},
-
-		"parameters": [
-			{ "key": "revision", "description": "Revision for the source repository" },
-		],
-	}
-
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
-	job["steps"] = [
-		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
-		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
-		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
-		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
-		{ "name": "package", "command": project_entry_point + [ "distribute", "package"] },
-		{ "name": "upload", "command": project_entry_point + [ "distribute", "upload"] },
-	]
+	job = {
+		"identifier": "distribute",
+		"display_name": "Distribute",
+		"description": "Generate and upload distribution packages for the MyWebsite project.",
+
+		"definition": {
+			"commands": [
+				initialization_entry_point + initialization_parameters,
+				project_entry_point + [ "clean" ],
+				project_entry_point + [ "develop" ],
+				project_entry_point + [ "lint" ],
+				project_entry_point + [ "distribute", "package"],
+				project_entry_point + [ "distribute", "upload"],
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+	}
 
 	return job

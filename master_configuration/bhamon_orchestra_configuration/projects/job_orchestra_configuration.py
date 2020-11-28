@@ -48,102 +48,105 @@ def configure_jobs():
 
 
 def check(platform):
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+
 	job = {
 		"identifier": "check_%s" % platform,
 		"display_name": "Check %s" % platform.capitalize(),
 		"description": "Run checks for the JobOrchestra-Configuration-Configuration project on %s." % platform.capitalize(),
-		"workspace": "job-orchestra-configuration",
+
+		"definition": {
+			"commands": [
+				initialization_entry_point + initialization_parameters,
+				project_entry_point + [ "clean" ],
+				project_entry_point + [ "develop" ],
+				project_entry_point + [ "lint" ],
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
 
 		"properties": {
 			"operating_system": [ platform ],
 			"is_controller": False,
 		},
-
-		"parameters": [
-			{ "key": "revision", "description": "Revision for the source repository" },
-		],
 	}
-
-	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
-	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
-	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
-	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
-
-	job["steps"] = [
-		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
-		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
-		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
-		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
-	]
 
 	return job
 
 
 def package():
-	job = {
-		"identifier": "package",
-		"display_name": "Package",
-		"description": "Generate distribution packages for the JobOrchestra-Configuration project.",
-		"workspace": "job-orchestra-configuration",
-
-		"properties": {
-			"operating_system": [ "linux", "windows" ],
-			"is_controller": False,
-		},
-
-		"parameters": [
-			{ "key": "revision", "description": "Revision for the source repository" },
-		],
-	}
-
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
-	job["steps"] = [
-		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
-		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
-		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
-		{ "name": "lint", "command": project_entry_point + [ "lint" ] },
-		{ "name": "distribute package", "command": project_entry_point + [ "distribute", "package" ] },
-		{ "name": "artifact package", "command": project_entry_point + [ "artifact", "package", "package" ] },
-		{ "name": "artifact verify", "command": project_entry_point + [ "artifact", "verify", "package" ] },
-		{ "name": "artifact upload", "command": project_entry_point + [ "artifact", "upload", "package" ] },
-	]
+	job = {
+		"identifier": "package",
+		"display_name": "Package",
+		"description": "Generate distribution packages for the JobOrchestra-Configuration project.",
+
+		"definition": {
+			"commands": [
+				initialization_entry_point + initialization_parameters,
+				project_entry_point + [ "clean" ],
+				project_entry_point + [ "develop" ],
+				project_entry_point + [ "lint" ],
+				project_entry_point + [ "distribute", "package" ],
+				project_entry_point + [ "artifact", "package", "package" ],
+				project_entry_point + [ "artifact", "verify", "package" ],
+				project_entry_point + [ "artifact", "upload", "package" ],
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+	}
 
 	return job
 
 
 def distribute():
-	job = {
-		"identifier": "distribute",
-		"display_name": "Distribute",
-		"description": "Upload distribution packages for the JobOrchestra-Configuration project to the python package repository.",
-		"workspace": "job-orchestra-configuration",
-
-		"properties": {
-			"operating_system": [ "linux", "windows" ],
-			"is_controller": False,
-		},
-
-		"parameters": [
-			{ "key": "revision", "description": "Revision for the source repository" },
-		],
-	}
-
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
-	job["steps"] = [
-		{ "name": "initialize", "command": initialization_entry_point + initialization_parameters},
-		{ "name": "clean", "command": project_entry_point + [ "clean" ] },
-		{ "name": "develop", "command": project_entry_point + [ "develop" ] },
-		{ "name": "artifact download", "command": project_entry_point + [ "artifact", "download", "package" ] },
-		{ "name": "artifact install", "command": project_entry_point + [ "artifact", "install", "package" ] },
-		{ "name": "distribute upload", "command": project_entry_point + [ "distribute", "upload" ] },
-	]
+	job = {
+		"identifier": "distribute",
+		"display_name": "Distribute",
+		"description": "Upload distribution packages for the JobOrchestra-Configuration project to the python package repository.",
+
+		"definition": {
+			"commands": [
+				initialization_entry_point + initialization_parameters,
+				project_entry_point + [ "clean" ],
+				project_entry_point + [ "develop" ],
+				project_entry_point + [ "artifact", "download", "package" ],
+				project_entry_point + [ "artifact", "install", "package" ],
+				project_entry_point + [ "distribute", "upload" ],
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
+	}
 
 	return job

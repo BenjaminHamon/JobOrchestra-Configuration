@@ -38,15 +38,15 @@ def empty():
 		"identifier": "empty",
 		"display_name": "Empty",
 		"description": "Example job doing nothing.",
-		"workspace": "example",
+
+		"definition": { "commands": [] },
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-		"steps": [],
 	}
 
 
@@ -55,19 +55,20 @@ def hello():
 		"identifier": "hello",
 		"display_name": "Hello",
 		"description": "Example job printing hello.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "import sys; print('hello from stderr', file = sys.stderr)" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "hello_stderr", "command": [ worker_python_executable, "-c", "import sys; print('hello from stderr', file = sys.stderr)" ] },
-		],
 	}
 
 
@@ -76,20 +77,21 @@ def sleep():
 		"identifier": "sleep",
 		"display_name": "Sleep",
 		"description": "Example job sleeping for a few seconds.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "import time; time.sleep(60)" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "sleep", "command": [ worker_python_executable, "-c", "import time; time.sleep(60)" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-		],
 	}
 
 
@@ -98,22 +100,23 @@ def failure():
 		"identifier": "failure",
 		"display_name": "Failure",
 		"description": "Example job with a failing step.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "raise RuntimeError" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "fail", "command": [ worker_python_executable, "-c", "raise RuntimeError" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-		],
 	}
 
 
@@ -122,22 +125,23 @@ def exception():
 		"identifier": "exception",
 		"display_name": "Exception",
 		"description": "Example job with a configuration error.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "print('{undefined}')" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+				[ worker_python_executable, "-c", "print('hello')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "exception", "command": [ worker_python_executable, "-c", "print('{undefined}')" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('hello')" ] },
-		],
 	}
 
 
@@ -150,18 +154,19 @@ def environment():
 		"identifier": "environment",
 		"display_name": "Environment",
 		"description": "Example job using environment.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				command + command_parameters,
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "initialization", "command": command + command_parameters },
-		],
 	}
 
 
@@ -170,20 +175,21 @@ def parameters():
 		"identifier": "parameters",
 		"display_name": "Parameters",
 		"description": "Example job with parameters.",
-		"workspace": "example",
 
-		"properties": {
-			"operating_system": [ "linux", "windows" ],
-			"is_controller": False,
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('{parameters[text_to_print]}')" ],
+			],
 		},
 
 		"parameters": [
 			{ "key": "text_to_print", "description": "Text to write to log" },
 		],
 
-		"steps": [
-			{ "name": "hello", "command": [ worker_python_executable, "-c", "print('{parameters[text_to_print]}')" ] },
-		],
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": False,
+		},
 	}
 
 
@@ -192,18 +198,19 @@ def log_with_special_characters():
 		"identifier": "log-with-special-characters",
 		"display_name": "Log with Special Characters",
 		"description": "Example job generating log files containing special characters.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('… é ² √ 👍')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "write", "command": [ worker_python_executable, "-c", "print('… é ² √ 👍')" ] },
-		],
 	}
 
 
@@ -212,18 +219,19 @@ def log_with_html():
 		"identifier": "log-with-html",
 		"display_name": "Log with HTML",
 		"description": "Example job generating log files containing html.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "print('<p>hello</p>')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "write", "command": [ worker_python_executable, "-c", "print('<p>hello</p>')" ] },
-		],
 	}
 
 
@@ -232,18 +240,19 @@ def large_log():
 		"identifier": "large-log",
 		"display_name": "Large Log",
 		"description": "Example job generating large log files.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "write", "command": [ worker_python_executable, "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ] },
-		],
 	}
 
 
@@ -252,18 +261,19 @@ def large_log_random():
 		"identifier": "large-log-random",
 		"display_name": "Large Log Random",
 		"description": "Example job generating large log files with random content.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "write", "command": [ worker_python_executable, "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ] },
-		],
 	}
 
 
@@ -272,18 +282,19 @@ def slow_log():
 		"identifier": "slow_log",
 		"display_name": "Slow Log",
 		"description": "Example job generating a log over some time.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				[ worker_python_executable, "-u", "-m", "bhamon_orchestra_worker_scripts.examples.slow_log" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "initialization", "command": [ worker_python_executable, "-u", "-m", "bhamon_orchestra_worker_scripts.examples.slow_log" ] },
-		],
 	}
 
 
@@ -296,21 +307,22 @@ def controller_success():
 		"identifier": "controller-success",
 		"display_name": "Controller Success",
 		"description": "Example controller job.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters,
+				controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters,
+				controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters,
+				controller_entry_point + [ "wait" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "trigger_hello", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters },
-			{ "name": "trigger_sleep", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters },
-			{ "name": "trigger_hello", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters },
-			{ "name": "wait", "command": controller_entry_point + [ "wait" ] },
-		],
 	}
 
 
@@ -323,21 +335,22 @@ def controller_failure():
 		"identifier": "controller-failure",
 		"display_name": "Controller Failure",
 		"description": "Example controller job.",
-		"workspace": "example",
+
+		"definition": {
+			"commands": [
+				controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters,
+				controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters,
+				controller_entry_point + [ "trigger", "--project", "example", "--job", "failure" ] + trigger_source_parameters,
+				controller_entry_point + [ "wait" ],
+			],
+		},
+
+		"parameters": [],
 
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
 		},
-
-		"parameters": [],
-
-		"steps": [
-			{ "name": "trigger_hello", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters },
-			{ "name": "trigger_sleep", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters },
-			{ "name": "trigger_failure", "command": controller_entry_point + [ "trigger", "--project", "example", "--job", "failure" ] + trigger_source_parameters },
-			{ "name": "wait", "command": controller_entry_point + [ "wait" ] },
-		],
 	}
 
 
