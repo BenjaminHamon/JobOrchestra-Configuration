@@ -6,13 +6,10 @@ import logging
 
 import filelock
 
-from bhamon_orchestra_master.job_scheduler import JobScheduler
-from bhamon_orchestra_master.master import Master
-from bhamon_orchestra_master.protocol import WebSocketServerProtocol
-from bhamon_orchestra_master.supervisor import Supervisor
+from bhamon_orchestra_model.application import AsyncioApplication
 from bhamon_orchestra_model.authentication_provider import AuthenticationProvider
 from bhamon_orchestra_model.authorization_provider import AuthorizationProvider
-from bhamon_orchestra_model.database.file_storage import FileStorage
+from bhamon_orchestra_model.database.file_data_storage import FileDataStorage
 from bhamon_orchestra_model.date_time_provider import DateTimeProvider
 from bhamon_orchestra_model.job_provider import JobProvider
 from bhamon_orchestra_model.project_provider import ProjectProvider
@@ -22,6 +19,10 @@ from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
 import bhamon_orchestra_master
+from bhamon_orchestra_master.job_scheduler import JobScheduler
+from bhamon_orchestra_master.master import Master
+from bhamon_orchestra_master.protocol import WebSocketServerProtocol
+from bhamon_orchestra_master.supervisor import Supervisor
 
 import bhamon_orchestra_configuration
 from bhamon_orchestra_configuration.worker_selector import WorkerSelector
@@ -30,7 +31,7 @@ import environment
 import master_configuration
 
 
-logger = logging.getLogger("Master")
+logger = logging.getLogger("Main")
 
 
 def main():
@@ -38,16 +39,29 @@ def main():
 	environment_instance = environment.load_environment()
 	environment.configure_logging(environment_instance, arguments)
 
+	application_title = bhamon_orchestra_master.__product__ + " " + "Master"
+	application_version = bhamon_orchestra_master.__version__
+
+	configuration_title = bhamon_orchestra_master.__product__ + " " + "Master Configuration"
+	configuration_version = bhamon_orchestra_configuration.__version__
+
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
 
-	environment.configure_log_file(environment_instance, configuration["orchestra_master_log_file_path"])
-
 	with filelock.FileLock("master.lock", 5):
-		logger.info("Job Orchestra %s", bhamon_orchestra_master.__version__)
-		logger.info("Configuration %s", bhamon_orchestra_configuration.__version__)
-		application = create_application(configuration)
-		application.run()
+		environment.configure_log_file(environment_instance, configuration["orchestra_master_log_file_path"])
+
+		logging.getLogger("Application").info("%s %s", configuration_title, configuration_version)
+
+		master_environment = {
+			"artifact_server_url": configuration["artifact_server_web_url"],
+			"python_package_repository_url": configuration["python_package_repository_web_url"],
+		}
+
+		master_application = create_application(configuration)
+		master_application.apply_configuration(master_configuration.configure(master_environment))
+		asyncio_application = AsyncioApplication(application_title, application_version)
+		asyncio_application.run_as_standalone(master_application.run())
 
 
 def parse_arguments():
@@ -57,25 +71,20 @@ def parse_arguments():
 
 
 def create_application(configuration): # pylint: disable = too-many-locals
-	environment_instance = {
-		"artifact_server_url": configuration["artifact_server_web_url"],
-		"python_package_repository_url": configuration["python_package_repository_web_url"],
-	}
-
 	database_metadata = None
 	if configuration["orchestra_database_uri"].startswith("postgresql://"):
 		database_metadata = importlib.import_module("bhamon_orchestra_model.database.sql_database_model").metadata
 
 	database_client_factory = environment.create_database_client_factory(
 			configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"], database_metadata)
-	file_storage_instance = FileStorage(configuration["orchestra_file_storage_path"])
+	data_storage_instance = FileDataStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
 
 	authentication_provider_instance = AuthenticationProvider(date_time_provider_instance)
 	authorization_provider_instance = AuthorizationProvider()
 	job_provider_instance = JobProvider(date_time_provider_instance)
 	project_provider_instance = ProjectProvider(date_time_provider_instance)
-	run_provider_instance = RunProvider(file_storage_instance, date_time_provider_instance)
+	run_provider_instance = RunProvider(data_storage_instance, date_time_provider_instance)
 	schedule_provider_instance = ScheduleProvider(date_time_provider_instance)
 	user_provider_instance = UserProvider(date_time_provider_instance)
 	worker_provider_instance = WorkerProvider(date_time_provider_instance)
@@ -122,8 +131,6 @@ def create_application(configuration): # pylint: disable = too-many-locals
 		job_scheduler = job_scheduler_instance,
 		supervisor = supervisor_instance,
 	)
-
-	master_instance.apply_configuration(master_configuration.configure(environment_instance))
 
 	return master_instance
 

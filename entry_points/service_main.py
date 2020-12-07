@@ -7,7 +7,7 @@ import flask
 
 from bhamon_orchestra_model.authentication_provider import AuthenticationProvider
 from bhamon_orchestra_model.authorization_provider import AuthorizationProvider
-from bhamon_orchestra_model.database.file_storage import FileStorage
+from bhamon_orchestra_model.database.file_data_storage import FileDataStorage
 from bhamon_orchestra_model.date_time_provider import DateTimeProvider
 from bhamon_orchestra_model.file_server_client import FileServerClient
 from bhamon_orchestra_model.job_provider import JobProvider
@@ -26,13 +26,16 @@ import bhamon_orchestra_configuration.run_result_transformer as run_result_trans
 import environment
 
 
-logger = logging.getLogger("Service")
+logger = logging.getLogger("Main")
 
 
 def main():
 	arguments = parse_arguments()
 	environment_instance = environment.load_environment()
 	environment.configure_logging(environment_instance, arguments)
+
+	application_title = bhamon_orchestra_service.__product__ + " " + "Service"
+	application_version = bhamon_orchestra_service.__version__
 
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
 		configuration = json.load(configuration_file)
@@ -45,7 +48,8 @@ def main():
 		"port": configuration["orchestra_service_listen_port"],
 	}
 
-	logger.info("Job Orchestra %s", bhamon_orchestra_service.__version__)
+	logging.getLogger("Application").info("%s %s", application_title, application_version)
+
 	application = create_application(configuration)
 	application.run(**development_options)
 
@@ -63,7 +67,7 @@ def create_application(configuration):
 
 	database_client_factory = environment.create_database_client_factory(
 			configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"], database_metadata)
-	file_storage_instance = FileStorage(configuration["orchestra_file_storage_path"])
+	data_storage_instance = FileDataStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
 
 	application = flask.Flask(__name__)
@@ -72,7 +76,7 @@ def create_application(configuration):
 	application.authorization_provider = AuthorizationProvider()
 	application.job_provider = JobProvider(date_time_provider_instance)
 	application.project_provider = ProjectProvider(date_time_provider_instance)
-	application.run_provider = RunProvider(file_storage_instance, date_time_provider_instance)
+	application.run_provider = RunProvider(data_storage_instance, date_time_provider_instance)
 	application.schedule_provider = ScheduleProvider(date_time_provider_instance)
 	application.user_provider = UserProvider(date_time_provider_instance)
 	application.worker_provider = WorkerProvider(date_time_provider_instance)

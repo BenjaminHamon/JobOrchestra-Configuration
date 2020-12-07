@@ -8,20 +8,27 @@ import socket
 
 import filelock
 
-from bhamon_orchestra_worker.worker import Worker
+from bhamon_orchestra_model.application import AsyncioApplication
+from bhamon_orchestra_model.database.file_data_storage import FileDataStorage
 
 import bhamon_orchestra_worker
+from bhamon_orchestra_worker.master_client import MasterClient
+from bhamon_orchestra_worker.worker import Worker
+from bhamon_orchestra_worker.worker_storage import WorkerStorage
 
 import environment
 
 
-logger = logging.getLogger("Worker")
+logger = logging.getLogger("Main")
 
 
 def main():
 	arguments = parse_arguments()
 	environment_instance = environment.load_environment()
 	environment.configure_logging(environment_instance, arguments)
+
+	application_title = bhamon_orchestra_worker.__product__ + " " + "Worker"
+	application_version = bhamon_orchestra_worker.__version__
 	executor_script = os.path.abspath(os.path.join(os.path.dirname(__file__), "executor_main.py"))
 
 	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
@@ -29,15 +36,16 @@ def main():
 
 	worker_path = configuration["orchestra_workers"][arguments.identifier]["path"]
 	worker_log_path = configuration["orchestra_workers"][arguments.identifier]["log"]
+
 	os.makedirs(worker_path, exist_ok = True)
 
 	os.chdir(worker_path)
 
 	with filelock.FileLock("worker.lock", 5):
 		environment.configure_log_file(environment_instance, worker_log_path)
-		logger.info("Job Orchestra %s", bhamon_orchestra_worker.__version__)
-		worker_instance = create_application(arguments.identifier, configuration, executor_script)
-		worker_instance.run()
+		worker_application = create_application(arguments.identifier, configuration, executor_script)
+		asyncio_application = AsyncioApplication(application_title, application_version)
+		asyncio_application.run_as_standalone(worker_application.run())
 
 
 def parse_arguments():
@@ -56,15 +64,26 @@ def create_application(local_worker_identifier, configuration, executor_script):
 	authentication = load_authentication()
 	properties = load_properties(worker_definition)
 
-	return Worker(
-		identifier = worker_identifier,
+	data_storage_instance = FileDataStorage(".")
+	worker_storage_instance = WorkerStorage(data_storage_instance)
+
+	master_client_instance = MasterClient(
 		master_uri = configuration["orchestra_master_url"],
+		worker_identifier = worker_identifier,
+		worker_version = bhamon_orchestra_worker.__version__,
 		user = authentication["user"],
 		secret = authentication["secret"],
+	)
+
+	worker_instance = Worker(
+		storage = worker_storage_instance,
+		master_client = master_client_instance,
 		display_name = worker_display_name,
 		properties = properties,
 		executor_script = executor_script,
 	)
+
+	return worker_instance
 
 
 def write_local_configuration(global_configuration):
