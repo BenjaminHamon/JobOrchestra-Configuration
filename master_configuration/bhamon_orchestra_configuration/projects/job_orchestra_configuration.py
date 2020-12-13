@@ -59,6 +59,8 @@ def check(platform):
 		"description": "Run checks for the JobOrchestra-Configuration-Configuration project on %s." % platform.capitalize(),
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
@@ -92,6 +94,8 @@ def package():
 		"description": "Generate distribution packages for the JobOrchestra-Configuration project.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
@@ -129,6 +133,8 @@ def distribute():
 		"description": "Upload distribution packages for the JobOrchestra-Configuration project to the python package repository.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],

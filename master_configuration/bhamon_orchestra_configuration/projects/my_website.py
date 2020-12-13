@@ -54,6 +54,8 @@ def check():
 		"description": "Run checks for the MyWebsite project.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
@@ -87,6 +89,8 @@ def distribute():
 		"description": "Generate and upload distribution packages for the MyWebsite project.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],

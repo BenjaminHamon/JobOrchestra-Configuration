@@ -60,6 +60,8 @@ def controller():
 		"description": "Trigger all jobs for the Solitaire project.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_android_debug" ] + trigger_source_parameters,
@@ -98,6 +100,8 @@ def package(target_platform, configuration):
 		"description": "Build and package the Solitaire project for %s and with the %s configuration." % (target_platform.capitalize(), configuration.capitalize()),
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],

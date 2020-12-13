@@ -59,6 +59,8 @@ def controller():
 		"description": "Trigger all jobs for the ImageManager project.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "package_debug" ] + trigger_source_parameters,
@@ -92,6 +94,8 @@ def package(configuration):
 		"description": "Build and package the ImageManager project with the %s configuration." % configuration.capitalize(),
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
@@ -130,6 +134,8 @@ def release():
 		"description": "Build and package the ImageManager project for release.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],

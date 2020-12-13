@@ -39,7 +39,10 @@ def empty():
 		"display_name": "Empty",
 		"description": "Example job doing nothing.",
 
-		"definition": { "commands": [] },
+		"definition": {
+			"type": "job",
+			"commands": [],
+		},
 
 		"parameters": [],
 
@@ -57,6 +60,8 @@ def hello():
 		"description": "Example job printing hello.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('hello')" ],
 				[ worker_python_executable, "-c", "import sys; print('hello from stderr', file = sys.stderr)" ],
@@ -79,6 +84,8 @@ def sleep():
 		"description": "Example job sleeping for a few seconds.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('hello')" ],
 				[ worker_python_executable, "-c", "import time; time.sleep(60)" ],
@@ -102,6 +109,8 @@ def failure():
 		"description": "Example job with a failing step.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('hello')" ],
 				[ worker_python_executable, "-c", "print('hello')" ],
@@ -127,6 +136,8 @@ def exception():
 		"description": "Example job with a configuration error.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('hello')" ],
 				[ worker_python_executable, "-c", "print('hello')" ],
@@ -156,6 +167,8 @@ def environment():
 		"description": "Example job using environment.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				command + command_parameters,
 			],
@@ -177,6 +190,8 @@ def parameters():
 		"description": "Example job with parameters.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('{parameters[text_to_print]}')" ],
 			],
@@ -200,6 +215,8 @@ def log_with_special_characters():
 		"description": "Example job generating log files containing special characters.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('… é ² √ 👍')" ],
 			],
@@ -221,6 +238,8 @@ def log_with_html():
 		"description": "Example job generating log files containing html.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "print('<p>hello</p>')" ],
 			],
@@ -242,6 +261,8 @@ def large_log():
 		"description": "Example job generating large log files.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "for i in range(1000 * 1000): print('Testing for large log files')" ],
 			],
@@ -263,6 +284,8 @@ def large_log_random():
 		"description": "Example job generating large log files with random content.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-c", "exec('import uuid\\nfor i in range(1000 * 1000): print(uuid.uuid4())')" ],
 			],
@@ -284,6 +307,8 @@ def slow_log():
 		"description": "Example job generating a log over some time.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				[ worker_python_executable, "-u", "-m", "bhamon_orchestra_worker_scripts.examples.slow_log" ],
 			],
@@ -309,6 +334,8 @@ def controller_success():
 		"description": "Example controller job.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters,
 				controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters,
@@ -337,6 +364,8 @@ def controller_failure():
 		"description": "Example controller job.",
 
 		"definition": {
+			"type": "job",
+
 			"commands": [
 				controller_entry_point + [ "trigger", "--project", "example", "--job", "hello" ] + trigger_source_parameters,
 				controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters,
