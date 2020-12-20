@@ -1,6 +1,5 @@
 repository = "https://github.com/BenjaminHamon/Overmind.Solitaire"
 
-controller_script = "bhamon_orchestra_worker_scripts.controller"
 initialization_script = "bhamon_orchestra_worker_scripts.solitaire"
 
 worker_configuration_path = "{environment[orchestra_worker_configuration]}"
@@ -36,7 +35,7 @@ def configure_services(environment):
 
 def configure_jobs():
 	return [
-		controller(),
+		development_pipeline(),
 		package("android", "debug"),
 		package("android", "release"),
 		package("linux", "debug"),
@@ -46,31 +45,41 @@ def configure_jobs():
 	]
 
 
-def controller():
+def development_pipeline():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
-	controller_entry_point = [ worker_python_executable, "-u", "-m", controller_script ]
-	controller_entry_point += [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
-	trigger_source_parameters = [ "--source-project", "{project_identifier}", "--source-run", "{run_identifier}" ]
 
 	job = {
-		"identifier": "controller",
-		"display_name": "Controller",
-		"description": "Trigger all jobs for the Solitaire project.",
+		"identifier": "development_pipeline",
+		"display_name": "Development Pipeline",
+		"description": "Run jobs for development.",
 
 		"definition": {
-			"type": "job",
+			"type": "pipeline",
 
-			"commands": [
+			"setup_commands": [
 				initialization_entry_point + initialization_parameters,
-				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_android_debug" ] + trigger_source_parameters,
-				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_android_release" ] + trigger_source_parameters,
-				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_linux_debug" ] + trigger_source_parameters,
-				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_linux_release" ] + trigger_source_parameters,
-				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_windows_debug" ] + trigger_source_parameters,
-				controller_entry_point + [ "trigger", "--project", "solitaire", "--job", "package_windows_release" ] + trigger_source_parameters,
-				controller_entry_point + [ "wait" ],
+			],
+
+			"elements": [
+				{
+					"identifier": "package_android_debug",
+					"job": "package_android_debug",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
+
+				{
+					"identifier": "package_linux_debug",
+					"job": "package_linux_debug",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
+
+				{
+					"identifier": "package_windows_debug",
+					"job": "package_windows_debug",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
 			],
 		},
 
