@@ -30,6 +30,11 @@ def configure_jobs():
 		slow_log(),
 		controller_success(),
 		controller_failure(),
+		pipeline_success(),
+		pipeline_failure(),
+		pipeline_complex_1(),
+		pipeline_complex_2(),
+		pipeline_complex_3(),
 	]
 
 
@@ -371,6 +376,370 @@ def controller_failure():
 				controller_entry_point + [ "trigger", "--project", "example", "--job", "sleep" ] + trigger_source_parameters,
 				controller_entry_point + [ "trigger", "--project", "example", "--job", "failure" ] + trigger_source_parameters,
 				controller_entry_point + [ "wait" ],
+			],
+		},
+
+		"parameters": [],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+
+def pipeline_success():
+	return {
+		"identifier": "pipeline-success",
+		"display_name": "Pipeline Success",
+		"description": "Example pipeline job.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"elements": [
+				{ "identifier": "hello-1", "job": "hello" },
+				{ "identifier": "hello-2", "job": "hello", "after": [ { "element": "hello-1", "status": "succeeded" } ] },
+				{ "identifier": "hello-3", "job": "hello", "after": [ { "element": "hello-2", "status": "succeeded" } ] },
+			],
+		},
+
+		"parameters": [],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+
+def pipeline_failure():
+	return {
+		"identifier": "pipeline-failure",
+		"display_name": "Pipeline Failure",
+		"description": "Example pipeline job.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"elements": [
+				{ "identifier": "hello-before", "job": "hello" },
+				{ "identifier": "failure", "job": "failure", "after": [ { "element": "hello-before", "status": "succeeded" } ] },
+				{ "identifier": "hello-after", "job": "hello", "after": [ { "element": "failure", "status": "succeeded" } ] },
+			],
+		},
+
+		"parameters": [],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+
+def pipeline_complex_1():
+	return {
+		"identifier": "pipeline-complex-1",
+		"display_name": "Pipeline Complex 1",
+		"description": "Example pipeline job.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"elements": [
+				{
+					"identifier": "stage-1-job-1",
+					"job": "hello",
+				},
+
+				{
+					"identifier": "stage-2-job-1",
+					"job": "hello",
+					"after": [ { "element": "stage-1-job-1", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "stage-2-job-2",
+					"job": "hello",
+					"after": [ { "element": "stage-1-job-1", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "stage-2-job-3",
+					"job": "hello",
+					"after": [ { "element": "stage-1-job-1", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "stage-3-job-1",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-job-1", "status": "succeeded" },
+						{ "element": "stage-2-job-2", "status": "succeeded" },
+						{ "element": "stage-2-job-3", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-job-2",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-job-1", "status": "succeeded" },
+						{ "element": "stage-2-job-2", "status": "succeeded" },
+						{ "element": "stage-2-job-3", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-4-job-1",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-3-job-1", "status": "succeeded" },
+						{ "element": "stage-3-job-2", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-4-job-2",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-3-job-1", "status": "succeeded" },
+						{ "element": "stage-3-job-2", "status": "succeeded" },
+					],
+				},
+			],
+		},
+
+		"parameters": [],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+
+def pipeline_complex_2():
+	return {
+		"identifier": "pipeline-complex-2",
+		"display_name": "Pipeline Complex 2",
+		"description": "Example pipeline job.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"elements": [
+				{
+					"identifier": "stage-1-job-1",
+					"job": "hello",
+				},
+
+				{
+					"identifier": "stage-1-job-2",
+					"job": "hello",
+				},
+
+				{
+					"identifier": "stage-2-job-1",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-1-job-2", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-2-job-2",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-1-job-2", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-2-job-3",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-1-job-2", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-2-job-4",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-1-job-2", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-job-1",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-job-1", "status": "succeeded" },
+						{ "element": "stage-2-job-2", "status": "succeeded" },
+						{ "element": "stage-2-job-3", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-job-2",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-job-1", "status": "succeeded" },
+						{ "element": "stage-2-job-2", "status": "succeeded" },
+						{ "element": "stage-2-job-3", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-job-3",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-job-4", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-4-job-1",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-3-job-1", "status": "succeeded" },
+						{ "element": "stage-3-job-2", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-4-job-2",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-job-1", "status": "succeeded" },
+						{ "element": "stage-2-job-4", "status": "succeeded" },
+					],
+				},
+			],
+		},
+
+		"parameters": [],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+
+def pipeline_complex_3():
+	return {
+		"identifier": "pipeline-complex-3",
+		"display_name": "Pipeline Complex 3",
+		"description": "Example pipeline job.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"elements": [
+				{
+					"identifier": "stage-1-check",
+					"job": "hello",
+				},
+
+				{
+					"identifier": "stage-2-build-linux",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-check", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-2-build-mac",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-check", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-2-build-windows",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-1-check", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-test-linux",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-build-linux", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-test-mac",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-build-mac", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-3-test-windows",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-build-windows", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-4-upload-steam",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-2-build-linux", "status": "succeeded" },
+						{ "element": "stage-2-build-mac", "status": "succeeded" },
+						{ "element": "stage-2-build-windows", "status": "succeeded" },
+						{ "element": "stage-3-test-linux", "status": "succeeded" },
+						{ "element": "stage-3-test-mac", "status": "succeeded" },
+						{ "element": "stage-3-test-windows", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "stage-5-release-steam",
+					"job": "hello",
+
+					"after": [
+						{ "element": "stage-4-upload-steam", "status": "succeeded" },
+					],
+				},
 			],
 		},
 
