@@ -39,8 +39,8 @@ def configure_services(environment):
 def configure_jobs():
 	return [
 		controller(),
-		package("debug"),
-		package("release"),
+		build("debug"),
+		build("release"),
 		release(),
 	]
 
@@ -63,8 +63,8 @@ def controller():
 
 			"commands": [
 				initialization_entry_point + initialization_parameters,
-				controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "package_debug" ] + trigger_source_parameters,
-				controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "package_release" ] + trigger_source_parameters,
+				controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "build_debug" ] + trigger_source_parameters,
+				controller_entry_point + [ "trigger", "--project", "image-manager", "--job", "build_release" ] + trigger_source_parameters,
 				controller_entry_point + [ "wait" ],
 			],
 		},
@@ -82,16 +82,16 @@ def controller():
 	return job
 
 
-def package(configuration):
+def build(configuration):
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
 	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job = {
-		"identifier": "package_%s" % configuration,
-		"display_name": "Package %s" % configuration.capitalize(),
-		"description": "Build and package the ImageManager project with the %s configuration." % configuration.capitalize(),
+		"identifier": "build_%s" % configuration,
+		"display_name": "Build %s" % configuration.capitalize(),
+		"description": "Build the ImageManager project with the %s configuration." % configuration.capitalize(),
 
 		"definition": {
 			"type": "job",
@@ -103,9 +103,8 @@ def package(configuration):
 				project_entry_point + [ "metadata" ],
 				project_entry_point + [ "compile", "--configuration", configuration.capitalize() ],
 				project_entry_point + [ "test", "--configuration", configuration.capitalize() ],
-				project_entry_point + [ "artifact", "package", "package", "--parameters", "configuration=" + configuration.capitalize() ],
-				project_entry_point + [ "artifact", "verify", "package", "--parameters", "configuration=" + configuration.capitalize() ],
-				project_entry_point + [ "artifact", "upload", "package", "--parameters", "configuration=" + configuration.capitalize() ],
+				project_entry_point + [ "artifact", "package+verify+upload", "binaries", "--parameters", "assembly=WallpaperService", "configuration=" + configuration.capitalize() ],
+				project_entry_point + [ "artifact", "package+verify+upload", "binaries", "--parameters", "assembly=WindowsClient", "configuration=" + configuration.capitalize() ],
 			],
 		},
 
@@ -131,7 +130,7 @@ def release():
 	job = {
 		"identifier": "release",
 		"display_name": "Release",
-		"description": "Build and package the ImageManager project for release.",
+		"description": "Package the ImageManager project for release.",
 
 		"definition": {
 			"type": "job",
@@ -140,20 +139,9 @@ def release():
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
 				project_entry_point + [ "develop" ],
-				project_entry_point + [ "metadata" ],
-				project_entry_point + [ "compile", "--configuration", "Debug" ],
-				project_entry_point + [ "test", "--configuration", "Debug" ],
-				project_entry_point + [ "compile", "--configuration", "Release" ],
-				project_entry_point + [ "test", "--configuration", "Release" ],
-				project_entry_point + [ "artifact", "package", "package", "--parameters", "configuration=Debug" ],
-				project_entry_point + [ "artifact", "verify", "package", "--parameters", "configuration=Debug" ],
-				project_entry_point + [ "artifact", "upload", "package", "--parameters", "configuration=Debug" ],
-				project_entry_point + [ "artifact", "package", "package", "--parameters", "configuration=Release" ],
-				project_entry_point + [ "artifact", "verify", "package", "--parameters", "configuration=Release" ],
-				project_entry_point + [ "artifact", "upload", "package", "--parameters", "configuration=Release" ],
-				project_entry_point + [ "artifact", "package", "package_final", "--parameters", "configuration=Release" ],
-				project_entry_point + [ "artifact", "verify", "package_final", "--parameters", "configuration=Release" ],
-				project_entry_point + [ "artifact", "upload", "package_final", "--parameters", "configuration=Release" ],
+				project_entry_point + [ "artifact", "download+install", "binaries", "--parameters", "assembly=WallpaperService", "configuration=Release" ],
+				project_entry_point + [ "artifact", "download+install", "binaries", "--parameters", "assembly=WindowsClient", "configuration=Release" ],
+				project_entry_point + [ "artifact", "package+verify+upload", "package_final", "--parameters", "configuration=Release" ],
 			],
 		},
 
