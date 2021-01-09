@@ -93,6 +93,9 @@ def configure_workspace_environment(worker_configuration):
 	with open("environment.json", mode = "w", encoding = "utf-8") as workspace_environment_file:
 		json.dump(workspace_environment, workspace_environment_file, indent = 4, sort_keys = True)
 
+	if worker_configuration["python_package_repository_web_url"].startswith("http://"):
+		python_helpers.configure_unsecure_package_repository(worker_configuration["python_package_repository_web_url"])
+
 
 if __name__ == "__main__":
 	main()
