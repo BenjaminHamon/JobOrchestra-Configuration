@@ -40,6 +40,8 @@ def configure_services(environment):
 
 def configure_jobs():
 	return [
+		development_pipeline(),
+		release_pipeline(),
 		check("linux"),
 		check("windows"),
 		package(),
@@ -47,10 +49,132 @@ def configure_jobs():
 	]
 
 
+def development_pipeline():
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
+
+	job = {
+		"identifier": "development_pipeline",
+		"display_name": "Development Pipeline",
+		"description": "Run jobs for development.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"setup_commands": [
+				initialization_entry_point + initialization_parameters,
+			],
+
+			"elements": [
+				{
+					"identifier": "check_linux",
+					"job": "check_linux",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
+
+				{
+					"identifier": "check_windows",
+					"job": "check_windows",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
+
+				{
+					"identifier": "package",
+					"job": "package",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+
+					"after": [
+						{ "element": "check_linux", "status": "succeeded" },
+						{ "element": "check_windows", "status": "succeeded" },
+					],
+				},
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+	return job
+
+
+def release_pipeline():
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "controller", "--repository", repository, "--revision", "{parameters[revision]}" ]
+
+	job = {
+		"identifier": "release_pipeline",
+		"display_name": "Release Pipeline",
+		"description": "Run jobs for release.",
+
+		"definition": {
+			"type": "pipeline",
+
+			"setup_commands": [
+				initialization_entry_point + initialization_parameters,
+			],
+
+			"elements": [
+				{
+					"identifier": "check_linux",
+					"job": "check_linux",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
+
+				{
+					"identifier": "check_windows",
+					"job": "check_windows",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+				},
+
+				{
+					"identifier": "package",
+					"job": "package",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+
+					"after": [
+						{ "element": "check_linux", "status": "succeeded" },
+						{ "element": "check_windows", "status": "succeeded" },
+					],
+				},
+
+				{
+					"identifier": "distribute",
+					"job": "distribute",
+					"parameters": { "revision": "{results[revision_control][revision]}" },
+
+					"after": [
+						{ "element": "package", "status": "succeeded" },
+					],
+				},
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+
+		"properties": {
+			"operating_system": [ "linux", "windows" ],
+			"is_controller": True,
+		},
+	}
+
+	return job
+
+
 def check(platform):
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
-	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job = {
@@ -85,7 +209,7 @@ def check(platform):
 def package():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
-	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job = {
@@ -100,11 +224,8 @@ def package():
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
 				project_entry_point + [ "develop" ],
-				project_entry_point + [ "lint" ],
 				project_entry_point + [ "distribute", "package" ],
-				project_entry_point + [ "artifact", "package", "package" ],
-				project_entry_point + [ "artifact", "verify", "package" ],
-				project_entry_point + [ "artifact", "upload", "package" ],
+				project_entry_point + [ "artifact", "package+verify+upload", "package" ],
 			],
 		},
 
@@ -124,7 +245,7 @@ def package():
 def distribute():
 	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
 	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
-	initialization_parameters += [ "--repository", repository, "--revision", "{parameters[revision]}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
 	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
 
 	job = {
@@ -139,8 +260,7 @@ def distribute():
 				initialization_entry_point + initialization_parameters,
 				project_entry_point + [ "clean" ],
 				project_entry_point + [ "develop" ],
-				project_entry_point + [ "artifact", "download", "package" ],
-				project_entry_point + [ "artifact", "install", "package" ],
+				project_entry_point + [ "artifact", "download+install", "package" ],
 				project_entry_point + [ "distribute", "upload" ],
 			],
 		},
