@@ -48,6 +48,12 @@ def configure_jobs():
 		check("windows", "3.7"),
 		check("windows", "3.8"),
 		check("windows", "3.9"),
+		test("linux", "3.7"),
+		test("linux", "3.8"),
+		test("linux", "3.9"),
+		test("windows", "3.7"),
+		test("windows", "3.8"),
+		test("windows", "3.9"),
 		package(),
 		distribute(),
 	]
@@ -108,18 +114,102 @@ def development_pipeline():
 				},
 
 				{
+					"identifier": "test_linux_python-3.7",
+					"job": "test_linux_python-3.7",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
+					"after": [ { "element": "check_linux_python-3.7", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test_linux_python-3.8",
+					"job": "test_linux_python-3.8",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
+					"after": [ { "element": "check_linux_python-3.8", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test_linux_python-3.9",
+					"job": "test_linux_python-3.9",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
+					"after": [ { "element": "check_linux_python-3.9", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test_windows_python-3.7",
+					"job": "test_windows_python-3.7",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
+					"after": [ { "element": "check_windows_python-3.7", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test_windows_python-3.8",
+					"job": "test_windows_python-3.8",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
+					"after": [ { "element": "check_windows_python-3.8", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test_windows_python-3.9",
+					"job": "test_windows_python-3.9",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
+					"after": [ { "element": "check_windows_python-3.9", "status": "succeeded" } ],
+				},
+
+				{
 					"identifier": "package",
 					"job": "package",
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "check_linux_python-3.7", "status": "succeeded" },
-						{ "element": "check_linux_python-3.8", "status": "succeeded" },
-						{ "element": "check_linux_python-3.9", "status": "succeeded" },
-						{ "element": "check_windows_python-3.7", "status": "succeeded" },
-						{ "element": "check_windows_python-3.8", "status": "succeeded" },
-						{ "element": "check_windows_python-3.9", "status": "succeeded" },
+						{ "element": "test_linux_python-3.7", "status": "succeeded" },
+						{ "element": "test_linux_python-3.8", "status": "succeeded" },
+						{ "element": "test_linux_python-3.9", "status": "succeeded" },
+						{ "element": "test_windows_python-3.7", "status": "succeeded" },
+						{ "element": "test_windows_python-3.8", "status": "succeeded" },
+						{ "element": "test_windows_python-3.9", "status": "succeeded" },
 					],
+				},
+
+				{
+					"identifier": "test-integration_linux_python-3.7",
+					"job": "test_linux_python-3.7",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
+					"after": [ { "element": "package", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test-integration_linux_python-3.8",
+					"job": "test_linux_python-3.8",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
+					"after": [ { "element": "package", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test-integration_linux_python-3.9",
+					"job": "test_linux_python-3.9",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
+					"after": [ { "element": "package", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test-integration_windows_python-3.7",
+					"job": "test_windows_python-3.7",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
+					"after": [ { "element": "package", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test-integration_windows_python-3.8",
+					"job": "test_windows_python-3.8",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
+					"after": [ { "element": "package", "status": "succeeded" } ],
+				},
+
+				{
+					"identifier": "test-integration_windows_python-3.9",
+					"job": "test_windows_python-3.9",
+					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
+					"after": [ { "element": "package", "status": "succeeded" } ],
 				},
 			],
 		},
@@ -251,12 +341,48 @@ def check(platform, python_version):
 				project_entry_point + [ "clean" ],
 				project_entry_point + [ "develop" ],
 				project_entry_point + [ "lint" ],
-				project_entry_point + [ "test" ],
 			],
 		},
 
 		"parameters": [
 			{ "key": "revision", "description": "Revision for the source repository" },
+		],
+
+		"properties": {
+			"operating_system": [ platform ],
+			"is_controller": False,
+		},
+	}
+
+	return job
+
+
+def test(platform, python_version):
+	initialization_entry_point = [ worker_python_executable, "-u", "-m", initialization_script ]
+	initialization_parameters = [ "--configuration", worker_configuration_path, "--results", "{result_file_path}" ]
+	initialization_parameters += [ "--type", "worker", "--repository", repository, "--revision", "{parameters[revision]}" ]
+	initialization_parameters += [ "--python-version", python_version ]
+	project_entry_point = [ ".venv/scripts/python", "-u", "development/main.py", "--verbosity", "debug", "--results", "{result_file_path}" ]
+
+	job = {
+		"identifier": "test_%s_python-%s" % (platform, python_version),
+		"display_name": "Test for %s with Python %s" % (platform.capitalize(), python_version),
+		"description": "Run tests for the JobOrchestra project on %s." % platform.capitalize(),
+
+		"definition": {
+			"type": "job",
+
+			"commands": [
+				initialization_entry_point + initialization_parameters,
+				project_entry_point + [ "clean" ],
+				project_entry_point + [ "develop" ],
+				project_entry_point + [ "test", "--filter", "{parameters[filter]}" ],
+			],
+		},
+
+		"parameters": [
+			{ "key": "revision", "description": "Revision for the source repository" },
+			{ "key": "filter", "description": "Filter for which tests to run" },
 		],
 
 		"properties": {
