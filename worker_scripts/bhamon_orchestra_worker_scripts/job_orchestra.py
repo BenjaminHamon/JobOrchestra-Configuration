@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import sys
 
 from bhamon_orchestra_model.revision_control.github import GitHubClient
 from bhamon_orchestra_worker.revision_control.git import GitClient
@@ -31,18 +32,21 @@ def main():
 		setup_for_controller(arguments.repository, arguments.revision, arguments.results)
 
 	elif arguments.type == "worker":
-		python_system_executable = environment_instance["python3_system_executable"]
+		python_system_executable = python_helpers.find_system_python(arguments.python_version)
 		git_client_instance = GitClient(environment_instance["git_executable"])
 		setup_for_worker(python_system_executable, git_client_instance, worker_configuration, arguments.repository, arguments.revision, arguments.results)
 
 
 def parse_arguments():
+	default_python_version = str(sys.version_info.major) + "." + str(sys.version_info.minor)
+
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--configuration", required = True, metavar = "<path>", help = "set the worker configuration file path")
 	parser.add_argument("--type", required = True, choices = [ "controller", "worker" ], help = "set the workspace type (controller, worker)")
 	parser.add_argument("--repository", required = True, metavar = "<uri>", help = "set the repository uri to clone")
 	parser.add_argument("--revision", required = True, metavar = "<revision>", help = "set the revision to update to")
 	parser.add_argument("--results", required = True, metavar = "<path>", help = "set the file path where to store the run results")
+	parser.add_argument("--python-version", default = default_python_version, metavar = "<version>", help = "set the python version to use")
 	return parser.parse_args()
 
 
