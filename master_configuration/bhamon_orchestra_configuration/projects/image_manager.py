@@ -84,6 +84,7 @@ def development_pipeline():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
+			"include_in_status": True,
 		},
 	}
 
@@ -140,6 +141,7 @@ def release_pipeline():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
+			"include_in_status": True,
 		},
 	}
 
@@ -179,6 +181,7 @@ def build(configuration):
 		"properties": {
 			"operating_system": [ "windows" ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 
@@ -216,6 +219,7 @@ def release():
 		"properties": {
 			"operating_system": [ "windows" ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 

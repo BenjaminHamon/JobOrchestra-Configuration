@@ -221,6 +221,7 @@ def development_pipeline():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
+			"include_in_status": True,
 		},
 	}
 
@@ -315,6 +316,7 @@ def release_pipeline():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
+			"include_in_status": True,
 		},
 	}
 
@@ -351,6 +353,7 @@ def check(platform, python_version):
 		"properties": {
 			"operating_system": [ platform ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 
@@ -388,6 +391,7 @@ def test(platform, python_version):
 		"properties": {
 			"operating_system": [ platform ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 
@@ -424,6 +428,7 @@ def package():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 
@@ -460,6 +465,7 @@ def distribute():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 

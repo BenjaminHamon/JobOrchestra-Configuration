@@ -90,6 +90,7 @@ def development_pipeline():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": True,
+			"include_in_status": True,
 		},
 	}
 
@@ -129,6 +130,7 @@ def package(target_platform, configuration):
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
+			"include_in_status": False,
 		},
 	}
 

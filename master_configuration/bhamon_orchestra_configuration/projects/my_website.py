@@ -67,6 +67,7 @@ def check():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
+			"include_in_status": True,
 		},
 
 		"parameters": [
@@ -108,6 +109,7 @@ def distribute():
 		"properties": {
 			"operating_system": [ "linux", "windows" ],
 			"is_controller": False,
+			"include_in_status": True,
 		},
 	}
 
