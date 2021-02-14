@@ -10,7 +10,7 @@ def configure_project():
 		"display_name": "Example",
 		"jobs": configure_jobs(),
 		"schedules": configure_schedules(),
-		"services": [],
+		"services": {},
 	}
 
 
