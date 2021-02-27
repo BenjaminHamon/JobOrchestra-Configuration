@@ -28,6 +28,7 @@ import bhamon_orchestra_configuration
 from bhamon_orchestra_configuration.worker_selector import WorkerSelector
 
 import environment
+import factory
 import master_configuration
 
 
@@ -75,8 +76,12 @@ def create_application(configuration): # pylint: disable = too-many-locals
 	if configuration["orchestra_database_uri"].startswith("postgresql://"):
 		database_metadata = importlib.import_module("bhamon_orchestra_model.database.sql_database_model").metadata
 
-	database_client_factory = environment.create_database_client_factory(
-			configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"], database_metadata)
+	database_client_factory = factory.create_database_client_factory(
+		database_uri = configuration["orchestra_database_uri"],
+		database_authentication = configuration["orchestra_database_authentication"],
+		database_metadata = database_metadata,
+	)
+
 	data_storage_instance = FileDataStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
 

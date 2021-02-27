@@ -24,6 +24,7 @@ import bhamon_orchestra_service.service as service
 import bhamon_orchestra_configuration.run_result_transformer as run_result_transformer
 
 import environment
+import factory
 
 
 logger = logging.getLogger("Main")
@@ -65,8 +66,12 @@ def create_application(configuration):
 	if configuration["orchestra_database_uri"].startswith("postgresql://"):
 		database_metadata = importlib.import_module("bhamon_orchestra_model.database.sql_database_model").metadata
 
-	database_client_factory = environment.create_database_client_factory(
-			configuration["orchestra_database_uri"], configuration["orchestra_database_authentication"], database_metadata)
+	database_client_factory = factory.create_database_client_factory(
+		database_uri = configuration["orchestra_database_uri"],
+		database_authentication = configuration["orchestra_database_authentication"],
+		database_metadata = database_metadata,
+	)
+
 	data_storage_instance = FileDataStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
 
