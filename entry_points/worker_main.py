@@ -5,6 +5,7 @@ import logging
 import os
 import platform
 import socket
+import sys
 
 import filelock
 
@@ -75,12 +76,14 @@ def create_application(local_worker_identifier, configuration, executor_script):
 		secret = authentication["secret"],
 	)
 
+	executor_command_factory = lambda run_request: [ sys.executable, executor_script, run_request["run_identifier"] ]
+
 	worker_instance = Worker(
 		storage = worker_storage_instance,
 		master_client = master_client_instance,
 		display_name = worker_display_name,
 		properties = properties,
-		executor_script = executor_script,
+		executor_command_factory = executor_command_factory,
 	)
 
 	return worker_instance
