@@ -399,8 +399,8 @@ def pipeline_success():
 
 			"elements": [
 				{ "identifier": "hello-1", "job": "hello" },
-				{ "identifier": "hello-2", "job": "hello", "after": [ { "element": "hello-1", "status": "succeeded" } ] },
-				{ "identifier": "hello-3", "job": "hello", "after": [ { "element": "hello-2", "status": "succeeded" } ] },
+				{ "identifier": "hello-2", "job": "hello", "after": [ { "element": "hello-1", "status": [ "succeeded" ] } ] },
+				{ "identifier": "hello-3", "job": "hello", "after": [ { "element": "hello-2", "status": [ "succeeded" ] } ] },
 			],
 		},
 
@@ -424,8 +424,8 @@ def pipeline_failure():
 
 			"elements": [
 				{ "identifier": "hello-before", "job": "hello" },
-				{ "identifier": "failure", "job": "failure", "after": [ { "element": "hello-before", "status": "succeeded" } ] },
-				{ "identifier": "hello-after", "job": "hello", "after": [ { "element": "failure", "status": "succeeded" } ] },
+				{ "identifier": "failure", "job": "failure", "after": [ { "element": "hello-before", "status": [ "succeeded" ] } ] },
+				{ "identifier": "hello-after", "job": "hello", "after": [ { "element": "failure", "status": [ "succeeded" ] } ] },
 			],
 		},
 
@@ -456,19 +456,19 @@ def pipeline_complex_1():
 				{
 					"identifier": "stage-2-job-1",
 					"job": "hello",
-					"after": [ { "element": "stage-1-job-1", "status": "succeeded" } ],
+					"after": [ { "element": "stage-1-job-1", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "stage-2-job-2",
 					"job": "hello",
-					"after": [ { "element": "stage-1-job-1", "status": "succeeded" } ],
+					"after": [ { "element": "stage-1-job-1", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "stage-2-job-3",
 					"job": "hello",
-					"after": [ { "element": "stage-1-job-1", "status": "succeeded" } ],
+					"after": [ { "element": "stage-1-job-1", "status": [ "succeeded" ] } ],
 				},
 
 				{
@@ -476,9 +476,9 @@ def pipeline_complex_1():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-job-1", "status": "succeeded" },
-						{ "element": "stage-2-job-2", "status": "succeeded" },
-						{ "element": "stage-2-job-3", "status": "succeeded" },
+						{ "element": "stage-2-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-2", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-3", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -487,9 +487,9 @@ def pipeline_complex_1():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-job-1", "status": "succeeded" },
-						{ "element": "stage-2-job-2", "status": "succeeded" },
-						{ "element": "stage-2-job-3", "status": "succeeded" },
+						{ "element": "stage-2-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-2", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-3", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -498,9 +498,9 @@ def pipeline_complex_1():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-3-job-1", "status": "succeeded" },
-						{ "element": "stage-3-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-3-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-3-job-2", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -509,9 +509,9 @@ def pipeline_complex_1():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-3-job-1", "status": "succeeded" },
-						{ "element": "stage-3-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-3-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-3-job-2", "status": [ "succeeded" ] },
 					],
 				},
 			],
@@ -551,8 +551,8 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-1-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-1-job-2", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -561,8 +561,8 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-1-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-1-job-2", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -571,8 +571,8 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-1-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-1-job-2", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -581,8 +581,8 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-1-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-1-job-2", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -591,9 +591,9 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-job-1", "status": "succeeded" },
-						{ "element": "stage-2-job-2", "status": "succeeded" },
-						{ "element": "stage-2-job-3", "status": "succeeded" },
+						{ "element": "stage-2-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-2", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-3", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -602,9 +602,9 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-job-1", "status": "succeeded" },
-						{ "element": "stage-2-job-2", "status": "succeeded" },
-						{ "element": "stage-2-job-3", "status": "succeeded" },
+						{ "element": "stage-2-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-2", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-3", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -613,7 +613,7 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-job-4", "status": "succeeded" },
+						{ "element": "stage-2-job-4", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -622,9 +622,9 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-3-job-1", "status": "succeeded" },
-						{ "element": "stage-3-job-2", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-3-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-3-job-2", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -633,8 +633,8 @@ def pipeline_complex_2():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-job-1", "status": "succeeded" },
-						{ "element": "stage-2-job-4", "status": "succeeded" },
+						{ "element": "stage-1-job-1", "status": [ "succeeded" ] },
+						{ "element": "stage-2-job-4", "status": [ "succeeded" ] },
 					],
 				},
 			],
@@ -669,7 +669,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-check", "status": "succeeded" },
+						{ "element": "stage-1-check", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -678,7 +678,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-check", "status": "succeeded" },
+						{ "element": "stage-1-check", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -687,7 +687,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-1-check", "status": "succeeded" },
+						{ "element": "stage-1-check", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -696,7 +696,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-build-linux", "status": "succeeded" },
+						{ "element": "stage-2-build-linux", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -705,7 +705,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-build-mac", "status": "succeeded" },
+						{ "element": "stage-2-build-mac", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -714,7 +714,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-build-windows", "status": "succeeded" },
+						{ "element": "stage-2-build-windows", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -723,12 +723,12 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-2-build-linux", "status": "succeeded" },
-						{ "element": "stage-2-build-mac", "status": "succeeded" },
-						{ "element": "stage-2-build-windows", "status": "succeeded" },
-						{ "element": "stage-3-test-linux", "status": "succeeded" },
-						{ "element": "stage-3-test-mac", "status": "succeeded" },
-						{ "element": "stage-3-test-windows", "status": "succeeded" },
+						{ "element": "stage-2-build-linux", "status": [ "succeeded" ] },
+						{ "element": "stage-2-build-mac", "status": [ "succeeded" ] },
+						{ "element": "stage-2-build-windows", "status": [ "succeeded" ] },
+						{ "element": "stage-3-test-linux", "status": [ "succeeded" ] },
+						{ "element": "stage-3-test-mac", "status": [ "succeeded" ] },
+						{ "element": "stage-3-test-windows", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -737,7 +737,7 @@ def pipeline_complex_3():
 					"job": "hello",
 
 					"after": [
-						{ "element": "stage-4-upload-steam", "status": "succeeded" },
+						{ "element": "stage-4-upload-steam", "status": [ "succeeded" ] },
 					],
 				},
 			],

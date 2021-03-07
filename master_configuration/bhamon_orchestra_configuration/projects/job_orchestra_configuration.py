@@ -113,12 +113,12 @@ def development_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "check_linux_python-3.7", "status": "succeeded" },
-						{ "element": "check_linux_python-3.8", "status": "succeeded" },
-						{ "element": "check_linux_python-3.9", "status": "succeeded" },
-						{ "element": "check_windows_python-3.7", "status": "succeeded" },
-						{ "element": "check_windows_python-3.8", "status": "succeeded" },
-						{ "element": "check_windows_python-3.9", "status": "succeeded" },
+						{ "element": "check_linux_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "check_linux_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "check_linux_python-3.9", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.9", "status": [ "succeeded" ] },
 					],
 				},
 			],
@@ -198,12 +198,12 @@ def release_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "check_linux_python-3.7", "status": "succeeded" },
-						{ "element": "check_linux_python-3.8", "status": "succeeded" },
-						{ "element": "check_linux_python-3.9", "status": "succeeded" },
-						{ "element": "check_windows_python-3.7", "status": "succeeded" },
-						{ "element": "check_windows_python-3.8", "status": "succeeded" },
-						{ "element": "check_windows_python-3.9", "status": "succeeded" },
+						{ "element": "check_linux_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "check_linux_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "check_linux_python-3.9", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.9", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -213,7 +213,7 @@ def release_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "package", "status": "succeeded" },
+						{ "element": "package", "status": [ "succeeded" ] },
 					],
 				},
 			],

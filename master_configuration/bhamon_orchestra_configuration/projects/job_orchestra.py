@@ -117,42 +117,42 @@ def development_pipeline():
 					"identifier": "test_linux_python-3.7",
 					"job": "test_linux_python-3.7",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
-					"after": [ { "element": "check_linux_python-3.7", "status": "succeeded" } ],
+					"after": [ { "element": "check_linux_python-3.7", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test_linux_python-3.8",
 					"job": "test_linux_python-3.8",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
-					"after": [ { "element": "check_linux_python-3.8", "status": "succeeded" } ],
+					"after": [ { "element": "check_linux_python-3.8", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test_linux_python-3.9",
 					"job": "test_linux_python-3.9",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
-					"after": [ { "element": "check_linux_python-3.9", "status": "succeeded" } ],
+					"after": [ { "element": "check_linux_python-3.9", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test_windows_python-3.7",
 					"job": "test_windows_python-3.7",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
-					"after": [ { "element": "check_windows_python-3.7", "status": "succeeded" } ],
+					"after": [ { "element": "check_windows_python-3.7", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test_windows_python-3.8",
 					"job": "test_windows_python-3.8",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
-					"after": [ { "element": "check_windows_python-3.8", "status": "succeeded" } ],
+					"after": [ { "element": "check_windows_python-3.8", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test_windows_python-3.9",
 					"job": "test_windows_python-3.9",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "not integration" },
-					"after": [ { "element": "check_windows_python-3.9", "status": "succeeded" } ],
+					"after": [ { "element": "check_windows_python-3.9", "status": [ "succeeded" ] } ],
 				},
 
 				{
@@ -161,12 +161,12 @@ def development_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "test_linux_python-3.7", "status": "succeeded" },
-						{ "element": "test_linux_python-3.8", "status": "succeeded" },
-						{ "element": "test_linux_python-3.9", "status": "succeeded" },
-						{ "element": "test_windows_python-3.7", "status": "succeeded" },
-						{ "element": "test_windows_python-3.8", "status": "succeeded" },
-						{ "element": "test_windows_python-3.9", "status": "succeeded" },
+						{ "element": "test_linux_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "test_linux_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "test_linux_python-3.9", "status": [ "succeeded" ] },
+						{ "element": "test_windows_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "test_windows_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "test_windows_python-3.9", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -174,42 +174,42 @@ def development_pipeline():
 					"identifier": "test-integration_linux_python-3.7",
 					"job": "test_linux_python-3.7",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
-					"after": [ { "element": "package", "status": "succeeded" } ],
+					"after": [ { "element": "package", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test-integration_linux_python-3.8",
 					"job": "test_linux_python-3.8",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
-					"after": [ { "element": "package", "status": "succeeded" } ],
+					"after": [ { "element": "package", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test-integration_linux_python-3.9",
 					"job": "test_linux_python-3.9",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
-					"after": [ { "element": "package", "status": "succeeded" } ],
+					"after": [ { "element": "package", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test-integration_windows_python-3.7",
 					"job": "test_windows_python-3.7",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
-					"after": [ { "element": "package", "status": "succeeded" } ],
+					"after": [ { "element": "package", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test-integration_windows_python-3.8",
 					"job": "test_windows_python-3.8",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
-					"after": [ { "element": "package", "status": "succeeded" } ],
+					"after": [ { "element": "package", "status": [ "succeeded" ] } ],
 				},
 
 				{
 					"identifier": "test-integration_windows_python-3.9",
 					"job": "test_windows_python-3.9",
 					"parameters": { "revision": "{results[revision_control][revision]}", "filter": "integration" },
-					"after": [ { "element": "package", "status": "succeeded" } ],
+					"after": [ { "element": "package", "status": [ "succeeded" ] } ],
 				},
 			],
 		},
@@ -288,12 +288,12 @@ def release_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "check_linux_python-3.7", "status": "succeeded" },
-						{ "element": "check_linux_python-3.8", "status": "succeeded" },
-						{ "element": "check_linux_python-3.9", "status": "succeeded" },
-						{ "element": "check_windows_python-3.7", "status": "succeeded" },
-						{ "element": "check_windows_python-3.8", "status": "succeeded" },
-						{ "element": "check_windows_python-3.9", "status": "succeeded" },
+						{ "element": "check_linux_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "check_linux_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "check_linux_python-3.9", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.7", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.8", "status": [ "succeeded" ] },
+						{ "element": "check_windows_python-3.9", "status": [ "succeeded" ] },
 					],
 				},
 
@@ -303,7 +303,7 @@ def release_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "package", "status": "succeeded" },
+						{ "element": "package", "status": [ "succeeded" ] },
 					],
 				},
 			],

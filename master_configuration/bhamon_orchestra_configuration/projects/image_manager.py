@@ -127,8 +127,8 @@ def release_pipeline():
 					"parameters": { "revision": "{results[revision_control][revision]}" },
 
 					"after": [
-						{ "element": "build_debug", "status": "succeeded" },
-						{ "element": "build_release", "status": "succeeded" },
+						{ "element": "build_debug", "status": [ "succeeded" ] },
+						{ "element": "build_release", "status": [ "succeeded" ] },
 					],
 				},
 			],
