@@ -1,7 +1,7 @@
 import argparse
-import json
 import logging
 
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
 from bhamon_orchestra_worker.controller import Controller
 from bhamon_orchestra_worker.web_service_client import WebServiceClient
 
@@ -16,12 +16,11 @@ def main():
 	environment_instance = environment.load_environment()
 	environment.configure_logging(environment_instance, None)
 
-	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
-		configuration = json.load(configuration_file)
-	with open(configuration["authentication_file_path"], mode = "r", encoding = "utf-8") as authentication_file:
-		authentication = json.load(authentication_file)
-
-	service_client_instance = WebServiceClient(configuration["orchestra_service_url"], (authentication["user"], authentication["secret"]))
+	serializer_instance = JsonSerializer()
+	configuration = serializer_instance.deserialize_from_file(arguments.configuration)
+	authentication = serializer_instance.deserialize_from_file(configuration["authentication_file_path"])
+	service_authorization = (authentication["user"], authentication["secret"])
+	service_client_instance = WebServiceClient(serializer_instance, configuration["orchestra_service_url"], authorization = service_authorization)
 	controller_instance = Controller(service_client_instance, None, arguments.results)
 
 	controller_instance.reload()

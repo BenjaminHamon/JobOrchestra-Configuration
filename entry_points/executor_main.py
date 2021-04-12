@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 import os
 import sys
@@ -9,6 +8,7 @@ import filelock
 from bhamon_orchestra_model.application import AsyncioApplication
 from bhamon_orchestra_model.database.file_data_storage import FileDataStorage
 from bhamon_orchestra_model.date_time_provider import DateTimeProvider
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
 
 import bhamon_orchestra_worker
 from bhamon_orchestra_worker.job_executor import JobExecutor
@@ -33,10 +33,9 @@ def main():
 	application_title = bhamon_orchestra_worker.__product__ + " " + "Executor"
 	application_version = bhamon_orchestra_worker.__version__
 
-	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
-		configuration = json.load(configuration_file)
-	with open(configuration["authentication_file_path"], mode = "r", encoding = "utf-8") as authentication_file:
-		authentication = json.load(authentication_file)
+	serializer_instance = JsonSerializer()
+	configuration = serializer_instance.deserialize_from_file(arguments.configuration)
+	authentication = serializer_instance.deserialize_from_file(configuration["authentication_file_path"])
 
 	with filelock.FileLock(os.path.join("runs", arguments.run_identifier, "executor.lock"), 5):
 		executor_instance = create_application(arguments.run_identifier, configuration, authentication)
@@ -52,10 +51,13 @@ def parse_arguments():
 
 
 def create_application(run_identifier, configuration, authentication):
+	service_authorization = (authentication["user"], authentication["secret"])
+
 	data_storage_instance = FileDataStorage(".")
 	date_time_provider_instance = DateTimeProvider()
-	worker_storage_instance = WorkerStorage(data_storage_instance)
-	service_client_instance = WebServiceClient(configuration["orchestra_service_url"], authorization = (authentication["user"], authentication["secret"]))
+	serializer_instance = JsonSerializer(indent = 4)
+	worker_storage_instance = WorkerStorage(data_storage_instance, serializer_instance)
+	service_client_instance = WebServiceClient(serializer_instance, configuration["orchestra_service_url"], authorization = service_authorization)
 
 	request = worker_storage_instance.load_request(run_identifier)
 
@@ -63,12 +65,14 @@ def create_application(run_identifier, configuration, authentication):
 		executor_instance = JobExecutor(
 			storage = worker_storage_instance,
 			date_time_provider = date_time_provider_instance,
+			serializer = serializer_instance,
 		)
 
 	elif request["job_definition"]["type"] == "pipeline":
 		executor_instance = PipelineExecutor(
 			storage = worker_storage_instance,
 			date_time_provider = date_time_provider_instance,
+			serializer = serializer_instance,
 			service_client = service_client_instance,
 		)
 

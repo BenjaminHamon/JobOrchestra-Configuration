@@ -1,6 +1,5 @@
 import argparse
 import getpass
-import json
 import logging
 import os
 import platform
@@ -11,6 +10,7 @@ import filelock
 
 from bhamon_orchestra_model.application import AsyncioApplication
 from bhamon_orchestra_model.database.file_data_storage import FileDataStorage
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
 
 import bhamon_orchestra_worker
 from bhamon_orchestra_worker.master_client import MasterClient
@@ -32,8 +32,8 @@ def main():
 	application_version = bhamon_orchestra_worker.__version__
 	executor_script = os.path.abspath(os.path.join(os.path.dirname(__file__), "executor_main.py"))
 
-	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
-		configuration = json.load(configuration_file)
+	serializer_instance = JsonSerializer()
+	configuration = serializer_instance.deserialize_from_file(arguments.configuration)
 
 	worker_path = configuration["orchestra_workers"][arguments.identifier]["path"]
 	worker_log_path = configuration["orchestra_workers"][arguments.identifier]["log"]
@@ -66,7 +66,8 @@ def create_application(local_worker_identifier, configuration, executor_script):
 	properties = load_properties(worker_definition)
 
 	data_storage_instance = FileDataStorage(".")
-	worker_storage_instance = WorkerStorage(data_storage_instance)
+	serializer_instance = JsonSerializer(indent = 4)
+	worker_storage_instance = WorkerStorage(data_storage_instance, serializer_instance)
 
 	master_client_instance = MasterClient(
 		master_uri = configuration["orchestra_master_url"],
@@ -90,6 +91,8 @@ def create_application(local_worker_identifier, configuration, executor_script):
 
 
 def write_local_configuration(global_configuration):
+	serializer_instance = JsonSerializer(indent = 4)
+
 	configuration_file_path = "worker.json"
 
 	local_configuration = {
@@ -103,24 +106,23 @@ def write_local_configuration(global_configuration):
 		"python_package_repository_web_url": global_configuration["python_package_repository_web_url"],
 	}
 
-	with open(configuration_file_path, mode = "w", encoding = "utf-8") as configuration_file:
-		json.dump(local_configuration, configuration_file, indent = 4)
+	serializer_instance.serialize_to_file(configuration_file_path, local_configuration)
 
 
 def load_authentication():
+	serializer_instance = JsonSerializer(indent = 4)
+
 	authentication_file_path = "authentication.json"
 
 	if os.path.exists(authentication_file_path):
-		with open(authentication_file_path, mode = "r", encoding = "utf-8") as authentication_file:
-			return json.load(authentication_file)
+		return serializer_instance.deserialize_from_file(authentication_file_path)
 
 	authentication = {
 		"user": input("User: "),
 		"secret": getpass.getpass("Secret: "),
 	}
 
-	with open(authentication_file_path, mode = "w", encoding = "utf-8") as authentication_file:
-		json.dump(authentication, authentication_file, indent = 4)
+	serializer_instance.serialize_to_file(authentication_file_path, authentication)
 
 	return authentication
 

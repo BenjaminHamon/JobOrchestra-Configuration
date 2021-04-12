@@ -1,6 +1,5 @@
 import argparse
 import importlib
-import json
 import logging
 
 import flask
@@ -15,11 +14,22 @@ from bhamon_orchestra_model.project_provider import ProjectProvider
 from bhamon_orchestra_model.revision_control.github import GitHubClient
 from bhamon_orchestra_model.run_provider import RunProvider
 from bhamon_orchestra_model.schedule_provider import ScheduleProvider
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
 from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
 import bhamon_orchestra_service
-import bhamon_orchestra_service.service as service
+import bhamon_orchestra_service.service_setup as service_setup
+from bhamon_orchestra_service.admin_controller import AdminController
+from bhamon_orchestra_service.job_controller import JobController
+from bhamon_orchestra_service.me_controller import MeController
+from bhamon_orchestra_service.project_controller import ProjectController
+from bhamon_orchestra_service.response_builder import ResponseBuilder
+from bhamon_orchestra_service.run_controller import RunController
+from bhamon_orchestra_service.schedule_controller import ScheduleController
+from bhamon_orchestra_service.service import Service
+from bhamon_orchestra_service.user_controller import UserController
+from bhamon_orchestra_service.worker_controller import WorkerController
 
 import bhamon_orchestra_configuration.run_result_transformer as run_result_transformer
 
@@ -38,8 +48,8 @@ def main():
 	application_title = bhamon_orchestra_service.__product__ + " " + "Service"
 	application_version = bhamon_orchestra_service.__version__
 
-	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
-		configuration = json.load(configuration_file)
+	serializer_instance = JsonSerializer()
+	configuration = serializer_instance.deserialize_from_file(arguments.configuration)
 
 	environment.configure_log_file(environment_instance, configuration["orchestra_service_log_file_path"])
 
@@ -61,7 +71,15 @@ def parse_arguments():
 	return argument_parser.parse_args()
 
 
-def create_application(configuration):
+def create_application(configuration): # pylint: disable = too-many-locals
+	application = flask.Flask(__name__)
+
+	external_services = {
+		"artifacts": FileServerClient("Artifact Server", configuration["artifact_server_web_url"]),
+		"github": GitHubClient(configuration.get("github_access_token", None)),
+		"python_packages": FileServerClient("Python Package Repository", configuration["python_package_repository_web_url"]),
+	}
+
 	database_metadata = None
 	if configuration["orchestra_database_uri"].startswith("postgresql://"):
 		database_metadata = importlib.import_module("bhamon_orchestra_model.database.sql_database_model").metadata
@@ -74,29 +92,53 @@ def create_application(configuration):
 
 	data_storage_instance = FileDataStorage(configuration["orchestra_file_storage_path"])
 	date_time_provider_instance = DateTimeProvider()
+	serializer_instance = JsonSerializer()
+	response_builder_instance = ResponseBuilder(application, serializer_instance)
 
-	application = flask.Flask(__name__)
-	application.database_client_factory = database_client_factory
-	application.authentication_provider = AuthenticationProvider(date_time_provider_instance)
-	application.authorization_provider = AuthorizationProvider()
-	application.job_provider = JobProvider(date_time_provider_instance)
-	application.project_provider = ProjectProvider(date_time_provider_instance)
-	application.run_provider = RunProvider(data_storage_instance, date_time_provider_instance)
-	application.schedule_provider = ScheduleProvider(date_time_provider_instance)
-	application.user_provider = UserProvider(date_time_provider_instance)
-	application.worker_provider = WorkerProvider(date_time_provider_instance)
+	authentication_provider_instance = AuthenticationProvider(date_time_provider_instance)
+	authorization_provider_instance = AuthorizationProvider()
+	job_provider_instance = JobProvider(date_time_provider_instance)
+	project_provider_instance = ProjectProvider(date_time_provider_instance)
+	run_provider_instance = RunProvider(data_storage_instance, date_time_provider_instance)
+	schedule_provider_instance = ScheduleProvider(date_time_provider_instance)
+	user_provider_instance = UserProvider(date_time_provider_instance)
+	worker_provider_instance = WorkerProvider(date_time_provider_instance)
 
-	application.run_result_transformer = transform_run_results
+	service_instance = Service(
+		application = application,
+		response_builder = response_builder_instance,
+		database_client_factory = database_client_factory,
+		authentication_provider = authentication_provider_instance,
+		authorization_provider = authorization_provider_instance,
+		user_provider = user_provider_instance,
+	)
 
-	service.configure(application)
-	service.register_handlers(application)
-	service.register_routes(application)
+	run_controller_serializer = JsonSerializer(indent = 4)
 
-	application.external_services = {
-		"artifacts": FileServerClient("Artifact Server", configuration["artifact_server_web_url"]),
-		"github": GitHubClient(configuration.get("github_access_token", None)),
-		"python_packages": FileServerClient("Python Package Repository", configuration["python_package_repository_web_url"]),
-	}
+	admin_controller_instance = AdminController(response_builder_instance, external_services)
+	job_controller_instance = JobController(response_builder_instance, job_provider_instance, run_provider_instance)
+	project_controller_instance = ProjectController(application, response_builder_instance, project_provider_instance, run_provider_instance)
+	run_controller_instance = RunController(response_builder_instance, run_controller_serializer, run_provider_instance)
+	schedule_controller_instance = ScheduleController(response_builder_instance, schedule_provider_instance)
+	user_controller_instance = UserController(response_builder_instance, authentication_provider_instance, user_provider_instance)
+	worker_controller_instance = WorkerController(response_builder_instance, job_provider_instance, run_provider_instance, worker_provider_instance)
+	me_controller_instance = MeController(response_builder_instance, authentication_provider_instance, user_provider_instance, user_controller_instance)
+
+	service_setup.configure(application)
+	service_setup.register_handlers(application, service_instance)
+
+	service_setup.register_routes(
+		application = application,
+		service = service_instance,
+		admin_controller = admin_controller_instance,
+		job_controller = job_controller_instance,
+		me_controller = me_controller_instance,
+		project_controller = project_controller_instance,
+		run_controller = run_controller_instance,
+		schedule_controller = schedule_controller_instance,
+		user_controller = user_controller_instance,
+		worker_controller = worker_controller_instance,
+	)
 
 	application.config["GITHUB_ACCESS_TOKEN"] = configuration.get("github_access_token", None)
 

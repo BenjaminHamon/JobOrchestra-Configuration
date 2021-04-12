@@ -3,13 +3,15 @@ import json
 
 import requests
 
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
+
 
 def main():
 	arguments = parse_arguments()
-	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
-		configuration = json.load(configuration_file)
-	with open(arguments.authentication, mode = "r", encoding = "utf-8") as authentication_file:
-		authentication = json.load(authentication_file)
+
+	serializer_instance = JsonSerializer(indent = 4)
+	configuration = serializer_instance.deserialize_from_file(arguments.configuration)
+	authentication = serializer_instance.deserialize_from_file(arguments.authentication)
 
 	response = send_request(
 		method = arguments.method,
@@ -19,11 +21,11 @@ def main():
 		parameters = arguments.parameters,
 	)
 
-	if response:
+	if response is not None:
 		if isinstance(response, str):
 			print(response)
 		else:
-			print(json.dumps(response, indent = 4))
+			print(serializer_instance.serialize_to_string(response))
 
 
 def parse_arguments():

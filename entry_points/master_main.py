@@ -1,7 +1,6 @@
 import argparse
 import functools
 import importlib
-import json
 import logging
 
 import filelock
@@ -15,6 +14,7 @@ from bhamon_orchestra_model.job_provider import JobProvider
 from bhamon_orchestra_model.project_provider import ProjectProvider
 from bhamon_orchestra_model.run_provider import RunProvider
 from bhamon_orchestra_model.schedule_provider import ScheduleProvider
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
 from bhamon_orchestra_model.user_provider import UserProvider
 from bhamon_orchestra_model.worker_provider import WorkerProvider
 
@@ -46,8 +46,8 @@ def main():
 	configuration_title = bhamon_orchestra_master.__product__ + " " + "Master Configuration"
 	configuration_version = bhamon_orchestra_configuration.__version__
 
-	with open(arguments.configuration, mode = "r", encoding = "utf-8") as configuration_file:
-		configuration = json.load(configuration_file)
+	serializer_instance = JsonSerializer()
+	configuration = serializer_instance.deserialize_from_file(arguments.configuration)
 
 	with filelock.FileLock("master.lock", 5):
 		environment.configure_log_file(environment_instance, configuration["orchestra_master_log_file_path"])
