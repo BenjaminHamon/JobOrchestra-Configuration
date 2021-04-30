@@ -79,7 +79,7 @@ def create_application(configuration): # pylint: disable = too-many-locals
 	authorization_provider_instance = AuthorizationProvider()
 	service_client_instance = ServiceClient(serializer_instance, configuration["orchestra_service_url"])
 
-	website_instance = Website(date_time_provider_instance, authorization_provider_instance, service_client_instance)
+	website_instance = Website(application, date_time_provider_instance, authorization_provider_instance, service_client_instance)
 	admin_controller_instance = AdminController(application, service_client_instance)
 	job_controller_instance = JobController(service_client_instance)
 	me_controller_instance = MeController(date_time_provider_instance, service_client_instance)
