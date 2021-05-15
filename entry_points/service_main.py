@@ -6,10 +6,8 @@ import flask
 
 from bhamon_orchestra_model.database.file_data_storage import FileDataStorage
 from bhamon_orchestra_model.date_time_provider import DateTimeProvider
-from bhamon_orchestra_model.file_server_client import FileServerClient
 from bhamon_orchestra_model.job_provider import JobProvider
 from bhamon_orchestra_model.project_provider import ProjectProvider
-from bhamon_orchestra_model.revision_control.github import GitHubClient
 from bhamon_orchestra_model.run_provider import RunProvider
 from bhamon_orchestra_model.schedule_provider import ScheduleProvider
 from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
@@ -28,6 +26,8 @@ from bhamon_orchestra_service.response_builder import ResponseBuilder
 from bhamon_orchestra_service.run_controller import RunController
 from bhamon_orchestra_service.schedule_controller import ScheduleController
 from bhamon_orchestra_service.service import Service
+from bhamon_orchestra_service.services.file_service import FileService
+from bhamon_orchestra_service.services.github_service import GitHubService
 from bhamon_orchestra_service.user_controller import UserController
 from bhamon_orchestra_service.worker_controller import WorkerController
 
@@ -75,9 +75,9 @@ def create_application(configuration): # pylint: disable = too-many-locals
 	application = flask.Flask(__name__)
 
 	external_services = {
-		"artifacts": FileServerClient("Artifact Server", configuration["artifact_server_web_url"]),
-		"github": GitHubClient(configuration.get("github_access_token", None)),
-		"python_packages": FileServerClient("Python Package Repository", configuration["python_package_repository_web_url"]),
+		"artifacts": FileService("artifacts", "Artifact Server", configuration["artifact_server_web_url"]),
+		"github": GitHubService(JsonSerializer(), configuration.get("github_access_token", None)),
+		"python_packages": FileService("python_packages", "Python Package Repository", configuration["python_package_repository_web_url"]),
 	}
 
 	database_metadata = None

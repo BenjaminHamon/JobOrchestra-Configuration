@@ -4,7 +4,8 @@ import logging
 import os
 import re
 
-from bhamon_orchestra_model.revision_control.github import GitHubClient
+from bhamon_orchestra_model.revision_control.github_client import GitHubClient
+from bhamon_orchestra_model.serialization.json_serializer import JsonSerializer
 from bhamon_orchestra_worker.revision_control.git import GitClient
 import bhamon_orchestra_worker.workspace
 
@@ -70,7 +71,7 @@ def configure_workspace_environment(worker_configuration):
 
 
 def resolve_controller_revision(repository, revision, result_file_path):
-	github_client_instance = GitHubClient()
+	github_client_instance = GitHubClient(JsonSerializer())
 	match = re.search(r"^https://github.com/(?P<repository>[a-zA-Z0-9_\-\.]+/[a-zA-Z0-9_\-\.]+)$", repository)
 	revision_data = github_client_instance.get_revision(match.group("repository"), revision)
 
